@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.image;import com.brazedblue.intervox.data.ImageAdjustments;public interface ImageFilterAccessor  {      public ImageAdjustments GetImageAdjustments(SingleSpaceID whichSpace);	public Histogram GetImageHistogram(SingleSpaceID whichSpace);  }

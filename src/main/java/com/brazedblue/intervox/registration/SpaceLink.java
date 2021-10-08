@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.registration;import com.brazedblue.intervox.image.SingleSpaceID;public interface SpaceLink {		public SingleSpaceID GetSpace1();		public SingleSpaceID GetSpace2();}

@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;interface NSControlPanel  {  }

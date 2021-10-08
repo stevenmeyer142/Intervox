@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.tracker;import com.brazedblue.intervox.data.CalculatedOffset;public interface TrackerSettingsAccess {	static public final String kPropertyLabel = "TrackerSettingsAccess";		public boolean IsUsingTrackerOffset();		public boolean IsUsingReference();		public CalculatedOffset GetTrackerCalculatedOffset();}

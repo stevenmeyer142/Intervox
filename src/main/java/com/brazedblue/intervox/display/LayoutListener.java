@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;public interface LayoutListener{	public void ProcessLayoutEvent(LayoutEvent event);}

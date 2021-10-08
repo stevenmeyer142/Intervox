@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.main;import com.brazedblue.intervox.util.NeuroSynchUtil;public class NSAppletFrameLite extends NSAppletFrame /* implements anInterface */ {      public NSAppletFrameLite() {    }	public static void main(String[] args) {		NeuroSynchUtil.SetImageGuided(false);		NSAppletFrame.main(args);    }  }

@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.image;import com.brazedblue.intervox.display.ProgressBroadcaster;public interface ImageReceiver {	public void FinishReceiving(ProgressBroadcaster broadcaster) throws java.io.IOException;}

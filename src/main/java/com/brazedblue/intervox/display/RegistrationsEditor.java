@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;import javax.swing.*;class RegistrationsEditor extends JPanel {  	private JTable		fRegistrationsTable;		    public RegistrationsEditor() 	{		setBorder(BorderFactory.createRaisedBevelBorder());				fRegistrationsTable = new JTable(2,8);		add(fRegistrationsTable);		    }  }

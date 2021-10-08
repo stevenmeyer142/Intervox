@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.geometry;public class ComputationException extends Exception {      public ComputationException(String s) 	{		super(s);    }}

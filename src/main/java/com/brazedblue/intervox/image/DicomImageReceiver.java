@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.image;import com.brazedblue.intervox.dicom.DicomImageDataSet;public interface DicomImageReceiver extends ImageReceiver {	public boolean AddDataSet(DicomImageDataSet dataSet, int resolution) throws java.io.IOException;}

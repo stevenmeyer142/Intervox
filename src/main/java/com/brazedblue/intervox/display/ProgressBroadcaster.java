@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;import javax.swing.*;public interface ProgressBroadcaster  {	 	public void Start(String message, int low, int high);		public void UpdateCurrentValue(String note, int value) throws ProgressCancelledException;		public void Finish(boolean successful);	}

@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.main;import com.brazedblue.intervox.util.Debug;public class NSAppletFrameLiteDev extends NSAppletFrameLite  {      public NSAppletFrameLiteDev() {    }	public static void main(String[] args) {		Debug.fgDebugging = true;		NSAppletFrameLite.main(args);    }  }

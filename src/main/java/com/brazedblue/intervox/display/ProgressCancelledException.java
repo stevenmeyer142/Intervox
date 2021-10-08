@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;import java.lang.Exception;public class ProgressCancelledException extends Exception  {      public ProgressCancelledException(String s) 	{		super(s);    }  }

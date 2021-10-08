@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;import java.beans.PropertyChangeListener;	//	extend PropertyChangeListener as a way of tagging  (easier to find uses in source code)public interface ImageViewTypeListener extends PropertyChangeListener  {}

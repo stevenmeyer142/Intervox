@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;import java.awt.Component;/*    * @deprecated as of JDK 1.4 Drag and Drop Support*/public interface ImageCopier {	public void CopyToClipboard();	public Component GetComponent();  }

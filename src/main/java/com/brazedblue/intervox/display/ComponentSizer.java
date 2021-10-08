@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.display;import java.awt.Dimension;public interface ComponentSizer { 	public Dimension GetPreferredSize();}

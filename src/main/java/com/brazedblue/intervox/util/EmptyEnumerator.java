@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.util;import java.util.*;public class EmptyEnumerator implements Enumeration  {      public EmptyEnumerator() {    }	public boolean hasMoreElements()	{		return false;	}		public Object nextElement()	{		throw new NoSuchElementException("EmptyEnumerator");	}  }

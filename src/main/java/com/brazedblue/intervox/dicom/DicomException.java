@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.dicom;public class DicomException extends java.io.IOException {      public DicomException(String message) 	{		super("Dicom error: " + message);		    }  }

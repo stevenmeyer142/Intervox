@@ -1,0 +1,1 @@
+package com.brazedblue.intervox.image;public interface SingleSpaceIDResolver {     public SingleSpaceID ResolveSingleSpaceID(SingleSpaceID spaceID); }

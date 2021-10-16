@@ -1,0 +1,1 @@
+// CGLObject.h// Created by Steve on Tue, Aug 15, 2000 @ 3:23 PM.#ifndef __CGLObject__#define __CGLObject__class CGLObject{public:	CGLObject();		virtual ~CGLObject();};#endif

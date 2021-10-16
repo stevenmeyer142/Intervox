@@ -1,0 +1,1 @@
+// CGLObject.cp// Created by Steve on Tue, Aug 15, 2000 @ 3:23 PM.#include "NativeOpenGL.h"#ifndef __CGLObject__#include "CGLObject.h"#endifCGLObject::CGLObject() {}CGLObject::~CGLObject(){}

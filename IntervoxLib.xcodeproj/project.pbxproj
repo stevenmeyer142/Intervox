@@ -1,0 +1,331 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */; };
+		4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */; };
+		4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */; };
+		4F5E1ECD272F2357004C6AA4 /* libMoltenVK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */; };
+		4F5E1ED0272F252F004C6AA4 /* data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F5E1ECF272F250A004C6AA4 /* data */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4F5E1EB3272F1917004C6AA4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				4F5E1ED0272F252F004C6AA4 /* data in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4F5E1EB5272F1917004C6AA4 /* IntervoxLib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IntervoxLib; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderheadless_objc.mm; sourceTree = "<group>"; };
+		4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderheadless.cpp; sourceTree = "<group>"; };
+		4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanTools.cpp; path = base/VulkanTools.cpp; sourceTree = "<group>"; };
+		4F5E1EC6272F1B65004C6AA4 /* VulkanTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VulkanTools.h; path = base/VulkanTools.h; sourceTree = "<group>"; };
+		4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = headless_debug.xcconfig; sourceTree = "<group>"; };
+		4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../vulkan/vulkan_git/MoltenVK/Package/Release/MoltenVK/dylib/macOS/libMoltenVK.dylib; sourceTree = "<group>"; };
+		4F5E1ECE272F2475004C6AA4 /* IntervoxLib.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IntervoxLib.entitlements; sourceTree = "<group>"; };
+		4F5E1ECF272F250A004C6AA4 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = IntervoxLib/data; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4F5E1EB2272F1917004C6AA4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F5E1ECD272F2357004C6AA4 /* libMoltenVK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4F5E1EAC272F1917004C6AA4 = {
+			isa = PBXGroup;
+			children = (
+				4F5E1ECF272F250A004C6AA4 /* data */,
+				4F5E1EB7272F1917004C6AA4 /* IntervoxLib */,
+				4F5E1EB6272F1917004C6AA4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4F5E1EB6272F1917004C6AA4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4F5E1EB5272F1917004C6AA4 /* IntervoxLib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4F5E1EB7272F1917004C6AA4 /* IntervoxLib */ = {
+			isa = PBXGroup;
+			children = (
+				4F5E1ECE272F2475004C6AA4 /* IntervoxLib.entitlements */,
+				4F5E1ECB272F22E7004C6AA4 /* frameworks */,
+				4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */,
+				4F5E1EC4272F1B56004C6AA4 /* base */,
+				4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */,
+				4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */,
+			);
+			path = IntervoxLib;
+			sourceTree = "<group>";
+		};
+		4F5E1EC4272F1B56004C6AA4 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */,
+				4F5E1EC6272F1B65004C6AA4 /* VulkanTools.h */,
+			);
+			name = base;
+			sourceTree = "<group>";
+		};
+		4F5E1ECB272F22E7004C6AA4 /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */,
+			);
+			name = frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4F5E1EB4272F1917004C6AA4 /* IntervoxLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F5E1EBC272F1917004C6AA4 /* Build configuration list for PBXNativeTarget "IntervoxLib" */;
+			buildPhases = (
+				4F5E1EB1272F1917004C6AA4 /* Sources */,
+				4F5E1EB2272F1917004C6AA4 /* Frameworks */,
+				4F5E1EB3272F1917004C6AA4 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IntervoxLib;
+			productName = IntervoxLib;
+			productReference = 4F5E1EB5272F1917004C6AA4 /* IntervoxLib */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4F5E1EAD272F1917004C6AA4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1310;
+				TargetAttributes = {
+					4F5E1EB4272F1917004C6AA4 = {
+						CreatedOnToolsVersion = 13.1;
+					};
+				};
+			};
+			buildConfigurationList = 4F5E1EB0272F1917004C6AA4 /* Build configuration list for PBXProject "IntervoxLib" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4F5E1EAC272F1917004C6AA4;
+			productRefGroup = 4F5E1EB6272F1917004C6AA4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4F5E1EB4272F1917004C6AA4 /* IntervoxLib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4F5E1EB1272F1917004C6AA4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */,
+				4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */,
+				4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4F5E1EBA272F1917004C6AA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		4F5E1EBB272F1917004C6AA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		4F5E1EBD272F1917004C6AA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IntervoxLib/IntervoxLib.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C34867QWKL;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					VK_USE_PLATFORM_MACOS_MVK,
+					_DEBUG,
+					"DEBUG=1",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4F5E1EBE272F1917004C6AA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IntervoxLib/IntervoxLib.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C34867QWKL;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = VK_USE_PLATFORM_MACOS_MVK;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4F5E1EB0272F1917004C6AA4 /* Build configuration list for PBXProject "IntervoxLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F5E1EBA272F1917004C6AA4 /* Debug */,
+				4F5E1EBB272F1917004C6AA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4F5E1EBC272F1917004C6AA4 /* Build configuration list for PBXNativeTarget "IntervoxLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F5E1EBD272F1917004C6AA4 /* Debug */,
+				4F5E1EBE272F1917004C6AA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4F5E1EAD272F1917004C6AA4 /* Project object */;
+}

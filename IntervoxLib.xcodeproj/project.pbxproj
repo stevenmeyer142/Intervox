@@ -7,11 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F051A592731A82500D3E3FE /* VulkanDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A512731A82500D3E3FE /* VulkanDevice.cpp */; };
+		4F051A5B2731A82500D3E3FE /* VulkanBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A542731A82500D3E3FE /* VulkanBuffer.cpp */; };
+		4F051A5F2731E6BF00D3E3FE /* vulkangear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */; };
 		4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */; };
 		4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */; };
 		4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */; };
 		4F5E1ECD272F2357004C6AA4 /* libMoltenVK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */; };
 		4F5E1ED0272F252F004C6AA4 /* data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F5E1ECF272F250A004C6AA4 /* data */; };
+		4F5E1ED527319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED327319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp */; };
+		4F5E1EDC2731A416004C6AA4 /* VulkanDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED62731A416004C6AA4 /* VulkanDebug.cpp */; };
+		4F5E1EDD2731A416004C6AA4 /* vulkanexamplebase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED72731A416004C6AA4 /* vulkanexamplebase.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +34,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4F051A512731A82500D3E3FE /* VulkanDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanDevice.cpp; path = base/VulkanDevice.cpp; sourceTree = "<group>"; };
+		4F051A532731A82500D3E3FE /* benchmark.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = benchmark.hpp; path = base/benchmark.hpp; sourceTree = "<group>"; };
+		4F051A542731A82500D3E3FE /* VulkanBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanBuffer.cpp; path = base/VulkanBuffer.cpp; sourceTree = "<group>"; };
+		4F051A552731A82500D3E3FE /* VulkanDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VulkanDevice.h; path = base/VulkanDevice.h; sourceTree = "<group>"; };
+		4F051A562731A82500D3E3FE /* VulkanBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VulkanBuffer.h; path = base/VulkanBuffer.h; sourceTree = "<group>"; };
+		4F051A572731A82500D3E3FE /* camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = camera.hpp; path = base/camera.hpp; sourceTree = "<group>"; };
+		4F051A5D2731E6BF00D3E3FE /* vulkangear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkangear.h; path = gears/vulkangear.h; sourceTree = "<group>"; };
+		4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vulkangear.cpp; path = gears/vulkangear.cpp; sourceTree = "<group>"; };
+		4F051A6027348B0200D3E3FE /* conanbuildinfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = conanbuildinfo.xcconfig; sourceTree = "<group>"; };
 		4F5E1EB5272F1917004C6AA4 /* IntervoxLib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IntervoxLib; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderheadless_objc.mm; sourceTree = "<group>"; };
 		4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderheadless.cpp; sourceTree = "<group>"; };
@@ -37,6 +52,14 @@
 		4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../vulkan/vulkan_git/MoltenVK/Package/Release/MoltenVK/dylib/macOS/libMoltenVK.dylib; sourceTree = "<group>"; };
 		4F5E1ECE272F2475004C6AA4 /* IntervoxLib.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IntervoxLib.entitlements; sourceTree = "<group>"; };
 		4F5E1ECF272F250A004C6AA4 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = IntervoxLib/data; sourceTree = "<group>"; };
+		4F5E1ED327319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntervoxHeadlessVulkan.cpp; sourceTree = "<group>"; };
+		4F5E1ED427319FD6004C6AA4 /* IntervoxHeadlessVulkan.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = IntervoxHeadlessVulkan.hpp; sourceTree = "<group>"; };
+		4F5E1ED62731A416004C6AA4 /* VulkanDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanDebug.cpp; path = base/VulkanDebug.cpp; sourceTree = "<group>"; };
+		4F5E1ED72731A416004C6AA4 /* vulkanexamplebase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vulkanexamplebase.cpp; path = base/vulkanexamplebase.cpp; sourceTree = "<group>"; };
+		4F5E1ED82731A416004C6AA4 /* VulkanDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VulkanDebug.h; path = base/VulkanDebug.h; sourceTree = "<group>"; };
+		4F5E1ED92731A416004C6AA4 /* keycodes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = keycodes.hpp; path = base/keycodes.hpp; sourceTree = "<group>"; };
+		4F5E1EDA2731A416004C6AA4 /* vulkanexamplebase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkanexamplebase.h; path = base/vulkanexamplebase.h; sourceTree = "<group>"; };
+		4F5E1EDB2731A416004C6AA4 /* VulkanInitializers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanInitializers.hpp; path = base/VulkanInitializers.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +74,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F051A5C2731E6AD00D3E3FE /* gears */ = {
+			isa = PBXGroup;
+			children = (
+				4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */,
+				4F051A5D2731E6BF00D3E3FE /* vulkangear.h */,
+			);
+			name = gears;
+			sourceTree = "<group>";
+		};
 		4F5E1EAC272F1917004C6AA4 = {
 			isa = PBXGroup;
 			children = (
@@ -71,12 +103,16 @@
 		4F5E1EB7272F1917004C6AA4 /* IntervoxLib */ = {
 			isa = PBXGroup;
 			children = (
+				4F051A6027348B0200D3E3FE /* conanbuildinfo.xcconfig */,
+				4F051A5C2731E6AD00D3E3FE /* gears */,
 				4F5E1ECE272F2475004C6AA4 /* IntervoxLib.entitlements */,
 				4F5E1ECB272F22E7004C6AA4 /* frameworks */,
 				4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */,
 				4F5E1EC4272F1B56004C6AA4 /* base */,
 				4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */,
 				4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */,
+				4F5E1ED327319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp */,
+				4F5E1ED427319FD6004C6AA4 /* IntervoxHeadlessVulkan.hpp */,
 			);
 			path = IntervoxLib;
 			sourceTree = "<group>";
@@ -84,6 +120,18 @@
 		4F5E1EC4272F1B56004C6AA4 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				4F051A532731A82500D3E3FE /* benchmark.hpp */,
+				4F051A572731A82500D3E3FE /* camera.hpp */,
+				4F051A542731A82500D3E3FE /* VulkanBuffer.cpp */,
+				4F051A562731A82500D3E3FE /* VulkanBuffer.h */,
+				4F051A512731A82500D3E3FE /* VulkanDevice.cpp */,
+				4F051A552731A82500D3E3FE /* VulkanDevice.h */,
+				4F5E1ED92731A416004C6AA4 /* keycodes.hpp */,
+				4F5E1ED62731A416004C6AA4 /* VulkanDebug.cpp */,
+				4F5E1ED82731A416004C6AA4 /* VulkanDebug.h */,
+				4F5E1ED72731A416004C6AA4 /* vulkanexamplebase.cpp */,
+				4F5E1EDA2731A416004C6AA4 /* vulkanexamplebase.h */,
+				4F5E1EDB2731A416004C6AA4 /* VulkanInitializers.hpp */,
 				4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */,
 				4F5E1EC6272F1B65004C6AA4 /* VulkanTools.h */,
 			);
@@ -155,9 +203,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F5E1ED527319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp in Sources */,
+				4F051A592731A82500D3E3FE /* VulkanDevice.cpp in Sources */,
+				4F5E1EDC2731A416004C6AA4 /* VulkanDebug.cpp in Sources */,
+				4F5E1EDD2731A416004C6AA4 /* vulkanexamplebase.cpp in Sources */,
 				4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */,
+				4F051A5B2731A82500D3E3FE /* VulkanBuffer.cpp in Sources */,
 				4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */,
 				4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */,
+				4F051A5F2731E6BF00D3E3FE /* vulkangear.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,7 +220,6 @@
 /* Begin XCBuildConfiguration section */
 		4F5E1EBA272F1917004C6AA4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -207,8 +260,13 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"\"SPIRV_CROSS_NAMESPACE_OVERRIDE=spirv_cross\"",
+					"\"ENABLE_OPT\"",
+					"\"ENABLE_HLSL\"",
+					"DEBUG=1",
+					_DEBUG,
+					"INTERVOX_LIB=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -263,6 +321,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "INTERVOX_LIB=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -278,17 +337,14 @@
 		};
 		4F5E1EBD272F1917004C6AA4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = IntervoxLib/IntervoxLib.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C34867QWKL;
 				ENABLE_HARDENED_RUNTIME = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					VK_USE_PLATFORM_MACOS_MVK,
-					_DEBUG,
-					"DEBUG=1",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = base;
 			};
 			name = Debug;
 		};
@@ -299,8 +355,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C34867QWKL;
 				ENABLE_HARDENED_RUNTIME = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = VK_USE_PLATFORM_MACOS_MVK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = base;
 			};
 			name = Release;
 		};

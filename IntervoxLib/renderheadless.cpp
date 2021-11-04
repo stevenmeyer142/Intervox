@@ -33,11 +33,11 @@
 #include <vulkan/vulkan.h>
 #include "VulkanTools.h"
 
+#include "IntervoxHeadlessVulkan.hpp"
+
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 android_app* androidapp;
 #endif
-
-#define DEBUG (!NDEBUG)
 
 #define BUFFER_ELEMENTS 32
 
@@ -889,10 +889,22 @@ void android_main(android_app* state) {
 }
 #else
 int main() {
+#if 0
 	VulkanExample *vulkanExample = new VulkanExample();
 	std::cout << "Finished. Press enter to terminate...";
 	getchar();
 	delete(vulkanExample);
+#else
+    IntervoxHeadlessVulkan *intervoxHeadless = new IntervoxHeadlessVulkan();
+
+    intervoxHeadless->initVulkan();
+    intervoxHeadless->setupWindow();
+    intervoxHeadless->prepare();
+    intervoxHeadless->renderLoop();
+    intervoxHeadless->grabImage();
+
+    delete(intervoxHeadless);
+#endif
 	return 0;
 }
 #endif

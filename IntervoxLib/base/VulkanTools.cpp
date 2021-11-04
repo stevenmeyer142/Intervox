@@ -8,7 +8,7 @@
 
 #include "VulkanTools.h"
 
-#if !defined(VK_USE_PLATFORM_MACOS_MVK)
+#ifndef INTERVOX_LIB
 const std::string getAssetPath()
 {
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)

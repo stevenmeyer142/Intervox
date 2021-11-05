@@ -649,7 +649,7 @@ void IntervoxHeadlessVulkan::render()
         /*
             Create framebuffer attachments
         */
-//#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE
     VkFormat colorFormat = VK_FORMAT_R8G8B8A8_UNORM;
         VkFormat depthFormat;
         vks::tools::getSupportedDepthFormat(physicalDevice, &depthFormat);
@@ -714,7 +714,7 @@ void IntervoxHeadlessVulkan::render()
             depthStencilView.image = depthAttachment.image;
             VK_CHECK_RESULT(vkCreateImageView(device, &depthStencilView, nullptr, &depthAttachment.view));
         }
-
+#endif
         /*
             Create renderpass
         */
@@ -778,6 +778,7 @@ void IntervoxHeadlessVulkan::render()
             renderPassInfo.pDependencies = dependencies.data();
             VK_CHECK_RESULT(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fRenderPass));
 
+#if DEBUG_RENDER_DELETE
             VkImageView attachments[2];
             attachments[0] = colorAttachment.view;
             attachments[1] = depthAttachment.view;
@@ -790,8 +791,9 @@ void IntervoxHeadlessVulkan::render()
             framebufferCreateInfo.height = fHeight;
             framebufferCreateInfo.layers = 1;
             VK_CHECK_RESULT(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &framebuffer));
+#endif
         }
-//#endif
+
 #if  DEBUG_RENDER_ADD
     setupImageViews();
     setupFrameBuffer();

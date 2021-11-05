@@ -50,10 +50,10 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALI
 #if DEBUG_RENDER
 IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
 {
-    vkDestroyBuffer(device, vertexBuffer, nullptr);
-    vkFreeMemory(device, vertexMemory, nullptr);
-    vkDestroyBuffer(device, indexBuffer, nullptr);
-    vkFreeMemory(device, indexMemory, nullptr);
+    vkDestroyBuffer(device, fVertexBuffer, nullptr);
+    vkFreeMemory(device, fVertexMemory, nullptr);
+    vkDestroyBuffer(device, fIndexBuffer, nullptr);
+    vkFreeMemory(device, fIndexMemory, nullptr);
 //#if DEBUG_RENDER_DELETE
     vkDestroyImageView(device, colorAttachment.view, nullptr);
     vkDestroyImage(device, colorAttachment.image, nullptr);
@@ -66,14 +66,16 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
 //#if DEBUG_RENDER_DELETE
     vkDestroyFramebuffer(device, framebuffer, nullptr);
 //#endif
-    vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-    vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-    vkDestroyPipeline(device, pipeline, nullptr);
-    vkDestroyPipelineCache(device, pipelineCache, nullptr);
-    vkDestroyCommandPool(device, commandPool, nullptr);
-    for (auto shadermodule : shaderModules) {
+    vkDestroyPipelineLayout(device, fPipelineLayout, nullptr);
+    vkDestroyDescriptorSetLayout(device, fDescriptorSetLayout, nullptr);
+    vkDestroyPipeline(device, fPipeline, nullptr);
+    vkDestroyPipelineCache(device, fPipelineCache, nullptr);
+    vkDestroyCommandPool(device, fCommandPool, nullptr);
+    for (auto shadermodule : fShaderModules) {
         vkDestroyShaderModule(device, shadermodule, nullptr);
     }
+    
+#if DEBUG_RENDER_DELETE
     vkDestroyDevice(device, nullptr);
 #if DEBUG
     if (debugReportCallback) {
@@ -85,6 +87,7 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     vkDestroyInstance(instance, nullptr);
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
     vks::android::freeVulkanLibrary();
+#endif
 #endif
 }
 #else
@@ -427,7 +430,7 @@ void IntervoxHeadlessVulkan::prepare()
 #if DEBUG_RENDER
 void IntervoxHeadlessVulkan::render()
 {
-
+#if DEBUG_RENDER_DELETE
         LOG("Running headless rendering example\n");
 
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -541,7 +544,7 @@ void IntervoxHeadlessVulkan::render()
         deviceCreateInfo.queueCreateInfoCount = 1;
         deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
         VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));
-
+#endif
         // Get a graphics queue
         vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
 
@@ -550,7 +553,7 @@ void IntervoxHeadlessVulkan::render()
         cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
         cmdPoolInfo.queueFamilyIndex = queueFamilyIndex;
         cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-        VK_CHECK_RESULT(vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &commandPool));
+        VK_CHECK_RESULT(vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &fCommandPool));
 
         /*
             Prepare vertex and index buffers
@@ -574,7 +577,7 @@ void IntervoxHeadlessVulkan::render()
             VkDeviceMemory stagingMemory;
 
             // Command buffer for copy commands (reused)
-            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
             VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
             VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();
@@ -593,14 +596,14 @@ void IntervoxHeadlessVulkan::render()
                 createBuffer(
                     VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    &vertexBuffer,
-                    &vertexMemory,
+                    &fVertexBuffer,
+                    &fVertexMemory,
                     vertexBufferSize);
 
                 VK_CHECK_RESULT(vkBeginCommandBuffer(copyCmd, &cmdBufInfo));
                 VkBufferCopy copyRegion = {};
                 copyRegion.size = vertexBufferSize;
-                vkCmdCopyBuffer(copyCmd, stagingBuffer, vertexBuffer, 1, &copyRegion);
+                vkCmdCopyBuffer(copyCmd, stagingBuffer, fVertexBuffer, 1, &copyRegion);
                 VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
                 submitWork(copyCmd, queue);
@@ -620,13 +623,13 @@ void IntervoxHeadlessVulkan::render()
                 createBuffer(
                     VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    &indexBuffer,
-                    &indexMemory,
+                    &fIndexBuffer,
+                    &fIndexMemory,
                     indexBufferSize);
 
                 VK_CHECK_RESULT(vkBeginCommandBuffer(copyCmd, &cmdBufInfo));
                 copyRegion.size = indexBufferSize;
-                vkCmdCopyBuffer(copyCmd, stagingBuffer, indexBuffer, 1, &copyRegion);
+                vkCmdCopyBuffer(copyCmd, stagingBuffer, fIndexBuffer, 1, &copyRegion);
                 VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
                 submitWork(copyCmd, queue);
@@ -795,7 +798,7 @@ void IntervoxHeadlessVulkan::render()
             std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {};
             VkDescriptorSetLayoutCreateInfo descriptorLayout =
                 vks::initializers::descriptorSetLayoutCreateInfo(setLayoutBindings);
-            VK_CHECK_RESULT(vkCreateDescriptorSetLayout(device, &descriptorLayout, nullptr, &descriptorSetLayout));
+            VK_CHECK_RESULT(vkCreateDescriptorSetLayout(device, &descriptorLayout, nullptr, &fDescriptorSetLayout));
 
             VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo =
                 vks::initializers::pipelineLayoutCreateInfo(nullptr, 0);
@@ -805,7 +808,7 @@ void IntervoxHeadlessVulkan::render()
             pipelineLayoutCreateInfo.pushConstantRangeCount = 1;
             pipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange;
 
-            VK_CHECK_RESULT(vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout));
+            VK_CHECK_RESULT(vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &fPipelineLayout));
 
             VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
             pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -841,7 +844,7 @@ void IntervoxHeadlessVulkan::render()
                 vks::initializers::pipelineDynamicStateCreateInfo(dynamicStateEnables);
 
             VkGraphicsPipelineCreateInfo pipelineCreateInfo =
-                vks::initializers::pipelineCreateInfo(pipelineLayout, renderPass);
+                vks::initializers::pipelineCreateInfo(fPipelineLayout, renderPass);
 
             std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
 
@@ -894,7 +897,7 @@ void IntervoxHeadlessVulkan::render()
             shaderStages[1].module = vks::tools::loadShader((shadersPath + "triangle.frag.spv").c_str(), device);
 #endif
             shaderModules = { shaderStages[0].module, shaderStages[1].module };
-            VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline));
+            VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &fPipeline));
         }
 
         /*
@@ -903,7 +906,7 @@ void IntervoxHeadlessVulkan::render()
         {
             VkCommandBuffer commandBuffer;
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-                vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+                vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &commandBuffer));
 
             VkCommandBufferBeginInfo cmdBufInfo =
@@ -944,12 +947,12 @@ void IntervoxHeadlessVulkan::render()
             scissor.extent.height = height;
             vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, fPipeline);
 
             // Render scene
             VkDeviceSize offsets[1] = { 0 };
-            vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
-            vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, &fVertexBuffer, offsets);
+            vkCmdBindIndexBuffer(commandBuffer, fIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
             std::vector<glm::vec3> pos = {
                 glm::vec3(-1.5f, 0.0f, -4.0f),
@@ -959,7 +962,7 @@ void IntervoxHeadlessVulkan::render()
 
             for (auto v : pos) {
                 glm::mat4 mvpMatrix = glm::perspective(glm::radians(60.0f), (float)width / (float)height, 0.1f, 256.0f) * glm::translate(glm::mat4(1.0f), v);
-                vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mvpMatrix), &mvpMatrix);
+                vkCmdPushConstants(commandBuffer, fPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mvpMatrix), &mvpMatrix);
                 vkCmdDrawIndexed(commandBuffer, 3, 1, 0, 0, 0);
             }
 
@@ -1005,7 +1008,7 @@ void IntervoxHeadlessVulkan::render()
             VK_CHECK_RESULT(vkBindImageMemory(device, dstImage, dstImageMemory, 0));
 
             // Do the actual blit from the offscreen image to our host visible destination image
-            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
             VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
             VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();

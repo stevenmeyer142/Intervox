@@ -44,20 +44,22 @@ class IntervoxHeadlessVulkan : public VulkanExampleBase {
     uint32_t    fHeight = 0;
 
 #if DEBUG_RENDER
+#if DEBUG_RENDER_DELETE
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
     VkDevice device;
     uint32_t queueFamilyIndex;
-    VkPipelineCache pipelineCache;
-    VkQueue queue;
-    VkCommandPool commandPool;
-    VkCommandBuffer commandBuffer;
-    VkDescriptorSetLayout descriptorSetLayout;
-    VkPipelineLayout pipelineLayout;
-    VkPipeline pipeline;
-    std::vector<VkShaderModule> shaderModules;
-    VkBuffer vertexBuffer, indexBuffer;
-    VkDeviceMemory vertexMemory, indexMemory;
+#endif
+    VkPipelineCache fPipelineCache;
+    VkQueue fQueue;
+    VkCommandPool fCommandPool;
+    VkCommandBuffer fCommandBuffer;
+    VkDescriptorSetLayout fDescriptorSetLayout;
+    VkPipelineLayout fPipelineLayout;
+    VkPipeline fPipeline;
+    std::vector<VkShaderModule> fShaderModules;
+    VkBuffer fVertexBuffer, fIndexBuffer;
+    VkDeviceMemory fVertexMemory, fIndexMemory;
 
 //#if DEBUG_RENDER_DELETE
    struct FrameBufferAttachment {

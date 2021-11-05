@@ -76,8 +76,10 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     vkDestroyPipelineLayout(device, fPipelineLayout, nullptr);
     vkDestroyDescriptorSetLayout(device, fDescriptorSetLayout, nullptr);
     vkDestroyPipeline(device, fPipeline, nullptr);
-    vkDestroyPipelineCache(device, fPipelineCache, nullptr);
-    vkDestroyCommandPool(device, fCommandPool, nullptr);
+#if DEBUG_RENDER_DELETE
+    vkDestroyPipelineCache(device, pipelineCache, nullptr);
+    vkDestroyCommandPool(device, cmdPool, nullptr);
+#endif
     for (auto shadermodule : fShaderModules) {
         vkDestroyShaderModule(device, shadermodule, nullptr);
     }
@@ -376,7 +378,7 @@ void IntervoxHeadlessVulkan::preparePipelines()
     pipelineCreateInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
     pipelineCreateInfo.pStages = shaderStages.data();
 
-    VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, fPipelineCache, 1, &pipelineCreateInfo, nullptr, &pipelines.solid));
+    VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipelines.solid));
 #endif
 }
 
@@ -553,14 +555,14 @@ void IntervoxHeadlessVulkan::render()
         VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));
 #endif
         // Get a graphics queue
-        vkGetDeviceQueue(device, queueFamilyIndex, 0, &fQueue);
+        vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
 
         // Command pool
         VkCommandPoolCreateInfo cmdPoolInfo = {};
         cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
         cmdPoolInfo.queueFamilyIndex = queueFamilyIndex;
         cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-        VK_CHECK_RESULT(vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &fCommandPool));
+        VK_CHECK_RESULT(vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &cmdPool));
 
         /*
             Prepare vertex and index buffers
@@ -584,7 +586,7 @@ void IntervoxHeadlessVulkan::render()
             VkDeviceMemory stagingMemory;
 
             // Command buffer for copy commands (reused)
-            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(cmdPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
             VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
             VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();
@@ -613,7 +615,7 @@ void IntervoxHeadlessVulkan::render()
                 vkCmdCopyBuffer(copyCmd, stagingBuffer, fVertexBuffer, 1, &copyRegion);
                 VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
-                submitWork(copyCmd, fQueue);
+                submitWork(copyCmd, queue);
 
                 vkDestroyBuffer(device, stagingBuffer, nullptr);
                 vkFreeMemory(device, stagingMemory, nullptr);
@@ -639,7 +641,7 @@ void IntervoxHeadlessVulkan::render()
                 vkCmdCopyBuffer(copyCmd, stagingBuffer, fIndexBuffer, 1, &copyRegion);
                 VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
-                submitWork(copyCmd, fQueue);
+                submitWork(copyCmd, queue);
 
                 vkDestroyBuffer(device, stagingBuffer, nullptr);
                 vkFreeMemory(device, stagingMemory, nullptr);
@@ -819,7 +821,7 @@ void IntervoxHeadlessVulkan::render()
 
             VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
             pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-            VK_CHECK_RESULT(vkCreatePipelineCache(device, &pipelineCacheCreateInfo, nullptr, &fPipelineCache));
+            VK_CHECK_RESULT(vkCreatePipelineCache(device, &pipelineCacheCreateInfo, nullptr, &pipelineCache));
 
             // Create pipeline
             VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
@@ -904,7 +906,7 @@ void IntervoxHeadlessVulkan::render()
             shaderStages[1].module = vks::tools::loadShader((shadersPath + "triangle.frag.spv").c_str(), device);
 #endif
             shaderModules = { shaderStages[0].module, shaderStages[1].module };
-            VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, fPipelineCache, 1, &pipelineCreateInfo, nullptr, &fPipeline));
+            VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &fPipeline));
         }
 
         /*
@@ -912,7 +914,7 @@ void IntervoxHeadlessVulkan::render()
         */
         {
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-                vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+                vks::initializers::commandBufferAllocateInfo(cmdPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &fCommandBuffer));
 
             VkCommandBufferBeginInfo cmdBufInfo =
@@ -976,7 +978,7 @@ void IntervoxHeadlessVulkan::render()
 
             VK_CHECK_RESULT(vkEndCommandBuffer(fCommandBuffer));
 
-            submitWork(fCommandBuffer, fQueue);
+            submitWork(fCommandBuffer, queue);
 
             vkDeviceWaitIdle(device);
         }
@@ -1014,7 +1016,7 @@ void IntervoxHeadlessVulkan::render()
             VK_CHECK_RESULT(vkBindImageMemory(device, dstImage, dstImageMemory, 0));
 
             // Do the actual blit from the offscreen image to our host visible destination image
-            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+            VkCommandBufferAllocateInfo cmdBufAllocateInfo = vks::initializers::commandBufferAllocateInfo(cmdPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
             VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
             VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();
@@ -1069,7 +1071,7 @@ void IntervoxHeadlessVulkan::render()
 
             VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
-            submitWork(copyCmd, fQueue);
+            submitWork(copyCmd, queue);
 
             // Get layout of the image (including row pitch)
             VkImageSubresource subResource{};
@@ -1128,7 +1130,7 @@ void IntervoxHeadlessVulkan::render()
             vkDestroyImage(device, dstImage, nullptr);
         }
 
-        vkQueueWaitIdle(fQueue);
+        vkQueueWaitIdle(queue);
 }
 
 #else

@@ -49,11 +49,13 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     VkPhysicalDevice physicalDevice;
     VkDevice device;
     uint32_t queueFamilyIndex;
-#endif
+
     VkPipelineCache fPipelineCache;
     VkQueue fQueue;
     VkCommandPool fCommandPool;
+#endif
     VkCommandBuffer fCommandBuffer;
+
     VkDescriptorSetLayout fDescriptorSetLayout;
     VkPipelineLayout fPipelineLayout;
     VkPipeline fPipeline;

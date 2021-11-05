@@ -22,7 +22,7 @@
 
 #define ENABLE_VALIDATION 0
 
-class IntervoxHeadlessVulkan : public VulkanExampleBase {
+class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 #if GEARS
     struct {
         VkPipelineVertexInputStateCreateInfo inputState;
@@ -61,13 +61,13 @@ class IntervoxHeadlessVulkan : public VulkanExampleBase {
     VkBuffer fVertexBuffer, fIndexBuffer;
     VkDeviceMemory fVertexMemory, fIndexMemory;
 
-//#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE
    struct FrameBufferAttachment {
         VkImage image;
         VkDeviceMemory memory;
         VkImageView view;
     };
-//#endif
+#endif
     
     int32_t width, height;
     
@@ -75,7 +75,7 @@ class IntervoxHeadlessVulkan : public VulkanExampleBase {
     VkFramebuffer framebuffer;
     FrameBufferAttachment colorAttachment, depthAttachment;
 //#endif
-    VkRenderPass renderPass;
+    VkRenderPass fRenderPass;
 
     VkDebugReportCallbackEXT debugReportCallback{};
 

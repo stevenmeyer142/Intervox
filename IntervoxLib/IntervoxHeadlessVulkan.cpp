@@ -45,6 +45,13 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALI
     camera.setPerspective(60.0f, (float)width / (float)height, 0.001f, 256.0f);
     timerSpeed *= 0.25f;
 #endif
+    
+#if DEBUG_RENDER
+    fWidth = 1024;
+    fHeight = 1024;
+    width = fWidth;
+    height = fHeight;
+#endif
 }
 
 #if DEBUG_RENDER
@@ -54,18 +61,18 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     vkFreeMemory(device, fVertexMemory, nullptr);
     vkDestroyBuffer(device, fIndexBuffer, nullptr);
     vkFreeMemory(device, fIndexMemory, nullptr);
-//#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE
     vkDestroyImageView(device, colorAttachment.view, nullptr);
     vkDestroyImage(device, colorAttachment.image, nullptr);
     vkFreeMemory(device, colorAttachment.memory, nullptr);
     vkDestroyImageView(device, depthAttachment.view, nullptr);
     vkDestroyImage(device, depthAttachment.image, nullptr);
     vkFreeMemory(device, depthAttachment.memory, nullptr);
-//#endif
-    vkDestroyRenderPass(device, renderPass, nullptr);
-//#if DEBUG_RENDER_DELETE
+#endif
+    vkDestroyRenderPass(device, fRenderPass, nullptr);
+#if DEBUG_RENDER_DELETE
     vkDestroyFramebuffer(device, framebuffer, nullptr);
-//#endif
+#endif
     vkDestroyPipelineLayout(device, fPipelineLayout, nullptr);
     vkDestroyDescriptorSetLayout(device, fDescriptorSetLayout, nullptr);
     vkDestroyPipeline(device, fPipeline, nullptr);
@@ -369,7 +376,7 @@ void IntervoxHeadlessVulkan::preparePipelines()
     pipelineCreateInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
     pipelineCreateInfo.pStages = shaderStages.data();
 
-    VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipelines.solid));
+    VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, fPipelineCache, 1, &pipelineCreateInfo, nullptr, &pipelines.solid));
 #endif
 }
 
@@ -546,7 +553,7 @@ void IntervoxHeadlessVulkan::render()
         VK_CHECK_RESULT(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));
 #endif
         // Get a graphics queue
-        vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
+        vkGetDeviceQueue(device, queueFamilyIndex, 0, &fQueue);
 
         // Command pool
         VkCommandPoolCreateInfo cmdPoolInfo = {};
@@ -606,7 +613,7 @@ void IntervoxHeadlessVulkan::render()
                 vkCmdCopyBuffer(copyCmd, stagingBuffer, fVertexBuffer, 1, &copyRegion);
                 VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
-                submitWork(copyCmd, queue);
+                submitWork(copyCmd, fQueue);
 
                 vkDestroyBuffer(device, stagingBuffer, nullptr);
                 vkFreeMemory(device, stagingMemory, nullptr);
@@ -632,7 +639,7 @@ void IntervoxHeadlessVulkan::render()
                 vkCmdCopyBuffer(copyCmd, stagingBuffer, fIndexBuffer, 1, &copyRegion);
                 VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
-                submitWork(copyCmd, queue);
+                submitWork(copyCmd, fQueue);
 
                 vkDestroyBuffer(device, stagingBuffer, nullptr);
                 vkFreeMemory(device, stagingMemory, nullptr);
@@ -642,8 +649,6 @@ void IntervoxHeadlessVulkan::render()
         /*
             Create framebuffer attachments
         */
-        width = 1024;
-        height = 1024;
 //#if DEBUG_RENDER_DELETE
     VkFormat colorFormat = VK_FORMAT_R8G8B8A8_UNORM;
         VkFormat depthFormat;
@@ -654,8 +659,8 @@ void IntervoxHeadlessVulkan::render()
             VkImageCreateInfo image = vks::initializers::imageCreateInfo();
             image.imageType = VK_IMAGE_TYPE_2D;
             image.format = colorFormat;
-            image.extent.width = width;
-            image.extent.height = height;
+            image.extent.width = fWidth;
+            image.extent.height = fHeight;
             image.extent.depth = 1;
             image.mipLevels = 1;
             image.arrayLayers = 1;
@@ -771,18 +776,18 @@ void IntervoxHeadlessVulkan::render()
             renderPassInfo.pSubpasses = &subpassDescription;
             renderPassInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());
             renderPassInfo.pDependencies = dependencies.data();
-            VK_CHECK_RESULT(vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass));
+            VK_CHECK_RESULT(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fRenderPass));
 
             VkImageView attachments[2];
             attachments[0] = colorAttachment.view;
             attachments[1] = depthAttachment.view;
 
             VkFramebufferCreateInfo framebufferCreateInfo = vks::initializers::framebufferCreateInfo();
-            framebufferCreateInfo.renderPass = renderPass;
+            framebufferCreateInfo.renderPass = fRenderPass;
             framebufferCreateInfo.attachmentCount = 2;
             framebufferCreateInfo.pAttachments = attachments;
-            framebufferCreateInfo.width = width;
-            framebufferCreateInfo.height = height;
+            framebufferCreateInfo.width = fWidth;
+            framebufferCreateInfo.height = fHeight;
             framebufferCreateInfo.layers = 1;
             VK_CHECK_RESULT(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &framebuffer));
         }
@@ -812,7 +817,7 @@ void IntervoxHeadlessVulkan::render()
 
             VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
             pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-            VK_CHECK_RESULT(vkCreatePipelineCache(device, &pipelineCacheCreateInfo, nullptr, &pipelineCache));
+            VK_CHECK_RESULT(vkCreatePipelineCache(device, &pipelineCacheCreateInfo, nullptr, &fPipelineCache));
 
             // Create pipeline
             VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
@@ -844,7 +849,7 @@ void IntervoxHeadlessVulkan::render()
                 vks::initializers::pipelineDynamicStateCreateInfo(dynamicStateEnables);
 
             VkGraphicsPipelineCreateInfo pipelineCreateInfo =
-                vks::initializers::pipelineCreateInfo(fPipelineLayout, renderPass);
+                vks::initializers::pipelineCreateInfo(fPipelineLayout, fRenderPass);
 
             std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
 
@@ -897,22 +902,21 @@ void IntervoxHeadlessVulkan::render()
             shaderStages[1].module = vks::tools::loadShader((shadersPath + "triangle.frag.spv").c_str(), device);
 #endif
             shaderModules = { shaderStages[0].module, shaderStages[1].module };
-            VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &fPipeline));
+            VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, fPipelineCache, 1, &pipelineCreateInfo, nullptr, &fPipeline));
         }
 
         /*
             Command buffer creation
         */
         {
-            VkCommandBuffer commandBuffer;
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
                 vks::initializers::commandBufferAllocateInfo(fCommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
-            VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &commandBuffer));
+            VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &fCommandBuffer));
 
             VkCommandBufferBeginInfo cmdBufInfo =
                 vks::initializers::commandBufferBeginInfo();
 
-            VK_CHECK_RESULT(vkBeginCommandBuffer(commandBuffer, &cmdBufInfo));
+            VK_CHECK_RESULT(vkBeginCommandBuffer(fCommandBuffer, &cmdBufInfo));
 
             VkClearValue clearValues[2];
             clearValues[0].color = { { 0.0f, 0.0f, 0.2f, 1.0f } };
@@ -920,11 +924,11 @@ void IntervoxHeadlessVulkan::render()
 
             VkRenderPassBeginInfo renderPassBeginInfo = {};
             renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-            renderPassBeginInfo.renderArea.extent.width = width;
-            renderPassBeginInfo.renderArea.extent.height = height;
+            renderPassBeginInfo.renderArea.extent.width = fWidth;
+            renderPassBeginInfo.renderArea.extent.height = fHeight;
             renderPassBeginInfo.clearValueCount = 2;
             renderPassBeginInfo.pClearValues = clearValues;
-            renderPassBeginInfo.renderPass = renderPass;
+            renderPassBeginInfo.renderPass = fRenderPass;
 //#if DEBUG_RENDER_DELETE
             renderPassBeginInfo.framebuffer = framebuffer;
 //#endif
@@ -932,27 +936,27 @@ void IntervoxHeadlessVulkan::render()
 //            renderPassBeginInfo.framebuffer = frameBuffers[0];
 //#endif
             
-            vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+            vkCmdBeginRenderPass(fCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             VkViewport viewport = {};
-            viewport.height = (float)height;
-            viewport.width = (float)width;
+            viewport.height = (float)fHeight;
+            viewport.width = (float)fWidth;
             viewport.minDepth = (float)0.0f;
             viewport.maxDepth = (float)1.0f;
-            vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+            vkCmdSetViewport(fCommandBuffer, 0, 1, &viewport);
 
             // Update dynamic scissor state
             VkRect2D scissor = {};
-            scissor.extent.width = width;
-            scissor.extent.height = height;
-            vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+            scissor.extent.width = fWidth;
+            scissor.extent.height = fHeight;
+            vkCmdSetScissor(fCommandBuffer, 0, 1, &scissor);
 
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, fPipeline);
+            vkCmdBindPipeline(fCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, fPipeline);
 
             // Render scene
             VkDeviceSize offsets[1] = { 0 };
-            vkCmdBindVertexBuffers(commandBuffer, 0, 1, &fVertexBuffer, offsets);
-            vkCmdBindIndexBuffer(commandBuffer, fIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindVertexBuffers(fCommandBuffer, 0, 1, &fVertexBuffer, offsets);
+            vkCmdBindIndexBuffer(fCommandBuffer, fIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
             std::vector<glm::vec3> pos = {
                 glm::vec3(-1.5f, 0.0f, -4.0f),
@@ -961,16 +965,16 @@ void IntervoxHeadlessVulkan::render()
             };
 
             for (auto v : pos) {
-                glm::mat4 mvpMatrix = glm::perspective(glm::radians(60.0f), (float)width / (float)height, 0.1f, 256.0f) * glm::translate(glm::mat4(1.0f), v);
-                vkCmdPushConstants(commandBuffer, fPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mvpMatrix), &mvpMatrix);
-                vkCmdDrawIndexed(commandBuffer, 3, 1, 0, 0, 0);
+                glm::mat4 mvpMatrix = glm::perspective(glm::radians(60.0f), (float)fWidth / (float)fHeight, 0.1f, 256.0f) * glm::translate(glm::mat4(1.0f), v);
+                vkCmdPushConstants(fCommandBuffer, fPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mvpMatrix), &mvpMatrix);
+                vkCmdDrawIndexed(fCommandBuffer, 3, 1, 0, 0, 0);
             }
 
-            vkCmdEndRenderPass(commandBuffer);
+            vkCmdEndRenderPass(fCommandBuffer);
 
-            VK_CHECK_RESULT(vkEndCommandBuffer(commandBuffer));
+            VK_CHECK_RESULT(vkEndCommandBuffer(fCommandBuffer));
 
-            submitWork(commandBuffer, queue);
+            submitWork(fCommandBuffer, fQueue);
 
             vkDeviceWaitIdle(device);
         }
@@ -984,8 +988,8 @@ void IntervoxHeadlessVulkan::render()
             VkImageCreateInfo imgCreateInfo(vks::initializers::imageCreateInfo());
             imgCreateInfo.imageType = VK_IMAGE_TYPE_2D;
             imgCreateInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
-            imgCreateInfo.extent.width = width;
-            imgCreateInfo.extent.height = height;
+            imgCreateInfo.extent.width = fWidth;
+            imgCreateInfo.extent.height = fHeight;
             imgCreateInfo.extent.depth = 1;
             imgCreateInfo.arrayLayers = 1;
             imgCreateInfo.mipLevels = 1;
@@ -1033,8 +1037,8 @@ void IntervoxHeadlessVulkan::render()
             imageCopyRegion.srcSubresource.layerCount = 1;
             imageCopyRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
             imageCopyRegion.dstSubresource.layerCount = 1;
-            imageCopyRegion.extent.width = width;
-            imageCopyRegion.extent.height = height;
+            imageCopyRegion.extent.width = fWidth;
+            imageCopyRegion.extent.height = fHeight;
             imageCopyRegion.extent.depth = 1;
 
             vkCmdCopyImage(
@@ -1063,7 +1067,7 @@ void IntervoxHeadlessVulkan::render()
 
             VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
-            submitWork(copyCmd, queue);
+            submitWork(copyCmd, fQueue);
 
             // Get layout of the image (including row pitch)
             VkImageSubresource subResource{};
@@ -1088,7 +1092,7 @@ void IntervoxHeadlessVulkan::render()
             std::ofstream file(filename, std::ios::out | std::ios::binary);
 
             // ppm header
-            file << "P6\n" << width << "\n" << height << "\n" << 255 << "\n";
+            file << "P6\n" << fWidth << "\n" << height << "\n" << 255 << "\n";
 
             // If source is BGR (destination is always RGB) and we can't use blit (which does automatic conversion), we'll have to manually swizzle color components
             // Check if source is BGR and needs swizzle
@@ -1096,9 +1100,9 @@ void IntervoxHeadlessVulkan::render()
             const bool colorSwizzle = (std::find(formatsBGR.begin(), formatsBGR.end(), VK_FORMAT_R8G8B8A8_UNORM) != formatsBGR.end());
 
             // ppm binary pixel data
-            for (int32_t y = 0; y < height; y++) {
+            for (int32_t y = 0; y < fHeight; y++) {
                 unsigned int *row = (unsigned int*)imagedata;
-                for (int32_t x = 0; x < width; x++) {
+                for (int32_t x = 0; x < fWidth; x++) {
                     if (colorSwizzle) {
                         file.write((char*)row + 2, 1);
                         file.write((char*)row + 1, 1);
@@ -1122,7 +1126,7 @@ void IntervoxHeadlessVulkan::render()
             vkDestroyImage(device, dstImage, nullptr);
         }
 
-        vkQueueWaitIdle(queue);
+        vkQueueWaitIdle(fQueue);
 }
 
 #else
@@ -1174,8 +1178,8 @@ void IntervoxHeadlessVulkan::grabImage()
     imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
     // Note that vkCmdBlitImage (if supported) will also do format conversions if the swapchain color format would differ
     imageCreateCI.format = VK_FORMAT_R8G8B8A8_UNORM;
-    imageCreateCI.extent.width = width;
-    imageCreateCI.extent.height = height;
+    imageCreateCI.extent.width = fWidth;
+    imageCreateCI.extent.height = fHeight;
     imageCreateCI.extent.depth = 1;
     imageCreateCI.arrayLayers = 1;
     imageCreateCI.mipLevels = 1;
@@ -1229,8 +1233,8 @@ void IntervoxHeadlessVulkan::grabImage()
     {
         // Define the region to blit (we will blit the whole swapchain image)
         VkOffset3D blitSize;
-        blitSize.x = width;
-        blitSize.y = height;
+        blitSize.x = fWidth;
+        blitSize.y = fHeight;
         blitSize.z = 1;
         VkImageBlit imageBlitRegion{};
         imageBlitRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1257,8 +1261,8 @@ void IntervoxHeadlessVulkan::grabImage()
         imageCopyRegion.srcSubresource.layerCount = 1;
         imageCopyRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         imageCopyRegion.dstSubresource.layerCount = 1;
-        imageCopyRegion.extent.width = width;
-        imageCopyRegion.extent.height = height;
+        imageCopyRegion.extent.width = fWidth;
+        imageCopyRegion.extent.height = fHeight;
         imageCopyRegion.extent.depth = 1;
 
         // Issue the copy command
@@ -1309,7 +1313,7 @@ void IntervoxHeadlessVulkan::grabImage()
     std::ofstream file("saved_intevox.ppm", std::ios::out | std::ios::binary);
 
     // ppm header
-    file << "P6\n" << width << "\n" << height << "\n" << 255 << "\n";
+    file << "P6\n" << fWidth << "\n" << fHeight << "\n" << 255 << "\n";
 
     // If source is BGR (destination is always RGB) and we can't use blit (which does automatic conversion), we'll have to manually swizzle color components
     bool colorSwizzle = false;
@@ -1322,10 +1326,10 @@ void IntervoxHeadlessVulkan::grabImage()
     }
 
     // ppm binary pixel data
-    for (uint32_t y = 0; y < height; y++)
+    for (uint32_t y = 0; y < fHeight; y++)
     {
         unsigned int *row = (unsigned int*)data;
-        for (uint32_t x = 0; x < width; x++)
+        for (uint32_t x = 0; x < fWidth; x++)
         {
             if (colorSwizzle)
             {

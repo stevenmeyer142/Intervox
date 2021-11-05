@@ -792,10 +792,10 @@ void IntervoxHeadlessVulkan::render()
             VK_CHECK_RESULT(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &framebuffer));
         }
 //#endif
-//#if  DEBUG_RENDER_ADD
-//    setupImageViews();
-//    setupFrameBuffer();
-//#endif
+#if  DEBUG_RENDER_ADD
+    setupImageViews();
+    setupFrameBuffer();
+#endif
         /*
             Prepare graphics pipeline
         */
@@ -929,12 +929,12 @@ void IntervoxHeadlessVulkan::render()
             renderPassBeginInfo.clearValueCount = 2;
             renderPassBeginInfo.pClearValues = clearValues;
             renderPassBeginInfo.renderPass = fRenderPass;
-//#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE
             renderPassBeginInfo.framebuffer = framebuffer;
-//#endif
-//#if DEBUG_RENDER_ADD
-//            renderPassBeginInfo.framebuffer = frameBuffers[0];
-//#endif
+#endif
+#if DEBUG_RENDER_ADD
+            renderPassBeginInfo.framebuffer = frameBuffers[0];
+#endif
             
             vkCmdBeginRenderPass(fCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -1043,11 +1043,11 @@ void IntervoxHeadlessVulkan::render()
 
             vkCmdCopyImage(
                 copyCmd,
-//#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE
                 colorAttachment.image,
-//#else
-//                colorAttachments[0].image,
-//#endif
+#else
+                colorAttachments[0].image,
+#endif
                            VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                 dstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 1,

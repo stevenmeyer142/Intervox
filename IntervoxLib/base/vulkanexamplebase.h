@@ -76,6 +76,10 @@
 #include "camera.hpp"
 #include "benchmark.hpp"
 
+#define DEBUG_RENDER 1
+#define DEBUG_RENDER_ADD 1
+#define DEBUG_RENDER_DELETE 0
+
 class CommandLineParser
 {
 public:

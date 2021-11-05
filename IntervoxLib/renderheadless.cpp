@@ -896,12 +896,17 @@ int main() {
 	delete(vulkanExample);
 #else
     IntervoxHeadlessVulkan *intervoxHeadless = new IntervoxHeadlessVulkan();
-
+#if !DEBUG_RENDER
     intervoxHeadless->initVulkan();
     intervoxHeadless->setupWindow();
     intervoxHeadless->prepare();
-    intervoxHeadless->renderLoop();
+#endif
+    intervoxHeadless->render();
+  //  intervoxHeadless->renderLoop();
+    
+#if !DEBUG_RENDER
     intervoxHeadless->grabImage();
+#endif
 
     delete(intervoxHeadless);
 #endif

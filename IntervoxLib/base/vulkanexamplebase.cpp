@@ -134,11 +134,25 @@ void VulkanExampleBase::renderFrame()
 #ifndef INTERVOX_LIB
     VulkanExampleBase::prepareFrame();
 #endif
+    
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer];
+    
+#ifdef INTERVOX_LIB
+    VkFenceCreateInfo fenceInfo = vks::initializers::fenceCreateInfo();
+    VkFence fence;
+    VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &fence));
+#endif
+    
 	VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE));
+    
 #ifndef INTERVOX_LIB
 	VulkanExampleBase::submitFrame();
+#endif
+    
+#ifdef INTERVOX_LIB
+    VK_CHECK_RESULT(vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
+    vkDestroyFence(device, fence, nullptr);
 #endif
 }
 

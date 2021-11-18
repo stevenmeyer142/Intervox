@@ -76,13 +76,7 @@
 #include "camera.hpp"
 #include "benchmark.hpp"
 
-#define DEBUG_RENDER 0
 
-#define DEBUG_RENDER_ADD 1
-#define DEBUG_RENDER_DELETE 0
-
-#define DEBUG_RENDER_ADD_X 0
-#define DEBUG_RENDER_DELETE_X 1
 
 class CommandLineParser
 {
@@ -164,7 +158,7 @@ protected:
 	/** @brief Pipeline stages used to wait at for graphics queue submissions */
 	VkPipelineStageFlags submitPipelineStages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 	// Contains command buffers and semaphores to be presented to the queue
-	VkSubmitInfo submitInfo;
+    VkSubmitInfo submitInfo{};
 	// Command buffers used for rendering
 	std::vector<VkCommandBuffer> drawCmdBuffers;
 	// Global render pass for frame buffer writes

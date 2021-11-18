@@ -13,7 +13,6 @@
 		4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */; };
 		4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */; };
 		4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */; };
-		4F5E1ECD272F2357004C6AA4 /* libMoltenVK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */; };
 		4F5E1ED0272F252F004C6AA4 /* data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F5E1ECF272F250A004C6AA4 /* data */; };
 		4F5E1ED527319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED327319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp */; };
 		4F5E1EDC2731A416004C6AA4 /* VulkanDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED62731A416004C6AA4 /* VulkanDebug.cpp */; };
@@ -43,13 +42,13 @@
 		4F051A5D2731E6BF00D3E3FE /* vulkangear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkangear.h; path = gears/vulkangear.h; sourceTree = "<group>"; };
 		4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vulkangear.cpp; path = gears/vulkangear.cpp; sourceTree = "<group>"; };
 		4F051A6027348B0200D3E3FE /* conanbuildinfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = conanbuildinfo.xcconfig; sourceTree = "<group>"; };
+		4F2F881E274570BC00C363E4 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../vulkan/vulkan_git/MoltenVK/Package/Debug/MoltenVK/dylib/macOS/libMoltenVK.dylib; sourceTree = "<group>"; };
 		4F5E1EB5272F1917004C6AA4 /* IntervoxLib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IntervoxLib; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderheadless_objc.mm; sourceTree = "<group>"; };
 		4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderheadless.cpp; sourceTree = "<group>"; };
 		4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanTools.cpp; path = base/VulkanTools.cpp; sourceTree = "<group>"; };
 		4F5E1EC6272F1B65004C6AA4 /* VulkanTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VulkanTools.h; path = base/VulkanTools.h; sourceTree = "<group>"; };
 		4F5E1ECA272F218E004C6AA4 /* headless_debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = headless_debug.xcconfig; sourceTree = "<group>"; };
-		4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../vulkan/vulkan_git/MoltenVK/Package/Release/MoltenVK/dylib/macOS/libMoltenVK.dylib; sourceTree = "<group>"; };
 		4F5E1ECE272F2475004C6AA4 /* IntervoxLib.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IntervoxLib.entitlements; sourceTree = "<group>"; };
 		4F5E1ECF272F250A004C6AA4 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = IntervoxLib/data; sourceTree = "<group>"; };
 		4F5E1ED327319FD6004C6AA4 /* IntervoxHeadlessVulkan.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntervoxHeadlessVulkan.cpp; sourceTree = "<group>"; };
@@ -67,7 +66,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F5E1ECD272F2357004C6AA4 /* libMoltenVK.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,12 +81,20 @@
 			name = gears;
 			sourceTree = "<group>";
 		};
+		4F2F88202745713E00C363E4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		4F5E1EAC272F1917004C6AA4 = {
 			isa = PBXGroup;
 			children = (
 				4F5E1ECF272F250A004C6AA4 /* data */,
 				4F5E1EB7272F1917004C6AA4 /* IntervoxLib */,
 				4F5E1EB6272F1917004C6AA4 /* Products */,
+				4F2F88202745713E00C363E4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,7 +147,7 @@
 		4F5E1ECB272F22E7004C6AA4 /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4F5E1ECC272F2357004C6AA4 /* libMoltenVK.dylib */,
+				4F2F881E274570BC00C363E4 /* libMoltenVK.dylib */,
 			);
 			name = frameworks;
 			sourceTree = "<group>";
@@ -343,6 +349,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C34867QWKL;
 				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"\"SPIRV_CROSS_NAMESPACE_OVERRIDE=spirv_cross\"",
+					"\"ENABLE_OPT\"",
+					"\"ENABLE_HLSL\"",
+					"DEBUG=1",
+					_DEBUG,
+					"INTERVOX_LIB=1",
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				OTHER_LDFLAGS = "-lvulkan";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = base;
 			};
@@ -355,6 +372,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C34867QWKL;
 				ENABLE_HARDENED_RUNTIME = YES;
+				OTHER_LDFLAGS = "-lvulkan";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = base;
 			};

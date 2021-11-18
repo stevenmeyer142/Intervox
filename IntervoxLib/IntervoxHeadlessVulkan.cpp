@@ -61,7 +61,7 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     vkFreeMemory(device, fVertexMemory, nullptr);
     vkDestroyBuffer(device, fIndexBuffer, nullptr);
     vkFreeMemory(device, fIndexMemory, nullptr);
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
     vkDestroyImageView(device, colorAttachment.view, nullptr);
     vkDestroyImage(device, colorAttachment.image, nullptr);
     vkFreeMemory(device, colorAttachment.memory, nullptr);
@@ -70,13 +70,13 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     vkFreeMemory(device, depthAttachment.memory, nullptr);
 #endif
     vkDestroyRenderPass(device, fRenderPass, nullptr);
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
     vkDestroyFramebuffer(device, framebuffer, nullptr);
 #endif
     vkDestroyPipelineLayout(device, fPipelineLayout, nullptr);
     vkDestroyDescriptorSetLayout(device, fDescriptorSetLayout, nullptr);
     vkDestroyPipeline(device, fPipeline, nullptr);
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
     vkDestroyPipelineCache(device, pipelineCache, nullptr);
     vkDestroyCommandPool(device, cmdPool, nullptr);
 #endif
@@ -84,7 +84,7 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
         vkDestroyShaderModule(device, shadermodule, nullptr);
     }
     
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
     vkDestroyDevice(device, nullptr);
 #if DEBUG
     if (debugReportCallback) {
@@ -439,7 +439,7 @@ void IntervoxHeadlessVulkan::prepare()
 #if DEBUG_RENDER
 void IntervoxHeadlessVulkan::render()
 {
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
         LOG("Running headless rendering example\n");
 
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -651,7 +651,7 @@ void IntervoxHeadlessVulkan::render()
         /*
             Create framebuffer attachments
         */
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
     VkFormat colorFormat = VK_FORMAT_R8G8B8A8_UNORM;
         VkFormat depthFormat;
         vks::tools::getSupportedDepthFormat(physicalDevice, &depthFormat);
@@ -780,7 +780,7 @@ void IntervoxHeadlessVulkan::render()
             renderPassInfo.pDependencies = dependencies.data();
             VK_CHECK_RESULT(vkCreateRenderPass(device, &renderPassInfo, nullptr, &fRenderPass));
 
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
             VkImageView attachments[2];
             attachments[0] = colorAttachment.view;
             attachments[1] = depthAttachment.view;
@@ -796,7 +796,7 @@ void IntervoxHeadlessVulkan::render()
 #endif
         }
 
-#if  DEBUG_RENDER_ADD
+#if  DEBUG_RENDER_ADD_X
     setupImageViews();
     setupFrameBuffer();
 #endif
@@ -933,10 +933,10 @@ void IntervoxHeadlessVulkan::render()
             renderPassBeginInfo.clearValueCount = 2;
             renderPassBeginInfo.pClearValues = clearValues;
             renderPassBeginInfo.renderPass = fRenderPass;
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
             renderPassBeginInfo.framebuffer = framebuffer;
 #endif
-#if DEBUG_RENDER_ADD
+#if DEBUG_RENDER_ADD_X
             renderPassBeginInfo.framebuffer = frameBuffers[0];
 #endif
             
@@ -1047,7 +1047,7 @@ void IntervoxHeadlessVulkan::render()
 
             vkCmdCopyImage(
                 copyCmd,
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
                 colorAttachment.image,
 #else
                 colorAttachments[0].image,

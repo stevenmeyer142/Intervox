@@ -898,7 +898,7 @@ int main() {
     IntervoxHeadlessVulkan *intervoxHeadless = new IntervoxHeadlessVulkan();
 //#if !DEBUG_RENDER
     intervoxHeadless->initVulkan();
-    intervoxHeadless->setupWindow();
+  //  intervoxHeadless->setupWindow();
     intervoxHeadless->prepare();
 //#endif
     intervoxHeadless->render();

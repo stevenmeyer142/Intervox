@@ -59,6 +59,12 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 	instanceExtensions.push_back(VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME);
 #endif
 
+#if DEBUG_RENDER_ADD_X
+    instanceExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+    instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    instanceExtensions.push_back(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR);
+#endif
+
 	// Get extensions supported by the instance and store for later use
 	uint32_t extCount = 0;
 	vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
@@ -104,8 +110,11 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 
 	// The VK_LAYER_KHRONOS_validation contains all current validation functionality.
 	// Note that on Android this layer requires at least NDK r20
+    const char* s = getenv("VULKAN_LAYER_PATH");
+    std::cout << s << std::endl;
 	const char* validationLayerName = "VK_LAYER_KHRONOS_validation";
-	if (settings.validation)
+
+    if (settings.validation)
 	{
 		// Check if this layer is available at instance level
 		uint32_t instanceLayerCount;
@@ -123,7 +132,7 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 			instanceCreateInfo.ppEnabledLayerNames = &validationLayerName;
 			instanceCreateInfo.enabledLayerCount = 1;
 		} else {
-			std::cerr << "Validation layer VK_LAYER_KHRONOS_validation not present, validation is disabled";
+			std::cerr << "Validation layer VK_LAYER_KHRONOS_validation not present, validation is disabled" << std::endl;
 		}
 	}
 	return vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
@@ -1033,7 +1042,14 @@ bool VulkanExampleBase::initVulkan()
 	// This is handled by a separate class that gets a logical device representation
 	// and encapsulates functions related to a device
 	vulkanDevice = new vks::VulkanDevice(physicalDevice);
+#if DEBUG_RENDER_DELETE
 	VkResult res = vulkanDevice->createLogicalDevice(enabledFeatures, enabledDeviceExtensions, deviceCreatepNextChain);
+#else
+    VkResult res = vulkanDevice->createLogicalDevice(enabledFeatures, enabledDeviceExtensions, deviceCreatepNextChain,
+                                                    false  // use swap chain
+                                                     );
+#endif
+    
 	if (res != VK_SUCCESS) {
 		vks::tools::exitFatal("Could not create Vulkan device: \n" + vks::tools::errorString(res), res);
 		return false;
@@ -1689,17 +1705,21 @@ static CVReturn displayLinkOutputCallback(CVDisplayLinkRef displayLink, const CV
 	vulkanExample->mouseButtons.right = false;
 }
 
+#ifndef INTERVOX_LIB
 - (void)mouseDragged:(NSEvent *)event
 {
 	auto point = [self getMouseLocalPoint:event];
 	vulkanExample->mouseDragged(point.x, point.y);
 }
+#endif
 
+#ifndef INTERVOX_LIB
 - (void)mouseMoved:(NSEvent *)event
 {
 	auto point = [self getMouseLocalPoint:event];
 	vulkanExample->mouseDragged(point.x, point.y);
 }
+#endif
 
 - (void)scrollWheel:(NSEvent *)event
 {
@@ -1770,10 +1790,12 @@ void VulkanExampleBase::displayLinkOutputCb()
 		nextFrame();
 }
 
+#ifndef INTERVOX_LIB
 void VulkanExampleBase::mouseDragged(float x, float y)
 {
 	handleMouseMove(static_cast<uint32_t>(x), static_cast<uint32_t>(y));
 }
+#endif
 
 void VulkanExampleBase::windowWillResize(float x, float y)
 {

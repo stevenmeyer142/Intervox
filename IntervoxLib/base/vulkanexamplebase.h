@@ -77,8 +77,12 @@
 #include "benchmark.hpp"
 
 #define DEBUG_RENDER 1
+
 #define DEBUG_RENDER_ADD 1
 #define DEBUG_RENDER_DELETE 0
+
+#define DEBUG_RENDER_ADD_X 0
+#define DEBUG_RENDER_DELETE_X 1
 
 class CommandLineParser
 {
@@ -331,7 +335,9 @@ public:
 #elif (defined(VK_USE_PLATFORM_IOS_MVK) || defined(VK_USE_PLATFORM_MACOS_MVK))
 	void* setupWindow(void* view);
 	void displayLinkOutputCb();
+#ifndef INTERVOX_LIB
 	void mouseDragged(float x, float y);
+#endif
 	void windowWillResize(float x, float y);
 	void windowDidResize();
 #elif defined(VK_USE_PLATFORM_DIRECTFB_EXT)

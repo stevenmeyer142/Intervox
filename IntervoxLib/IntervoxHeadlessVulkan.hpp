@@ -20,7 +20,7 @@
 #include <vector>
 
 
-#define ENABLE_VALIDATION 0
+#define ENABLE_VALIDATION 1
 
 class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 #if GEARS
@@ -44,7 +44,7 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     uint32_t    fHeight = 0;
 
 #if DEBUG_RENDER
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
     VkDevice device;
@@ -63,7 +63,7 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     VkBuffer fVertexBuffer, fIndexBuffer;
     VkDeviceMemory fVertexMemory, fIndexMemory;
 
-#if DEBUG_RENDER_DELETE
+#if DEBUG_RENDER_DELETE_X
    struct FrameBufferAttachment {
         VkImage image;
         VkDeviceMemory memory;
@@ -73,7 +73,7 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     
     int32_t width, height;
     
-//#if DEBUG_RENDER_DELETE
+//#if DEBUG_RENDER_DELETE_X
     VkFramebuffer framebuffer;
     FrameBufferAttachment colorAttachment, depthAttachment;
 //#endif

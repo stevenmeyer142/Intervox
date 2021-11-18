@@ -59,11 +59,6 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 	instanceExtensions.push_back(VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME);
 #endif
 
-#if DEBUG_RENDER_ADD_X
-    instanceExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
-    instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-    instanceExtensions.push_back(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR);
-#endif
 
 	// Get extensions supported by the instance and store for later use
 	uint32_t extCount = 0;
@@ -110,8 +105,6 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 
 	// The VK_LAYER_KHRONOS_validation contains all current validation functionality.
 	// Note that on Android this layer requires at least NDK r20
-    const char* s = getenv("VULKAN_LAYER_PATH");
-    std::cout << s << std::endl;
 	const char* validationLayerName = "VK_LAYER_KHRONOS_validation";
 
     if (settings.validation)
@@ -1008,7 +1001,7 @@ bool VulkanExampleBase::initVulkan()
 
 #if !defined(VK_USE_PLATFORM_ANDROID_KHR)
 	// GPU selection via command line argument
-	if (commandLineParser.isSet("gpuselection")) {
+	if (commandLineParser.isSet("gpuselection") || 1) {
 		uint32_t index = commandLineParser.getValueAsInt("gpuselection", 0);
 		if (index > gpuCount - 1) {
 			std::cerr << "Selected device index " << index << " is out of range, reverting to device 0 (use -listgpus to show available Vulkan devices)" << "\n";
@@ -1016,7 +1009,7 @@ bool VulkanExampleBase::initVulkan()
 			selectedDevice = index;
 		}
 	}
-	if (commandLineParser.isSet("gpulist")) {
+	if (commandLineParser.isSet("gpulist") || 1) {
 		std::cout << "Available Vulkan devices" << "\n";
 		for (uint32_t i = 0; i < gpuCount; i++) {
 			VkPhysicalDeviceProperties deviceProperties;
@@ -1042,12 +1035,12 @@ bool VulkanExampleBase::initVulkan()
 	// This is handled by a separate class that gets a logical device representation
 	// and encapsulates functions related to a device
 	vulkanDevice = new vks::VulkanDevice(physicalDevice);
-#if DEBUG_RENDER_DELETE
+#ifndef INTERVOX_LIB
 	VkResult res = vulkanDevice->createLogicalDevice(enabledFeatures, enabledDeviceExtensions, deviceCreatepNextChain);
 #else
     VkResult res = vulkanDevice->createLogicalDevice(enabledFeatures, enabledDeviceExtensions, deviceCreatepNextChain,
-                                                    false  // use swap chain
-                                                     );
+                                                    false,  // use swap chain
+                                                     VK_QUEUE_GRAPHICS_BIT);
 #endif
     
 	if (res != VK_SUCCESS) {

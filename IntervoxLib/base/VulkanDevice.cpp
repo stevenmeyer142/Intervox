@@ -264,12 +264,14 @@ namespace vks
 			deviceCreateInfo.pNext = &physicalDeviceFeatures2;
 		}
 
-		// Enable the debug marker extension if it is present (likely meaning a debugging tool is present)
-		if (extensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
+		// Enable the debug marker extension if it is present (likely meaning a debugging tool is present)'
+#ifndef INTERVOX_LIB  // this caused a device creation error on the mac
+		if (extensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME) && 0)
 		{
 			deviceExtensions.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 			enableDebugMarkers = true;
 		}
+#endif
 
 		if (deviceExtensions.size() > 0)
 		{

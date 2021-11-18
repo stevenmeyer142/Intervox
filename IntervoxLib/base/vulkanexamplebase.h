@@ -76,7 +76,7 @@
 #include "camera.hpp"
 #include "benchmark.hpp"
 
-#define DEBUG_RENDER 1
+#define DEBUG_RENDER 0
 
 #define DEBUG_RENDER_ADD 1
 #define DEBUG_RENDER_DELETE 0
@@ -207,8 +207,8 @@ protected:
 public:
 	bool prepared = false;
 	bool resized = false;
-	uint32_t width = 1024;
-	uint32_t height = 1024;
+	uint32_t width = 1280;
+	uint32_t height = 720;
 
 #ifndef INTERVOX_LIB
     vks::UIOverlay UIOverlay;

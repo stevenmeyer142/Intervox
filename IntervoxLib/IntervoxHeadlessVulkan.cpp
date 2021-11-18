@@ -403,7 +403,7 @@ void IntervoxHeadlessVulkan::draw()
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer];
 
-#ifdef INTERVOX_LIB
+#ifndef INTERVOX_LIB
     VkFenceCreateInfo fenceInfo = vks::initializers::fenceCreateInfo();
     VkFence fence;
     VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &fence));
@@ -415,7 +415,7 @@ void IntervoxHeadlessVulkan::draw()
    VulkanExampleBase::submitFrame();
 #endif
     
-#ifdef INTERVOX_LIB
+#ifndef INTERVOX_LIB
     VK_CHECK_RESULT(vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
     vkDestroyFence(device, fence, nullptr);
 #endif
@@ -1182,8 +1182,8 @@ void IntervoxHeadlessVulkan::grabImage()
     imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
     // Note that vkCmdBlitImage (if supported) will also do format conversions if the swapchain color format would differ
     imageCreateCI.format = VK_FORMAT_R8G8B8A8_UNORM;
-    imageCreateCI.extent.width = fWidth;
-    imageCreateCI.extent.height = fHeight;
+    imageCreateCI.extent.width = width;
+    imageCreateCI.extent.height = height;
     imageCreateCI.extent.depth = 1;
     imageCreateCI.arrayLayers = 1;
     imageCreateCI.mipLevels = 1;
@@ -1237,8 +1237,8 @@ void IntervoxHeadlessVulkan::grabImage()
     {
         // Define the region to blit (we will blit the whole swapchain image)
         VkOffset3D blitSize;
-        blitSize.x = fWidth;
-        blitSize.y = fHeight;
+        blitSize.x = width;
+        blitSize.y = height;
         blitSize.z = 1;
         VkImageBlit imageBlitRegion{};
         imageBlitRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1265,8 +1265,8 @@ void IntervoxHeadlessVulkan::grabImage()
         imageCopyRegion.srcSubresource.layerCount = 1;
         imageCopyRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         imageCopyRegion.dstSubresource.layerCount = 1;
-        imageCopyRegion.extent.width = fWidth;
-        imageCopyRegion.extent.height = fHeight;
+        imageCopyRegion.extent.width = width;
+        imageCopyRegion.extent.height = height;
         imageCopyRegion.extent.depth = 1;
 
         // Issue the copy command
@@ -1317,7 +1317,7 @@ void IntervoxHeadlessVulkan::grabImage()
     std::ofstream file("saved_intevox.ppm", std::ios::out | std::ios::binary);
 
     // ppm header
-    file << "P6\n" << fWidth << "\n" << fHeight << "\n" << 255 << "\n";
+    file << "P6\n" << width << "\n" << height << "\n" << 255 << "\n";
 
     // If source is BGR (destination is always RGB) and we can't use blit (which does automatic conversion), we'll have to manually swizzle color components
     bool colorSwizzle = false;
@@ -1330,10 +1330,10 @@ void IntervoxHeadlessVulkan::grabImage()
     }
 
     // ppm binary pixel data
-    for (uint32_t y = 0; y < fHeight; y++)
+    for (uint32_t y = 0; y < height; y++)
     {
         unsigned int *row = (unsigned int*)data;
-        for (uint32_t x = 0; x < fWidth; x++)
+        for (uint32_t x = 0; x < width; x++)
         {
             if (colorSwizzle)
             {

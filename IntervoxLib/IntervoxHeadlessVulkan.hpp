@@ -11,7 +11,7 @@
 
 #include "base/vulkanexamplebase.h"
 
-#define GEARS 0
+#define GEARS 1
 
 #if GEARS
 #include "gears/vulkangear.h"
@@ -20,7 +20,7 @@
 #include <vector>
 
 
-#define ENABLE_VALIDATION 1
+#define ENABLE_VALIDATION 0
 
 class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 #if GEARS
@@ -40,8 +40,6 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     VkDescriptorSetLayout descriptorSetLayout;
 #endif
     std::vector<uint8_t> fImageData;
-    uint32_t    fWidth = 0;
-    uint32_t    fHeight = 0;
 
 #if DEBUG_RENDER
 #if DEBUG_RENDER_DELETE_X

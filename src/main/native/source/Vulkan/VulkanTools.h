@@ -53,17 +53,13 @@
 	VkResult res = (f);																					\
 	if (res != VK_SUCCESS)																				\
 	{																									\
-		std::cout << "Fatal : VkResult is \"" << vks::tools::errorString(res) << "\" in " << __FILE__ << " at line " << __LINE__ << std::endl; \
+		std::cout << "Fatal : VkResult is \"" << vks::tools::errorString(res) << "\" in " << __FILE__ << " at line " << __LINE__ << "\n"; \
 		assert(res == VK_SUCCESS);																		\
 	}																									\
 }
 #endif
 
-#if defined(__ANDROID__)
-#define ASSET_PATH ""
-#else
-#define ASSET_PATH "./"
-#endif
+const std::string getAssetPath();
 
 namespace vks
 {
@@ -81,6 +77,9 @@ namespace vks
 		// Selected a suitable supported depth format starting with 32 bit down to 16 bit
 		// Returns false if none of the depth formats in the list is supported by the device
 		VkBool32 getSupportedDepthFormat(VkPhysicalDevice physicalDevice, VkFormat *depthFormat);
+
+		// Returns if a given format support LINEAR filtering
+		VkBool32 formatIsFilterable(VkPhysicalDevice physicalDevice, VkFormat format, VkImageTiling tiling);
 
 		// Put an image memory barrier for setting an image layout on the sub resource into the given command buffer
 		void setImageLayout(
@@ -101,7 +100,7 @@ namespace vks
 			VkPipelineStageFlags srcStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 			VkPipelineStageFlags dstStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
 
-		/** @brief Inser an image memory barrier into the command buffer */
+		/** @brief Insert an image memory barrier into the command buffer */
 		void insertImageMemoryBarrier(
 			VkCommandBuffer cmdbuffer,
 			VkImage image,
@@ -114,10 +113,10 @@ namespace vks
 			VkImageSubresourceRange subresourceRange);
 
 		// Display error message and exit on fatal error
-		void exitFatal(std::string message, int32_t exitCode);
-		void exitFatal(std::string message, VkResult resultCode);
+		void exitFatal(const std::string& message, int32_t exitCode);
+		void exitFatal(const std::string& message, VkResult resultCode);
 
-		// Load a SPIR-V shader (binary) 
+		// Load a SPIR-V shader (binary)
 #if defined(__ANDROID__)
 		VkShaderModule loadShader(AAssetManager* assetManager, const char *fileName, VkDevice device);
 #else
@@ -126,5 +125,7 @@ namespace vks
 
 		/** @brief Checks if a file exists */
 		bool fileExists(const std::string &filename);
+
+		uint32_t alignedSize(uint32_t value, uint32_t alignment);
 	}
 }

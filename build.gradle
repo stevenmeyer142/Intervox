@@ -37,3 +37,16 @@ publishing {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
+
+task JniCompile {
+    exec {
+        workingDir "/Users/stevenmeyer/Projects/intervox_maven/Intervox/src/main/native/build"
+        commandLine 'cmake', '--build', '../'
+
+    }
+}
+
+JniCompile.dependsOn compileJava
+
+

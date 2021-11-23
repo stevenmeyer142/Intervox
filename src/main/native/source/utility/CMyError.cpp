@@ -6,9 +6,12 @@
 #include "CMyError.h"
 #endif
 
-#include <String.h>
+#include <cstring>
+#if kOpenGL
+
 #include <OpenGL/glu.h>
 #include <OpenGL/gl.h>
+#endif
 #include "JNICommon.h"
 #define kUseCGL 1
 
@@ -38,27 +41,6 @@ CMyError::~CMyError() throw()
 
 void CMyError::CheckForGLError(bool toss, bool debugMessage)
 {
-#if 0
-	GLenum errorCode = ::glGetError();
-	const GLubyte *errString = NULL;
-	if (errorCode != GL_NO_ERROR)
-	{
-		errString = ::gluErrorString(errorCode);
-	} 
-	
-	if (errString)
-	{
-		if (debugMessage)
-		{
-			DebugMessage ((const char*)errString);
-		}
-		
-		if (toss)
-		{
-			throw CMyError(errorCode, "gl Error:", (const char*)errString);
-		}
-	}
-#endif
 }
 
 #pragma segment 
@@ -73,23 +55,7 @@ void CMyError::Assert(bool condition, const char* message )
 
 
 
-#pragma segment Main
-#if !kOpenGL
-void CMyError::ThrowErrorIf3DErr(TQ3Status theStatus, const char *message)
-{
-	if (theStatus != kQ3Success)
-	{
-		TQ3Error theError = Q3Error_Get(NULL);
-		if (theError == kQ3ErrorMacintoshError)
-			ThrowErrorIfOSErr (Q3MacintoshError_Get(NULL), message);
-		else if (theError != kQ3ErrorNone)
-			ThrowErrorIfOSErr (theError, message);	
-	}
-	
-}
-#endif
 
-#pragma segment Main
 void CMyError::DebugMessage(const char* message)
 {
 	if (gDebugging)
@@ -105,20 +71,7 @@ void CMyError::DebugMessage(const char* message)
 }
 
 
-#pragma segment Main
-#if !kOpenGL
-void CMyError::CheckFor3DErrorAndThrow()
-{
-	TQ3Error theError = Q3Error_Get(NULL);
-	if (theError == kQ3ErrorMacintoshError)
-		ThrowErrorIfOSErr (Q3MacintoshError_Get(NULL), NULL);
-	else if (theError != kQ3ErrorNone)
-		ThrowErrorIfOSErr (theError, NULL);	
-	
-}
-#endif
 
-#pragma segment Main
 void CMyError::CheckForJNIException(JNIEnv *env, const char * message)
 {
 #if kNoACS
@@ -135,7 +88,6 @@ void CMyError::CheckForJNIException(JNIEnv *env, const char * message)
 
 
 
-#pragma segment Main
 void CMyError::ThrowErrorIfOSErr(OSErr err, const char *message)
 {
 	if (err != 0)
@@ -146,7 +98,6 @@ void CMyError::ThrowErrorIfOSErr(OSErr err, const char *message)
 }
 
 
-#pragma segment Main
 void CMyError::ThrowErrorIfNULL(void* ptr, const char *message)
 {
 	if (ptr == NULL)

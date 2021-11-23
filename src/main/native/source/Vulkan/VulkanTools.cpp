@@ -6,8 +6,20 @@
 * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 */
 
-#include "NativeOpenGL.h"
 #include "VulkanTools.h"
+
+#ifndef INTERVOX_LIB
+const std::string getAssetPath()
+{
+#if defined(VK_USE_PLATFORM_ANDROID_KHR)
+	return "";
+#elif defined(VK_EXAMPLE_DATA_DIR)
+	return VK_EXAMPLE_DATA_DIR;
+#else
+	return "./../data/";
+#endif
+}
+#endif
 
 namespace vks
 {
@@ -58,6 +70,7 @@ namespace vks
 				STR(INTEGRATED_GPU);
 				STR(DISCRETE_GPU);
 				STR(VIRTUAL_GPU);
+				STR(CPU);
 #undef STR
 			default: return "UNKNOWN_DEVICE_TYPE";
 			}
@@ -86,6 +99,21 @@ namespace vks
 					return true;
 				}
 			}
+
+			return false;
+		}
+
+		// Returns if a given format support LINEAR filtering
+		VkBool32 formatIsFilterable(VkPhysicalDevice physicalDevice, VkFormat format, VkImageTiling tiling)
+		{
+			VkFormatProperties formatProps;
+			vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &formatProps);
+
+			if (tiling == VK_IMAGE_TILING_OPTIMAL)
+				return formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+
+			if (tiling == VK_IMAGE_TILING_LINEAR)
+				return formatProps.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
 
 			return false;
 		}
@@ -142,7 +170,7 @@ namespace vks
 				break;
 
 			case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
-				// Image is a transfer source 
+				// Image is a transfer source
 				// Make sure any reads from the image have been finished
 				imageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 				break;
@@ -263,7 +291,7 @@ namespace vks
 				1, &imageMemoryBarrier);
 		}
 
-		void exitFatal(std::string message, int32_t exitCode)
+		void exitFatal(const std::string& message, int32_t exitCode)
 		{
 #if defined(_WIN32)
 			if (!errorModeSilent) {
@@ -279,26 +307,9 @@ namespace vks
 #endif
 		}
 
-		void exitFatal(std::string message, VkResult resultCode)
+		void exitFatal(const std::string& message, VkResult resultCode)
 		{
 			exitFatal(message, (int32_t)resultCode);
-		}
-
-		std::string readTextFile(const char *fileName)
-		{
-			std::string fileContent;
-			std::ifstream fileStream(fileName, std::ios::in);
-			if (!fileStream.is_open()) {
-				printf("File %s not found\n", fileName);
-				return "";
-			}
-			std::string line = "";
-			while (!fileStream.eof()) {
-				getline(fileStream, line);
-				fileContent.append(line + "\n");
-			}
-			fileStream.close();
-			return fileContent;
 		}
 
 #if defined(__ANDROID__)
@@ -359,7 +370,7 @@ namespace vks
 			}
 			else
 			{
-				std::cerr << "Error: Could not open shader file \"" << fileName << "\"" << std::endl;
+				std::cerr << "Error: Could not open shader file \"" << fileName << "\"" << "\n";
 				return VK_NULL_HANDLE;
 			}
 		}
@@ -370,5 +381,11 @@ namespace vks
 			std::ifstream f(filename.c_str());
 			return !f.fail();
 		}
+
+		uint32_t alignedSize(uint32_t value, uint32_t alignment)
+        {
+	        return (value + alignment - 1) & ~(alignment - 1);
+        }
+
 	}
 }

@@ -58,8 +58,15 @@ public abstract class SerialPort {
 			result = QueryIfPortNotFound(port, kMacPortStrings);
 		} else if (NeuroSynchUtil.IsOSX()) {
 			String[] ports = GetPortsList();
-
-			result = QueryIfPortNotFound(port, ports);
+			
+			if (ports.length > 0)
+			{
+				result = QueryIfPortNotFound(port, ports);
+			}
+			else
+			{
+				result = null;
+			}
 		} else {
 			NeuroSynchUtil.ErrorMessage("SerialPort.GetExistingPort not implemented for OS.", NeuroSynchUtil.kNoDlog);
 		}

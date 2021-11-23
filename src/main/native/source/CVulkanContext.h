@@ -12,7 +12,7 @@
 #include <JavaVM/jni.h>
 
 
-class VulkanOffscreenRenderer;
+class IntervoxHeadlessVulkan;
 
 class CVulkanContext {
 public:
@@ -25,7 +25,7 @@ public:
 	virtual ~CVulkanContext();
 
 private:
-	VulkanOffscreenRenderer *fOffscreenRenderer = NULL;
+	IntervoxHeadlessVulkan *fOffscreenRenderer = NULL;
 };
 
 #endif /* CVULKANCONTEXT_H_ */

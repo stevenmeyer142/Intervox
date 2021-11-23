@@ -20,8 +20,8 @@ set(OPENGL_SOURCE
 
 set(VULKAN_SOURCE
 	source/CVulkanContext.cpp
-	source/Vulkan/VulkanOffscreenRenderer.cpp
-	source/Vulkan/VulkanTools.cpp
+#	source/Vulkan/VulkanOffscreenRenderer.cpp
+#	source/Vulkan/VulkanTools.cpp
 )
  
 set(BASE_SOURCE 
@@ -43,11 +43,13 @@ set(BASE_SOURCE
 )
 
 
+
+
 add_library (Intervox 
 	SHARED
 
 	${BASE_SOURCE}
-	${VULKAN_SOURCE}
+#	${VULKAN_SOURCE}
 )
 
 
@@ -55,10 +57,13 @@ target_compile_options(Intervox
 	PRIVATE 
 	-w
 	-std=gnu++14
+	-DJNI_LIB
 )
 target_include_directories(Intervox
 	PRIVATE
 	source
+	"/usr/local/Cellar/openjdk/17/libexec/openjdk.jdk/Contents/Home/include"
+	"/usr/local/Cellar/openjdk/17/libexec/openjdk.jdk/Contents/Home/include/darwin"
 )
 
 

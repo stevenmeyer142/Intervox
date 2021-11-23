@@ -7,7 +7,7 @@
 
 #include "NativeOpenGL.h"
 #include "CVulkanContext.h"
-#include "Vulkan/VulkanOffscreenRenderer.hpp"
+#include "IntervoxHeadlessVulkan.hpp"
 #include "utility/CMyError.h"
 
 CVulkanContext::CVulkanContext() {

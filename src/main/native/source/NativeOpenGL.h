@@ -9,19 +9,23 @@
 
 #if !defined(__NATIVEOPENGL_HEADER__)
 #define __NATIVEOPENGL_HEADER__ 1
+#define kOpenGL 0
 
+#if kOpenGL
 #include <OpenGL/OpenGL.h>
+typedef GLfloat      CGLMCoord;
+#else
+typedef double CGLMCoord;
+#endif
 
 // workaround for a bug 5/16/05
 #define __CARBONSOUND__ 1
 
 #define kOSX 1
 #define kNoACS 1
-#define kOpenGL 1
 #define kUseJNI true
 typedef long ListIndex;
 
-typedef GLfloat      CGLMCoord;
 typedef ListIndex    CGLMIndex;
 
 #define kUSE_VULKAN 1

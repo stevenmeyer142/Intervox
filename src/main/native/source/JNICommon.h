@@ -1,10 +1,14 @@
 #ifndef __JNICommon__
 #define __JNICommon__
 
-#include <JavaVM/jni.h>
+#include <jni.h>
 
 
+#if kOpenGL
 #include <OpenGL/gl.h>
+#else
+typedef double GLfloat;
+#endif
 
 
 

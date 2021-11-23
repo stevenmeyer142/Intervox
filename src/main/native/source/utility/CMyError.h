@@ -6,10 +6,7 @@
 
 
 #include <stdexcept>
-
-#include <JavaVM/JNI.h>
-#include <OpenGL/OpenGL.h>
-
+#include <jni.h>
 
 const short kErrMessageStrLength = 55;
 typedef long OSErr;
@@ -27,8 +24,8 @@ public:
 
 	static void ThrowErrorIfOSErr(OSErr err, const char *message = NULL);
 	
-	static void CheckForJNIException(JNIEnv *env, const char * message = NULL);
-	
+    static void CheckForJNIException(JNIEnv *env, const char * message = NULL);
+
 	static void DebugMessage(const char* message);
 	
 	static void CheckForGLError(bool toss, bool debugMessage);

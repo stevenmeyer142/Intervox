@@ -7,6 +7,7 @@
 
 #include "IntervoxHeadlessVulkan.hpp"
 
+static bool DEV_DEBUG = true;
 
 #define VERTEX_BUFFER_BIND_ID 0
 
@@ -41,6 +42,35 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     }
 #endif
 }
+
+
+void IntervoxHeadlessVulkan::renderScene()
+{
+    render();
+    grabImage();
+}
+
+void IntervoxHeadlessVulkan::initialize(uint32_t aWidth, uint32_t aHeight)
+{
+    width = aWidth;
+    height = aHeight;
+    fImageData.resize(height * width * sizeof(uint32_t));
+    
+    initVulkan();
+    prepare();
+}
+
+void IntervoxHeadlessVulkan::copyImageData_RGBA_8888(uint32_t* toBuffer, uint32_t aWidth, uint32_t aHeight)
+{
+    if ((aWidth == width) && (aHeight == height) && (fImageData.size() == height * width * sizeof(*toBuffer)))
+    {
+        memcpy(toBuffer, fImageData.data(), height * width * sizeof(*toBuffer));
+    }
+    else
+    {
+        std::cerr << "Error IntervoxHeadlessVulkan::copyImageData_RGBA_8888 bad height and width" << std::endl;
+    }
+}    
 
 
 void IntervoxHeadlessVulkan::buildCommandBuffers()
@@ -556,10 +586,13 @@ void IntervoxHeadlessVulkan::grabImage()
         colorSwizzle = (std::find(formatsBGR.begin(), formatsBGR.end(), getColorFormat()) != formatsBGR.end());
     }
 
+ 
+#if 0  // debugging code
     // ppm binary pixel data
+    const char* debug_data = data;
     for (uint32_t y = 0; y < height; y++)
     {
-        unsigned int *row = (unsigned int*)data;
+        unsigned int *row = (unsigned int*)debug_data;
         for (uint32_t x = 0; x < width; x++)
         {
             if (colorSwizzle)
@@ -574,11 +607,40 @@ void IntervoxHeadlessVulkan::grabImage()
             }
             row++;
         }
-        data += subResourceLayout.rowPitch;
+        debug_data += subResourceLayout.rowPitch;
     }
     file.close();
 
     std::cout << "Screenshot saved to disk" << std::endl;
+#endif
+
+    for (uint32_t y = 0; y < height; y++)
+    {
+        const uint8_t *row = reinterpret_cast<const uint8_t*>( data);
+        uint8_t* toRow = fImageData.data() + y * width * 4;
+        for (uint32_t x = 0; x < width; x++)
+        {
+            // reverse order for correct rendering in java
+            if (!colorSwizzle)
+            {
+                toRow[0] = row[2];
+                toRow[1] = row[1];
+                toRow[2] = row[0];
+                toRow[3] = 0xFF;
+            }
+            else
+            {
+                toRow[0] = row[0];
+                toRow[1] = row[0];
+                toRow[2] = row[0];
+                toRow[3] = 0xFF;
+
+             }
+            row += 4;
+            toRow += 4;
+        }
+        data += subResourceLayout.rowPitch;
+    }
 
     // Clean up resources
     vkUnmapMemory(device, dstImageMemory);

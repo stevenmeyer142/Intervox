@@ -776,7 +776,9 @@ VulkanExampleBase::VulkanExampleBase(bool enableValidation)
 #else
 		std::cerr << "Error: Could not find asset path in " << getAssetPath() << "\n";
 #endif
-		exit(-1);
+#ifndef INTERVOX_LIB
+        exit(-1);
+#endif
 	}
 #endif
 

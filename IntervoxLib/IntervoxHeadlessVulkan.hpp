@@ -45,6 +45,12 @@ public:
     IntervoxHeadlessVulkan();
 
     ~IntervoxHeadlessVulkan();
+    
+    void initialize(uint32_t width, uint32_t height);
+    
+    void renderScene();
+    
+    void copyImageData_RGBA_8888(uint32_t* toBuffer, uint32_t aWidth, uint32_t aHeight);
 
     void buildCommandBuffers();
 

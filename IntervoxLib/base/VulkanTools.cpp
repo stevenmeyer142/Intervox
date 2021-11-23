@@ -8,7 +8,8 @@
 
 #include "VulkanTools.h"
 
-#ifndef INTERVOX_LIB
+
+#if !(defined(VK_USE_PLATFORM_IOS_MVK) || defined(VK_USE_PLATFORM_MACOS_MVK) || !defined(INTERVOX_JNI))
 const std::string getAssetPath()
 {
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -16,7 +17,7 @@ const std::string getAssetPath()
 #elif defined(VK_EXAMPLE_DATA_DIR)
 	return VK_EXAMPLE_DATA_DIR;
 #else
-	return "./../data/";
+	return "data/";
 #endif
 }
 #endif

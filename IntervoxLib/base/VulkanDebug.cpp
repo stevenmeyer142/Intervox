@@ -65,7 +65,7 @@ namespace vks
 			// If you instead want to have calls abort, pass in VK_TRUE and the function will return VK_ERROR_VALIDATION_FAILED_EXT 
 			return VK_FALSE;
 		}
-
+ 
 		void setupDebugging(VkInstance instance, VkDebugReportFlagsEXT flags, VkDebugReportCallbackEXT callBack)
 		{
 

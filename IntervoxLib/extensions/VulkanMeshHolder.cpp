@@ -45,7 +45,7 @@ VulkanMeshHolder::~VulkanMeshHolder()
 }
 
 #pragma segment Main
-void VulkanMeshHolder::Render(bool lowRes)
+void VulkanMeshHolder::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {
 #if 0
 	if (kUseMaterial)	

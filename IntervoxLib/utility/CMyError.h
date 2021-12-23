@@ -6,10 +6,14 @@
 
 
 #include <stdexcept>
+#ifdef INTERVOX_JNI
 #include <jni.h>
+#endif
 
 const short kErrMessageStrLength = 55;
 typedef long OSErr;
+
+extern bool gDebugging;
 
 class CMyError : public std::exception
 {
@@ -24,7 +28,9 @@ public:
 
 	static void ThrowErrorIfOSErr(OSErr err, const char *message = NULL);
 	
+#ifdef INTERVOX_JNI
     static void CheckForJNIException(JNIEnv *env, const char * message = NULL);
+#endif
 
 	static void DebugMessage(const char* message);
 	

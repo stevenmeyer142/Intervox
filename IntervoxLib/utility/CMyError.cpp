@@ -8,12 +8,15 @@
 
 #include <cstring>
 #if kOpenGL
-
 #include <OpenGL/glu.h>
 #include <OpenGL/gl.h>
 #endif
+#ifdef INTERVOX_JNI
 #include "JNICommon.h"
+#endif
 #define kUseCGL 1
+
+bool gDebugging = false;
 
 CMyError::CMyError(long err, const char* message1, const char* message2) 
 {
@@ -60,7 +63,7 @@ void CMyError::DebugMessage(const char* message)
 }
 
 
-
+#ifdef INTERVOX_JNI
 void CMyError::CheckForJNIException(JNIEnv *env, const char * message)
 {
 #if kNoACS
@@ -73,7 +76,7 @@ void CMyError::CheckForJNIException(JNIEnv *env, const char * message)
 	}
 #endif
 }
-
+#endif
 
 
 

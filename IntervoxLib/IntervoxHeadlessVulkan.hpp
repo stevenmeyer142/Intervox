@@ -18,9 +18,13 @@
 #endif
 
 #include <vector>
+#include <memory>
 
+#if USE_MESH_PIPELINE
+#include "extensions/VulkanMeshPipeline.hpp"
+#endif
 
-#define ENABLE_VALIDATION 0
+#define ENABLE_VALIDATION 1
 
 class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 #if GEARS
@@ -38,8 +42,13 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 
     VkPipelineLayout pipelineLayout;
     VkDescriptorSetLayout descriptorSetLayout;
+
 #endif
     std::vector<uint8_t> fImageData;
+
+#if USE_MESH_PIPELINE
+    std::vector<std::shared_ptr<VulkanMeshPipeline>> fMeshPipelines;
+#endif
 
 public:
     IntervoxHeadlessVulkan();

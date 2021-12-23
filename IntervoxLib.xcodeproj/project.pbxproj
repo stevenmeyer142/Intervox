@@ -10,6 +10,7 @@
 		4F051A592731A82500D3E3FE /* VulkanDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A512731A82500D3E3FE /* VulkanDevice.cpp */; };
 		4F051A5B2731A82500D3E3FE /* VulkanBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A542731A82500D3E3FE /* VulkanBuffer.cpp */; };
 		4F051A5F2731E6BF00D3E3FE /* vulkangear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */; };
+		4F12A3BE2774F4A60077B64C /* VulkanMeshPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */; };
 		4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */; };
 		4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */; };
 		4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */; };
@@ -20,20 +21,15 @@
 		4F71AADC274D3B5F00C64F39 /* VulkanMesh.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AAD4274D3B5F00C64F39 /* VulkanMesh.hpp */; };
 		4F71AADD274D3B5F00C64F39 /* VulkanMeshHolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAD5274D3B5F00C64F39 /* VulkanMeshHolder.cpp */; };
 		4F71AADE274D3B5F00C64F39 /* VulkanContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAD6274D3B5F00C64F39 /* VulkanContext.cpp */; };
-		4F71AADF274D3B5F00C64F39 /* VulkanRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAD7274D3B5F00C64F39 /* VulkanRenderable.cpp */; };
-		4F71AAE0274D3B5F00C64F39 /* VulkanRenderable.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AAD8274D3B5F00C64F39 /* VulkanRenderable.hpp */; };
 		4F71AAE1274D3B5F00C64F39 /* VulkanContext.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AAD9274D3B5F00C64F39 /* VulkanContext.hpp */; };
 		4F71AAE2274D3B5F00C64F39 /* VulkanMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AADA274D3B5F00C64F39 /* VulkanMesh.cpp */; };
 		4F71AAE3274D3B5F00C64F39 /* VulkanMeshHolder.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AADB274D3B5F00C64F39 /* VulkanMeshHolder.hpp */; };
-		4F71AAE7274D3F4D00C64F39 /* VulkanPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAE4274D3F4D00C64F39 /* VulkanPipeline.cpp */; };
-		4F71AAE8274D3F4D00C64F39 /* VulkanPipeline.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AAE5274D3F4D00C64F39 /* VulkanPipeline.hpp */; };
 		4F71AAF5274D88E200C64F39 /* CTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAEA274D88E200C64F39 /* CTriangle.cpp */; };
 		4F71AAF8274D88E200C64F39 /* CMySortedList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAF1274D88E200C64F39 /* CMySortedList.cpp */; };
 		4F71AAF9274D88E200C64F39 /* CVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAF2274D88E200C64F39 /* CVertex.cpp */; };
 		4F71AAFB274D88E800C64F39 /* C3DPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAED274D88E200C64F39 /* C3DPoint.cpp */; };
 		4F71AAFC274D88EB00C64F39 /* CCubeMarcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAEB274D88E200C64F39 /* CCubeMarcher.cpp */; };
 		4F71AAFD274D88EF00C64F39 /* CJavaArrSlicesSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAF4274D88E200C64F39 /* CJavaArrSlicesSet.cpp */; };
-		4F71AAFE274D88F500C64F39 /* CJavaArrSlicesSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAF4274D88E200C64F39 /* CJavaArrSlicesSet.cpp */; };
 		4F71AAFF274D88F900C64F39 /* CCubeMarcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAEB274D88E200C64F39 /* CCubeMarcher.cpp */; };
 		4F71AB00274D88FC00C64F39 /* C3DPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAED274D88E200C64F39 /* C3DPoint.cpp */; };
 		4F71AB01274D890000C64F39 /* CTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAEA274D88E200C64F39 /* CTriangle.cpp */; };
@@ -67,6 +63,8 @@
 		4F7B17DB274BE0BC008892C2 /* JNICommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F7B17DA274BE0BC008892C2 /* JNICommon.cpp */; };
 		4F7B17DC274BE165008892C2 /* vulkangear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */; };
 		4F7B17E1274BE2BB008892C2 /* CMyError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F7B17DF274BE1D1008892C2 /* CMyError.cpp */; };
+		4FA8CC38275A6E830062A286 /* CMyError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F7B17DF274BE1D1008892C2 /* CMyError.cpp */; };
+		4FA8CC39275A6FCA0062A286 /* VulkanMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AADA274D3B5F00C64F39 /* VulkanMesh.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -92,6 +90,8 @@
 		4F051A5D2731E6BF00D3E3FE /* vulkangear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkangear.h; path = gears/vulkangear.h; sourceTree = "<group>"; };
 		4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vulkangear.cpp; path = gears/vulkangear.cpp; sourceTree = "<group>"; };
 		4F051A6027348B0200D3E3FE /* conanbuildinfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = conanbuildinfo.xcconfig; sourceTree = "<group>"; };
+		4F12A3BC2774F4A50077B64C /* VulkanMeshPipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanMeshPipeline.hpp; path = extensions/VulkanMeshPipeline.hpp; sourceTree = "<group>"; };
+		4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanMeshPipeline.cpp; path = extensions/VulkanMeshPipeline.cpp; sourceTree = "<group>"; };
 		4F2F881E274570BC00C363E4 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../vulkan/vulkan_git/MoltenVK/Package/Debug/MoltenVK/dylib/macOS/libMoltenVK.dylib; sourceTree = "<group>"; };
 		4F5E1EB5272F1917004C6AA4 /* IntervoxLib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IntervoxLib; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderheadless_objc.mm; sourceTree = "<group>"; };
@@ -112,13 +112,9 @@
 		4F71AAD4274D3B5F00C64F39 /* VulkanMesh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanMesh.hpp; path = extensions/VulkanMesh.hpp; sourceTree = "<group>"; };
 		4F71AAD5274D3B5F00C64F39 /* VulkanMeshHolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanMeshHolder.cpp; path = extensions/VulkanMeshHolder.cpp; sourceTree = "<group>"; };
 		4F71AAD6274D3B5F00C64F39 /* VulkanContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanContext.cpp; path = extensions/VulkanContext.cpp; sourceTree = "<group>"; };
-		4F71AAD7274D3B5F00C64F39 /* VulkanRenderable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanRenderable.cpp; path = extensions/VulkanRenderable.cpp; sourceTree = "<group>"; };
-		4F71AAD8274D3B5F00C64F39 /* VulkanRenderable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanRenderable.hpp; path = extensions/VulkanRenderable.hpp; sourceTree = "<group>"; };
 		4F71AAD9274D3B5F00C64F39 /* VulkanContext.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanContext.hpp; path = extensions/VulkanContext.hpp; sourceTree = "<group>"; };
 		4F71AADA274D3B5F00C64F39 /* VulkanMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanMesh.cpp; path = extensions/VulkanMesh.cpp; sourceTree = "<group>"; };
 		4F71AADB274D3B5F00C64F39 /* VulkanMeshHolder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanMeshHolder.hpp; path = extensions/VulkanMeshHolder.hpp; sourceTree = "<group>"; };
-		4F71AAE4274D3F4D00C64F39 /* VulkanPipeline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VulkanPipeline.cpp; sourceTree = "<group>"; };
-		4F71AAE5274D3F4D00C64F39 /* VulkanPipeline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VulkanPipeline.hpp; sourceTree = "<group>"; };
 		4F71AAE9274D88E200C64F39 /* C3DPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = C3DPoint.h; path = utility/C3DPoint.h; sourceTree = "<group>"; };
 		4F71AAEA274D88E200C64F39 /* CTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTriangle.cpp; path = utility/CTriangle.cpp; sourceTree = "<group>"; };
 		4F71AAEB274D88E200C64F39 /* CCubeMarcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCubeMarcher.cpp; path = utility/CCubeMarcher.cpp; sourceTree = "<group>"; };
@@ -149,6 +145,7 @@
 		4F7B17DA274BE0BC008892C2 /* JNICommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JNICommon.cpp; path = IntervoxLib/JNICommon.cpp; sourceTree = "<group>"; };
 		4F7B17DE274BE1D1008892C2 /* CMyError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMyError.h; path = utility/CMyError.h; sourceTree = "<group>"; };
 		4F7B17DF274BE1D1008892C2 /* CMyError.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CMyError.cpp; path = utility/CMyError.cpp; sourceTree = "<group>"; };
+		4FA8CC3A275A71BB0062A286 /* JNICommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JNICommon.h; path = IntervoxLib/JNICommon.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				4F7B17DA274BE0BC008892C2 /* JNICommon.cpp */,
+				4FA8CC3A275A71BB0062A286 /* JNICommon.h */,
 				4F7B17D427484B0E008892C2 /* GLMain.cpp */,
 				4F7B17D527484B0E008892C2 /* NativeOpenGL.h */,
 				4F5E1EB7272F1917004C6AA4 /* IntervoxLib */,
@@ -264,10 +262,8 @@
 				4F71AAD4274D3B5F00C64F39 /* VulkanMesh.hpp */,
 				4F71AAD5274D3B5F00C64F39 /* VulkanMeshHolder.cpp */,
 				4F71AADB274D3B5F00C64F39 /* VulkanMeshHolder.hpp */,
-				4F71AAD7274D3B5F00C64F39 /* VulkanRenderable.cpp */,
-				4F71AAD8274D3B5F00C64F39 /* VulkanRenderable.hpp */,
-				4F71AAE4274D3F4D00C64F39 /* VulkanPipeline.cpp */,
-				4F71AAE5274D3F4D00C64F39 /* VulkanPipeline.hpp */,
+				4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */,
+				4F12A3BC2774F4A50077B64C /* VulkanMeshPipeline.hpp */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -315,10 +311,8 @@
 				4F71AB0D274D8A1100C64F39 /* CSlicesSet.h in Headers */,
 				4F71AADC274D3B5F00C64F39 /* VulkanMesh.hpp in Headers */,
 				4F71AB1F274D8AAC00C64F39 /* CTempMemPointer.h in Headers */,
-				4F71AAE0274D3B5F00C64F39 /* VulkanRenderable.hpp in Headers */,
 				4F71AB16274D8A1100C64F39 /* CVertexList.h in Headers */,
 				4F71AAE3274D3B5F00C64F39 /* VulkanMeshHolder.hpp in Headers */,
-				4F71AAE8274D3F4D00C64F39 /* VulkanPipeline.hpp in Headers */,
 				4F71AAE1274D3B5F00C64F39 /* VulkanContext.hpp in Headers */,
 				4F71AB10274D8A1100C64F39 /* CFacetLookup.h in Headers */,
 				4F71AB1B274D8A3800C64F39 /* CTriangleList.h in Headers */,
@@ -412,19 +406,21 @@
 				4F71AB0E274D8A1100C64F39 /* CFacetLookup.cpp in Sources */,
 				4F71AAF9274D88E200C64F39 /* CVertex.cpp in Sources */,
 				4F5E1EDD2731A416004C6AA4 /* vulkanexamplebase.cpp in Sources */,
+				4F12A3BE2774F4A60077B64C /* VulkanMeshPipeline.cpp in Sources */,
 				4F71AB19274D8A3800C64F39 /* CTriangleList.cpp in Sources */,
 				4F71AB00274D88FC00C64F39 /* C3DPoint.cpp in Sources */,
 				4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */,
+				4FA8CC38275A6E830062A286 /* CMyError.cpp in Sources */,
 				4F051A5B2731A82500D3E3FE /* VulkanBuffer.cpp in Sources */,
 				4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */,
 				4F71AB13274D8A1100C64F39 /* C3DFloatPoint.cpp in Sources */,
 				4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */,
-				4F71AAFE274D88F500C64F39 /* CJavaArrSlicesSet.cpp in Sources */,
 				4F71AB11274D8A1100C64F39 /* CVertexList.cpp in Sources */,
 				4F71AAF8274D88E200C64F39 /* CMySortedList.cpp in Sources */,
 				4F051A5F2731E6BF00D3E3FE /* vulkangear.cpp in Sources */,
 				4F71AAF5274D88E200C64F39 /* CTriangle.cpp in Sources */,
 				4F71AAFF274D88F900C64F39 /* CCubeMarcher.cpp in Sources */,
+				4FA8CC39275A6FCA0062A286 /* VulkanMesh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,7 +439,6 @@
 				4F7B17D827484B0E008892C2 /* GLMain.cpp in Sources */,
 				4F71AB0F274D8A1100C64F39 /* CFacetLookup.cpp in Sources */,
 				4F71AB1C274D8A3B00C64F39 /* CMySortedList.cpp in Sources */,
-				4F71AADF274D3B5F00C64F39 /* VulkanRenderable.cpp in Sources */,
 				4F71AADD274D3B5F00C64F39 /* VulkanMeshHolder.cpp in Sources */,
 				4F71AB14274D8A1100C64F39 /* C3DFloatPoint.cpp in Sources */,
 				4F7B17CD274849AD008892C2 /* VulkanTools.cpp in Sources */,
@@ -456,7 +451,6 @@
 				4F7B17CE274849B0008892C2 /* vulkanexamplebase.cpp in Sources */,
 				4F71AB12274D8A1100C64F39 /* CVertexList.cpp in Sources */,
 				4F71AB02274D890300C64F39 /* CVertex.cpp in Sources */,
-				4F71AAE7274D3F4D00C64F39 /* VulkanPipeline.cpp in Sources */,
 				4F7B17DC274BE165008892C2 /* vulkangear.cpp in Sources */,
 				4F71AB0C274D8A1100C64F39 /* CSlicesSet.cpp in Sources */,
 			);
@@ -606,7 +600,10 @@
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				OTHER_LDFLAGS = "-lvulkan";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = base;
+				USER_HEADER_SEARCH_PATHS = (
+					base,
+					"${PROJECT_DIR}/IntervoxLib",
+				);
 			};
 			name = Debug;
 		};
@@ -619,7 +616,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				OTHER_LDFLAGS = "-lvulkan";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = base;
+				USER_HEADER_SEARCH_PATHS = (
+					base,
+					"${PROJECT_DIR}/IntervoxLib",
+				);
 			};
 			name = Release;
 		};

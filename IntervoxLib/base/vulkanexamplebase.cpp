@@ -236,6 +236,7 @@ void VulkanExampleBase::prepare()
 #endif
 }
 
+
 VkPipelineShaderStageCreateInfo VulkanExampleBase::loadShader(std::string fileName, VkShaderStageFlagBits stage)
 {
 	VkPipelineShaderStageCreateInfo shaderStage = {};

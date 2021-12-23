@@ -1,12 +1,14 @@
 #include "NativeOpenGL.h"
 #include "utility/CMySortedList.h"
 #include <stdio.h>
+#ifdef INTERVOX_JNI
 #include "JNICommon.h"
+#endif
 #include <iterator>
 
 #define kDebugList 0
 
-
+// TODO: Change this code and its clear
 CMySortedList::CMySortedList() : fVector(200), fDebug(false)
 {
     fVector.clear();

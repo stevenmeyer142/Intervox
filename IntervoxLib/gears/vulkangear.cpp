@@ -10,12 +10,21 @@
 
 #include "vulkangear.h"
 
+#if USE_MESH_PIPELINE
+int32_t VulkanGear::newVertex(std::vector<MeshVertex> *vBuffer, float x, float y, float z, const glm::vec3& normal)
+{
+    MeshVertex v(glm::vec3(x, y, z), normal, color);
+    vBuffer->push_back(v);
+    return static_cast<int32_t>(vBuffer->size()) - 1;
+}
+#else
 int32_t VulkanGear::newVertex(std::vector<Vertex> *vBuffer, float x, float y, float z, const glm::vec3& normal)
 {
 	Vertex v(glm::vec3(x, y, z), normal, color);
 	vBuffer->push_back(v);
 	return static_cast<int32_t>(vBuffer->size()) - 1;
 }
+#endif
 
 void VulkanGear::newFace(std::vector<uint32_t> *iBuffer, int a, int b, int c)
 {
@@ -32,14 +41,23 @@ VulkanGear::~VulkanGear()
 	indexBuffer.destroy();
 }
 
-void VulkanGear::generate(GearInfo *gearinfo, VkQueue queue)
+#if USE_MESH_PIPELINE
+    std::shared_ptr<VulkanMesh> VulkanGear::generate(GearInfo *gearinfo, VkQueue queue)
+#else
+    void VulkanGear::generate(GearInfo *gearinfo, VkQueue queue)
+#endif
+
 {
 	this->color = gearinfo->color;
 	this->pos = gearinfo->pos;
 	this->rotOffset = gearinfo->rotOffset;
 	this->rotSpeed = gearinfo->rotSpeed;
 
+#if USE_MESH_PIPELINE
+    std::vector<MeshVertex> vBuffer;
+#else
 	std::vector<Vertex> vBuffer;
+#endif
 	std::vector<uint32_t> iBuffer;
 
 	int i, j;
@@ -166,6 +184,12 @@ void VulkanGear::generate(GearInfo *gearinfo, VkQueue queue)
 		newFace(&iBuffer, ix1, ix3, ix2);
 	}
 
+#if USE_MESH_PIPELINE
+    auto result = std::make_shared<VulkanMesh>(vulkanDevice);
+    result->addVertexData(vBuffer, iBuffer, queue);
+    
+    return result;
+#else
 	size_t vertexBufferSize = vBuffer.size() * sizeof(Vertex);
 	size_t indexBufferSize = iBuffer.size() * sizeof(uint32_t);
 
@@ -254,6 +278,7 @@ void VulkanGear::generate(GearInfo *gearinfo, VkQueue queue)
 	indexCount = iBuffer.size();
 
 	prepareUniformBuffer();
+#endif
 }
 
 void VulkanGear::draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)

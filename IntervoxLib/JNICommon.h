@@ -22,6 +22,4 @@ void SetErrorCodeAndMessage(JNIEnv *env, long code, char* message, jobjectArray 
 	
 void DebugMessage(JNIEnv *env, char* message, jobject errRecord);
 
-extern bool gDebugging;
-
 #endif

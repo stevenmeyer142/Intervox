@@ -41,6 +41,9 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
         delete(gear);
     }
 #endif
+#if USE_MESH_PIPELINE
+    fMeshPipelines.clear();
+#endif
 }
 
 
@@ -122,6 +125,7 @@ void IntervoxHeadlessVulkan::buildCommandBuffers()
 
 void IntervoxHeadlessVulkan::prepareVertices()
 {
+
 #if GEARS
     // Gear definitions
     std::vector<float> innerRadiuses = { 1.0f, 0.5f, 1.3f };
@@ -160,6 +164,7 @@ void IntervoxHeadlessVulkan::prepareVertices()
         gears[i]->generate(&gearInfo, queue);
     }
 
+#if !USE_MESH_PIPELINE
     // Binding and attribute descriptions are shared across all gears
     vertices.bindingDescriptions.resize(1);
     vertices.bindingDescriptions[0] =
@@ -198,6 +203,7 @@ void IntervoxHeadlessVulkan::prepareVertices()
     vertices.inputState.pVertexBindingDescriptions = vertices.bindingDescriptions.data();
     vertices.inputState.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertices.attributeDescriptions.size());
     vertices.inputState.pVertexAttributeDescriptions = vertices.attributeDescriptions.data();
+#endif
 #endif
 }
 
@@ -381,11 +387,18 @@ void IntervoxHeadlessVulkan::draw()
 void IntervoxHeadlessVulkan::prepare()
 {
     VulkanExampleBase::prepare();
+#if USE_MESH_PIPELINE
+    auto meshPipeLine = std::make_shared<VulkanMeshPipeline>(device);
+    fMeshPipelines.push_back(meshPipeLine);
+#endif
+
     prepareVertices();
+#if !USE_MESH_PIPELINE
     setupDescriptorSetLayout();
     preparePipelines();
     setupDescriptorPool();
     setupDescriptorSets();
+#endif
     updateUniformBuffers();
     buildCommandBuffers();
     prepared = true;

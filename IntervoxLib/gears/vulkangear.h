@@ -24,6 +24,13 @@
 #include "VulkanBuffer.h"
 #include "VulkanDevice.h"
 
+#define USE_MESH_PIPELINE 1
+
+#if USE_MESH_PIPELINE
+#include <memory>
+#include "extensions/VulkanMesh.hpp"
+#endif
+
 struct Vertex
 {
 	float pos[3];
@@ -83,7 +90,12 @@ private:
 	UBO ubo;
 	vks::Buffer uniformBuffer;
 
+#if USE_MESH_PIPELINE
+    int32_t newVertex(std::vector<MeshVertex> *vBuffer, float x, float y, float z, const glm::vec3& normal);
+#else
 	int32_t newVertex(std::vector<Vertex> *vBuffer, float x, float y, float z, const glm::vec3& normal);
+#endif
+    
 	void newFace(std::vector<uint32_t> *iBuffer, int a, int b, int c);
 
 	void prepareUniformBuffer();
@@ -98,7 +110,11 @@ public:
 	VulkanGear(vks::VulkanDevice *vulkanDevice) : vulkanDevice(vulkanDevice) {};
 	~VulkanGear();
 
+#if USE_MESH_PIPELINE
+    std::shared_ptr<VulkanMesh> generate(GearInfo *gearinfo, VkQueue queue);
+#else
 	void generate(GearInfo *gearinfo, VkQueue queue);
+#endif
 
 };
 

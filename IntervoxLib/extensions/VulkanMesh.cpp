@@ -8,179 +8,206 @@
 #include "utility/CMyError.h"
 #include "utility/CVertex.h"
 #include "utility/CTriangle.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 
 
-VulkanMesh::VulkanMesh() : fIndices(NULL), fNormals(NULL), fVertices(NULL), fTrianglesCount(0), fVerticesCount(0),
-		fUseNormals(true) 
+
+VulkanMesh::VulkanMesh(vks::VulkanDevice *aVulkanDevice)  :
+    vulkanDevice(aVulkanDevice)
+    
 {
 }
 
 
 VulkanMesh::~VulkanMesh()
 {
-	ReleaseHandles ();
+	freeBuffers ();
 }
 
 
-
-
-
-void VulkanMesh::Render()
+void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 {
-#if 0
-	if (fIndices != NULL && fVertices != NULL && fNormals)
-	{
-		CMyError::CheckForGLError (false, true);
-//		::HLock(fVertices);
-	
-//		::HLock(fNormals);
-//		::HLock(fIndices);
-
-		
-	  	::glPushAttrib(GL_ENABLE_BIT | GL_EVAL_BIT);
-
-		if (kAutoNormal)
-		{
-		  	::glEnable(GL_AUTO_NORMAL);
-		  	::glEnable(GL_NORMALIZE);
-		}
-		if (fUseNormals)
-		{
-			glEnableClientState(GL_NORMAL_ARRAY);
-		}
-		glEnableClientState(GL_VERTEX_ARRAY);
-		CMyError::CheckForGLError (false, true);
-		
-		glVertexPointer(3, GL_FLOAT, 0, fVertices);
-		if (fUseNormals)
-		{
-			glNormalPointer(GL_FLOAT, 0, fNormals);
-		}
-#if kCompile
-	   		::glLockArraysEXT (0, fVerticesCount);
-#endif
-
-		glDrawElements(GL_TRIANGLES, fTrianglesCount * 3, GL_UNSIGNED_INT, fIndices);
-
-		::glFinish();	//	do this before unlocking handles
-	CMyError::CheckForGLError (false, true); 		
-
-#if kCompile
-
-	    	::glUnlockArraysEXT ();
-
-#endif
-	CMyError::CheckForGLError (false, true); 		
-		
-		
- 		CMyError::CheckForGLError (false, true);
-
-		if (fUseNormals)
-		{
-			glDisableClientState(GL_NORMAL_ARRAY);
-		}
-		glDisableClientState(GL_VERTEX_ARRAY);
-	
-  		::glPopAttrib();
- 
-
-		CMyError::CheckForGLError (false, true); 		
-	}
-#endif
+    ubo.projection = perspective;
+    ubo.view = view;
+    ubo.model = glm::mat4(1.0f);
+    ubo.model = glm::translate(ubo.model, pos);
+ //   ubo.model = glm::rotate(ubo.model, glm::radians((rotSpeed * timer) + rotOffset), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.normal = glm::inverseTranspose(ubo.view * ubo.model);
+    ubo.lightPos = glm::vec3(0.0f, 0.0f, 2.5f);
+    ubo.lightPos.x = 0.0f; //sin(glm::radians(timer)) * 8.0f;
+    ubo.lightPos.z = 8.0f; // cos(glm::radians(timer)) * 8.0f;
+ //   ubo.color = color; // TODO uncomment this
+    memcpy(uniformBuffer.mapped, &ubo, sizeof(ubo));
 }
 
-void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices)
+
+void VulkanMesh::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {
-	try 
-	{
-		fTrianglesCount = 0;
-		
-		if (fIndices != NULL || fNormals != NULL || fVertices != NULL)
-		{
-			CMyError::DebugMessage ("VulkanMesh::AddTriangles- Handles already created.");
-			ReleaseHandles ();
-		}
-		
-		CGLMIndex verticesListCount = vertices.GetSize(); 
-		CGLMIndex trianglesListCount = triangles.GetSize(); 
-		fVerticesCount = verticesListCount;
-		fTrianglesCount = 0;
-		
-		fNormals = ::malloc(verticesListCount * 3 * sizeof(CGLMCoord));
-		CMyError::ThrowErrorIfNULL(fNormals, "Couldn't allocate temp handle");
-		fVertices = ::malloc(verticesListCount * 3 * sizeof(CGLMCoord));
-		CMyError::ThrowErrorIfNULL(fVertices, "Couldn't allocate temp handle");
-		fIndices = ::malloc(trianglesListCount * 3 * sizeof(CGLMIndex));
-		CMyError::ThrowErrorIfNULL(fIndices, "Couldn't allocate temp handle");
-		
-		// add Failure Handling here
-		
-		if (fNormals != NULL && fVertices != NULL && fIndices != NULL)
-		{
-			CGLMCoord *normalsPtr = (CGLMCoord*)fNormals;			
-			CGLMCoord *verticesPtr = (CGLMCoord*)fVertices;
-			
-			CVertex* vertexClass; 
-			for (CGLMCoord i = 1; i <= verticesListCount; i++)
-			{
-				vertexClass = (CVertex*)vertices.At((long)i);
-				vertexClass->GetXYZ(verticesPtr);
-				vertexClass->GetNormalXYZ(normalsPtr);
-				if (false)
-				{
-					for (short i = 0; i < 3; i++)
-					{
-						normalsPtr[i] = -normalsPtr[i];
-					}
-				}
-				normalsPtr += 3;
-	 			verticesPtr += 3;
-			}		
-						
-			CGLMIndex* indiciesPtr = (CGLMIndex*)fIndices;
-			CTriangle* triangleClass;
-			
-			for (CGLMCoord i = 1; i <= trianglesListCount; i++)
-			{
-				triangleClass = (CTriangle*)triangles.At((long)i);
-				triangleClass->GetIndices(indiciesPtr);
-				
-				if (indiciesPtr[0] < verticesListCount && indiciesPtr[1] < verticesListCount
-						&& indiciesPtr[2] < verticesListCount)
-				{
-					indiciesPtr +=3;
-					fTrianglesCount++;
-				}
-			}		
-						
-		}
-	}
-	catch (CMyError err)
-	{
-		throw;
-	}
-	
+    VkDeviceSize offsets[1] = { 0 };
+    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, NULL);
+    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertexBuffer.buffer, offsets);
+    vkCmdBindIndexBuffer(cmdbuffer, indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+    vkCmdDrawIndexed(cmdbuffer, indexCount, 1, 0, 0, 1);
 }
 
-void VulkanMesh::ReleaseHandles()
+void VulkanMesh::setupDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout descriptorSetLayout)
 {
-	if (fIndices != NULL)
-	{
-		::free(fIndices);
-		fIndices = NULL;
-	}
+    VkDescriptorSetAllocateInfo allocInfo =
+        vks::initializers::descriptorSetAllocateInfo(
+            pool,
+            &descriptorSetLayout,
+            1);
 
-	if (fNormals != NULL)
-	{
-		::free(fNormals);
-		fNormals = NULL;
-	}
+    VK_CHECK_RESULT(vkAllocateDescriptorSets(vulkanDevice->logicalDevice, &allocInfo, &descriptorSet));
 
-	if (fVertices != NULL)
-	{
-		::free(fVertices);
-		fVertices = NULL;
-	}
+    // Binding 0 : Vertex shader uniform buffer
+    VkWriteDescriptorSet writeDescriptorSet =
+        vks::initializers::writeDescriptorSet(
+            descriptorSet,
+            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            0,
+            &uniformBuffer.descriptor);
+
+    vkUpdateDescriptorSets(vulkanDevice->logicalDevice, 1, &writeDescriptorSet, 0, NULL);
+
+}
+
+void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices, VkQueue queue)
+{
+    CGLMIndex verticesListCount = vertices.GetSize();
+    CGLMIndex trianglesListCount = triangles.GetSize();
+    std::vector<MeshVertex> vBuffer;
+    std::vector<uint32_t> iBuffer;
+
+  //   CGLMCoord *normalsPtr =
+    float vertex[3];
+    float normal[3];
+    
+    CVertex* vertexClass;
+    for (CGLMCoord i = 1; i <= verticesListCount; i++)
+    {
+        vertexClass = (CVertex*)vertices.At((long)i);
+        vertexClass->GetXYZ(vertex);
+        vertexClass->GetNormalXYZ(normal);
+        vBuffer.push_back(MeshVertex(vertex, normal, color));
+    }
+                
+     CTriangle* triangleClass;
+    
+    for (CGLMCoord i = 1; i <= trianglesListCount; i++)
+    {
+        CGLMIndex indicies[3];
+        triangleClass = (CTriangle*)triangles.At((long)i);
+        triangleClass->GetIndices(indicies);
+        
+        if (indicies[0] < verticesListCount && indicies[1] < verticesListCount
+                && indicies[2] < verticesListCount)
+        {
+            for (size_t i = 0; i < 3; ++i)
+            {
+                iBuffer.push_back(static_cast<uint32_t>(indicies[i]));
+            }
+        }
+    }
+    addVertexData(vBuffer, iBuffer, queue);
+}
+
+void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer,  std::vector<uint32_t>& iBuffer, VkQueue queue)
+{
+    size_t vertexBufferSize = vBuffer.size() * sizeof(MeshVertex);
+    size_t indexBufferSize = iBuffer.size() * sizeof(uint32_t);
+
+    bool useStaging = true;
+
+    if (useStaging)
+    {
+        vks::Buffer vertexStaging, indexStaging;
+
+        // Create staging buffers
+        // Vertex data
+        vulkanDevice->createBuffer(
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            &vertexStaging,
+            vertexBufferSize,
+            vBuffer.data());
+        // Index data
+        vulkanDevice->createBuffer(
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            &indexStaging,
+            indexBufferSize,
+            iBuffer.data());
+
+        // Create device local buffers
+        // Vertex buffer
+        vulkanDevice->createBuffer(
+            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            &vertexBuffer,
+            vertexBufferSize);
+        // Index buffer
+        vulkanDevice->createBuffer(
+            VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            &indexBuffer,
+            indexBufferSize);
+
+        // Copy from staging buffers
+        VkCommandBuffer copyCmd = vulkanDevice->createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
+
+        VkBufferCopy copyRegion = {};
+
+        copyRegion.size = vertexBufferSize;
+        vkCmdCopyBuffer(
+            copyCmd,
+            vertexStaging.buffer,
+            vertexBuffer.buffer,
+            1,
+            &copyRegion);
+
+        copyRegion.size = indexBufferSize;
+        vkCmdCopyBuffer(
+            copyCmd,
+            indexStaging.buffer,
+            indexBuffer.buffer,
+            1,
+            &copyRegion);
+
+        vulkanDevice->flushCommandBuffer(copyCmd, queue, true);
+
+        vkDestroyBuffer(vulkanDevice->logicalDevice, vertexStaging.buffer, nullptr);
+        vkFreeMemory(vulkanDevice->logicalDevice, vertexStaging.memory, nullptr);
+        vkDestroyBuffer(vulkanDevice->logicalDevice, indexStaging.buffer, nullptr);
+        vkFreeMemory(vulkanDevice->logicalDevice, indexStaging.memory, nullptr);
+    }
+    else
+    {
+        // Vertex buffer
+        vulkanDevice->createBuffer(
+            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            &vertexBuffer,
+            vertexBufferSize,
+            vBuffer.data());
+        // Index buffer
+        vulkanDevice->createBuffer(
+            VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            &indexBuffer,
+            indexBufferSize,
+            iBuffer.data());
+    }
+
+    indexCount = iBuffer.size();
+
+    prepareUniformBuffer();
+
+}
+
+void VulkanMesh::freeBuffers()
+{
 }
 
 void VulkanMesh::DebugTestDraw()
@@ -190,6 +217,7 @@ void VulkanMesh::DebugTestDraw()
 
 void VulkanMesh::DebugLookAtTriangles()
 {
+#if 0
 	CGLMIndex* indiciesPtr = (CGLMIndex*)fIndices;
 	CGLMCoord *verticesPtr = (CGLMCoord*)fVertices;
 	for (int i = 0; i < fTrianglesCount; i++)
@@ -205,6 +233,7 @@ void VulkanMesh::DebugLookAtTriangles()
 		}
 	
 	}
+#endif
 }
 
 
@@ -295,6 +324,17 @@ CMyError::CheckForGLError (false, true);
 		::HUnlock(fIndices); */
 	}
 #endif
+}
+
+void VulkanMesh::prepareUniformBuffer()
+{
+    VK_CHECK_RESULT(vulkanDevice->createBuffer(
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        &uniformBuffer,
+        sizeof(ubo)));
+    // Map persistent
+    VK_CHECK_RESULT(uniformBuffer.map());
 }
 
 

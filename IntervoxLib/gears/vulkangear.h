@@ -24,7 +24,7 @@
 #include "VulkanBuffer.h"
 #include "VulkanDevice.h"
 
-#define USE_MESH_PIPELINE 1
+#define USE_MESH_PIPELINE 0
 
 #if USE_MESH_PIPELINE
 #include <memory>

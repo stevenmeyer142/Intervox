@@ -109,12 +109,19 @@ void IntervoxHeadlessVulkan::buildCommandBuffers()
         VkRect2D scissor = vks::initializers::rect2D(width, height, 0, 0);
         vkCmdSetScissor(drawCmdBuffers[i], 0, 1, &scissor);
 
+#if !USE_MESH_PIPELINE
         vkCmdBindPipeline(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.solid);
 
         for (auto& gear : gears)
         {
             gear->draw(drawCmdBuffers[i], pipelineLayout);
         }
+#else
+        for (auto& pipeline : fMeshPipelines)
+        {
+            pipeline->Draw(drawCmdBuffers[i]);
+        }
+#endif
 
         vkCmdEndRenderPass(drawCmdBuffers[i]);
 
@@ -346,9 +353,17 @@ void IntervoxHeadlessVulkan::preparePipelines()
 void IntervoxHeadlessVulkan::updateUniformBuffers()
 {
 #if GEARS
+#if !USE_MESH_PIPELINE
     for (auto& gear : gears)
     {
         gear->updateUniformBuffer(camera.matrices.perspective, camera.matrices.view, timer * 360.0f);
+    }
+#endif
+#endif
+#if USE_MESH_PIPELINE
+    for (auto pipeline : fMeshPipelines)
+    {
+        pipeline->updateUniformBuffer(camera.matrices.perspective,  camera.matrices.view);
     }
 #endif
 }
@@ -398,6 +413,12 @@ void IntervoxHeadlessVulkan::prepare()
     preparePipelines();
     setupDescriptorPool();
     setupDescriptorSets();
+#else
+    auto shadersPath = getShadersPath();
+    for (auto& meshPipeLine : fMeshPipelines)
+    {
+        meshPipeLine->setupDescriptorsAndPipeline(shadersPath, renderPass, pipelineCache);
+    }
 #endif
     updateUniformBuffers();
     buildCommandBuffers();

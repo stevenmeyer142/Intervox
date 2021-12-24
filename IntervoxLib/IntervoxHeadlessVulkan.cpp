@@ -22,6 +22,8 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALI
     camera.setRotation(glm::vec3(-23.75f, 41.25f, 21.0f));
     camera.setPerspective(60.0f, (float)width / (float)height, 0.001f, 256.0f);
     timerSpeed *= 0.25f;
+    fImageData.resize(height * width * sizeof(uint32_t));
+
 #endif
 }
 
@@ -31,10 +33,13 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
 #if GEARS
     // Clean up used Vulkan resources
     // Note : Inherited destructor cleans up resources stored in base class
+    
+#if !USE_MESH_PIPELINE
     vkDestroyPipeline(device, pipelines.solid, nullptr);
 
     vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
     vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+#endif
 
     for (auto& gear : gears)
     {
@@ -80,7 +85,7 @@ void IntervoxHeadlessVulkan::buildCommandBuffers()
 {
 #if GEARS
     VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();
-    VkClearColorValue clearColor = { { 1.0f, 0.025f, 0.025f, 1.0f } };
+    VkClearColorValue clearColor = { { 0.025f, 0.025f, 0.025f, 1.0f } };
     VkClearValue clearValues[2];
  //   clearValues[0].color = defaultClearColor;
     clearValues[0].color = clearColor;
@@ -168,7 +173,12 @@ void IntervoxHeadlessVulkan::prepareVertices()
         gearInfo.rotOffset = rotationOffsets[i];
 
         gears[i] = new VulkanGear(vulkanDevice);
+#if USE_MESH_PIPELINE
+        auto mesh = gears[i]->generate(&gearInfo, queue);
+        fMeshPipelines[0]->addMesh(mesh);
+#else
         gears[i]->generate(&gearInfo, queue);
+#endif
     }
 
 #if !USE_MESH_PIPELINE
@@ -217,6 +227,8 @@ void IntervoxHeadlessVulkan::prepareVertices()
 void IntervoxHeadlessVulkan::setupDescriptorPool()
 {
 #if GEARS
+    // TODO  handle size of descriptor pools
+    // move this into VulkanMeshPipeline
     // One UBO for each gear
     std::vector<VkDescriptorPoolSize> poolSizes =
     {
@@ -414,10 +426,11 @@ void IntervoxHeadlessVulkan::prepare()
     setupDescriptorPool();
     setupDescriptorSets();
 #else
+    setupDescriptorPool();
     auto shadersPath = getShadersPath();
     for (auto& meshPipeLine : fMeshPipelines)
     {
-        meshPipeLine->setupDescriptorsAndPipeline(shadersPath, renderPass, pipelineCache);
+        meshPipeLine->setupDescriptorsAndPipeline(shadersPath, renderPass, pipelineCache, descriptorPool);
     }
 #endif
     updateUniformBuffers();
@@ -605,11 +618,6 @@ void IntervoxHeadlessVulkan::grabImage()
     vkMapMemory(device, dstImageMemory, 0, VK_WHOLE_SIZE, 0, (void**)&data);
     data += subResourceLayout.offset;
 
-    std::ofstream file("saved_intevox.ppm", std::ios::out | std::ios::binary);
-
-    // ppm header
-    file << "P6\n" << width << "\n" << height << "\n" << 255 << "\n";
-
     // If source is BGR (destination is always RGB) and we can't use blit (which does automatic conversion), we'll have to manually swizzle color components
     bool colorSwizzle = false;
     // Check if source is BGR
@@ -621,7 +629,12 @@ void IntervoxHeadlessVulkan::grabImage()
     }
 
  
-#if 0  // debugging code
+#if 1  // debugging code
+    std::ofstream file("saved_intevox.ppm", std::ios::out | std::ios::binary);
+
+    // ppm header
+    file << "P6\n" << width << "\n" << height << "\n" << 255 << "\n";
+
     // ppm binary pixel data
     const char* debug_data = data;
     for (uint32_t y = 0; y < height; y++)

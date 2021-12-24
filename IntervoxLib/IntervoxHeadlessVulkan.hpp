@@ -40,8 +40,8 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 
     std::vector<VulkanGear*> gears;
 
-    VkPipelineLayout pipelineLayout;
-    VkDescriptorSetLayout descriptorSetLayout;
+    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+    VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
 
 #endif
     std::vector<uint8_t> fImageData;

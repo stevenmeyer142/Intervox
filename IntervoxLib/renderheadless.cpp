@@ -896,6 +896,7 @@ int main() {
 	delete(vulkanExample);
 #else
     IntervoxHeadlessVulkan *intervoxHeadless = new IntervoxHeadlessVulkan();
+
     intervoxHeadless->initVulkan();
     intervoxHeadless->prepare();
     intervoxHeadless->render();

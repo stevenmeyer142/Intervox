@@ -208,6 +208,11 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer,  std::vector<ui
 
 void VulkanMesh::freeBuffers()
 {
+    
+    uniformBuffer.destroy();
+    vertexBuffer.destroy();
+    indexBuffer.destroy();
+
 }
 
 void VulkanMesh::DebugTestDraw()

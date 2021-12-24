@@ -28,7 +28,7 @@ class VulkanMeshPipeline
     void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view);
     
     void setupDescriptorsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass,
-                        VkPipelineCache pipelineCache);
+                                     VkPipelineCache pipelineCache, VkDescriptorPool pool);
     
 
 

@@ -202,11 +202,16 @@ void VulkanMeshPipeline::setupVertexDescriptions()
 }
 
 void VulkanMeshPipeline::setupDescriptorsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass,
-                    VkPipelineCache pipelineCache)
+                    VkPipelineCache pipelineCache, VkDescriptorPool pool)
 {
     setupDescriptorSetLayout();
     setupVertexDescriptions();
     createPipeline(shadersPath, renderPass, pipelineCache);
+    
+    for (auto& mesh :fMeshes)
+    {
+        mesh->setupDescriptorSet(pool, fDescriptorSetLayout);
+    }
 }
 
 VkPipelineShaderStageCreateInfo VulkanMeshPipeline::loadShader(std::string fileName, VkShaderStageFlagBits stage)

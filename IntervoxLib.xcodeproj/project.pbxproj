@@ -11,6 +11,8 @@
 		4F051A5B2731A82500D3E3FE /* VulkanBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A542731A82500D3E3FE /* VulkanBuffer.cpp */; };
 		4F051A5F2731E6BF00D3E3FE /* vulkangear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F051A5E2731E6BF00D3E3FE /* vulkangear.cpp */; };
 		4F12A3BE2774F4A60077B64C /* VulkanMeshPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */; };
+		4F38DE332776512300AC83D4 /* VulkanMeshPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */; };
+		4F38DE342776512800AC83D4 /* VulkanMeshHolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAD5274D3B5F00C64F39 /* VulkanMeshHolder.cpp */; };
 		4F5E1EC1272F1B2E004C6AA4 /* renderheadless_objc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */; };
 		4F5E1EC2272F1B2E004C6AA4 /* renderheadless.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC0272F1B2E004C6AA4 /* renderheadless.cpp */; };
 		4F5E1EC7272F1B65004C6AA4 /* VulkanTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1EC5272F1B65004C6AA4 /* VulkanTools.cpp */; };
@@ -19,7 +21,6 @@
 		4F5E1EDC2731A416004C6AA4 /* VulkanDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED62731A416004C6AA4 /* VulkanDebug.cpp */; };
 		4F5E1EDD2731A416004C6AA4 /* vulkanexamplebase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E1ED72731A416004C6AA4 /* vulkanexamplebase.cpp */; };
 		4F71AADC274D3B5F00C64F39 /* VulkanMesh.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AAD4274D3B5F00C64F39 /* VulkanMesh.hpp */; };
-		4F71AADD274D3B5F00C64F39 /* VulkanMeshHolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAD5274D3B5F00C64F39 /* VulkanMeshHolder.cpp */; };
 		4F71AADE274D3B5F00C64F39 /* VulkanContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AAD6274D3B5F00C64F39 /* VulkanContext.cpp */; };
 		4F71AAE1274D3B5F00C64F39 /* VulkanContext.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4F71AAD9274D3B5F00C64F39 /* VulkanContext.hpp */; };
 		4F71AAE2274D3B5F00C64F39 /* VulkanMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F71AADA274D3B5F00C64F39 /* VulkanMesh.cpp */; };
@@ -437,10 +438,11 @@
 				4F71AAFD274D88EF00C64F39 /* CJavaArrSlicesSet.cpp in Sources */,
 				4F7B17D0274849B8008892C2 /* VulkanDevice.cpp in Sources */,
 				4F7B17D827484B0E008892C2 /* GLMain.cpp in Sources */,
+				4F38DE332776512300AC83D4 /* VulkanMeshPipeline.cpp in Sources */,
 				4F71AB0F274D8A1100C64F39 /* CFacetLookup.cpp in Sources */,
 				4F71AB1C274D8A3B00C64F39 /* CMySortedList.cpp in Sources */,
-				4F71AADD274D3B5F00C64F39 /* VulkanMeshHolder.cpp in Sources */,
 				4F71AB14274D8A1100C64F39 /* C3DFloatPoint.cpp in Sources */,
+				4F38DE342776512800AC83D4 /* VulkanMeshHolder.cpp in Sources */,
 				4F7B17CD274849AD008892C2 /* VulkanTools.cpp in Sources */,
 				4F71AAE2274D3B5F00C64F39 /* VulkanMesh.cpp in Sources */,
 				4F71AB21274D8AAC00C64F39 /* CTempMemPointer.cpp in Sources */,

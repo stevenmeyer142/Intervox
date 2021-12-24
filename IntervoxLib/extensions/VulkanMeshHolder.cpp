@@ -16,6 +16,12 @@
 const bool kUseList = false;
 const bool kUseMaterial = true;
 
+const float VulkanMeshHolder::kDefaultSpecularity = .5;
+const float VulkanMeshHolder::kDefaultAmbience = .2;
+const float VulkanMeshHolder::kDefaultDiffuseness = .6;
+const float VulkanMeshHolder::kDefaultShininess = 10;
+
+
 #define kNotAdded 0
 
 #define kDebugSurface 0

@@ -227,8 +227,9 @@ void IntervoxHeadlessVulkan::prepareVertices()
 void IntervoxHeadlessVulkan::setupDescriptorPool()
 {
 #if GEARS
-    // TODO  handle size of descriptor pools
-    // move this into VulkanMeshPipeline
+    // TODO  class method for VulkanMeshPipeline to return pool sizes.
+    // move descriptorsetlayout from mesh to pipeline
+    
     // One UBO for each gear
     std::vector<VkDescriptorPoolSize> poolSizes =
     {

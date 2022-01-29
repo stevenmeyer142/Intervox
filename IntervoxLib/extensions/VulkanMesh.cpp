@@ -44,6 +44,7 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 
 void VulkanMesh::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {
+    std::cout << "VulkanMesh::Draw" << std::endl;
     VkDeviceSize offsets[1] = { 0 };
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, NULL);
     vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertexBuffer.buffer, offsets);
@@ -110,13 +111,16 @@ void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices, V
             }
         }
     }
-    addVertexData(vBuffer, iBuffer, queue);
+    glm::vec3 position;
+    addVertexData(vBuffer, iBuffer, position, queue);
 }
 
-void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer,  std::vector<uint32_t>& iBuffer, VkQueue queue)
+void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uint32_t>& iBuffer,
+                               const glm::vec3& position, VkQueue queue)
 {
     size_t vertexBufferSize = vBuffer.size() * sizeof(MeshVertex);
     size_t indexBufferSize = iBuffer.size() * sizeof(uint32_t);
+    pos = position;
 
     bool useStaging = true;
 

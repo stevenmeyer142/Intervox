@@ -106,10 +106,10 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pDisposeGLC
 /*
  * Class:     com_brazedblue_intervox_view3D_OpenGLJNI
  * Method:    pSetRotation
- * Signature: (J[F[Ljava/lang/String;)V
+ * Signature: (JFF[Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pSetRotation
-  (JNIEnv *, jobject, jlong, jfloatArray, jobjectArray);
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jobjectArray);
 
 /*
  * Class:     com_brazedblue_intervox_view3D_OpenGLJNI

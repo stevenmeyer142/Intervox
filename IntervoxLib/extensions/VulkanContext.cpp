@@ -9,6 +9,9 @@
 #include "VulkanContext.hpp"
 #include "IntervoxHeadlessVulkan.hpp"
 #include "utility/CMyError.h"
+#include "utility/CJavaArrSlicesSet.h"
+
+const static bool DEBUG_MODULE = true;
 
 CVulkanContext::CVulkanContext() {
 
@@ -67,3 +70,30 @@ void CVulkanContext::FillInJavaRGBArray(JNIEnv *env, jintArray array, long width
 }
 
 
+void CVulkanContext::Rotate(float xRot, float yRot)
+{
+    if (NULL == fOffscreenRenderer)
+    {
+        CMyError::DebugMessage("CVulkanContext::SetRotation NULL == fOffscreenRenderer");
+        return;
+    }
+
+    fOffscreenRenderer->rotate(xRot, yRot);
+}
+
+void CVulkanContext::Zoom(float factor)
+{
+    
+}
+
+void CVulkanContext::AbsoluteZoom(float zoom)
+{
+    
+}
+
+void CVulkanContext::CreateGeometries(JNIEnv *env, jint width, jint height, jobjectArray objArrays,
+                    jint regionValue, jint geomID, int resolution)
+{
+    CJavaArrSlicesSet slicesSet(env, objArrays, width, height);
+    fOffscreenRenderer->addMeshForRegion(&slicesSet, regionValue);
+ }

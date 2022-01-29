@@ -5,7 +5,12 @@
 //  Created by Steven Meyer on 11/2/21.
 //
 
+#include "NativeOpenGL.h"
 #include "IntervoxHeadlessVulkan.hpp"
+#include "utility/CJavaArrSlicesSet.h"
+#include "utility/C3DPoint.h"
+#include "utility/CCubeMarcher.h"
+#include "utility/CMyError.h"
 
 static bool DEV_DEBUG = true;
 
@@ -15,7 +20,15 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALI
 {
     width = 256;
     height = 256;
-#if GEARS
+    
+#if 0
+    camera.type = Camera::CameraType::lookat;
+    camera.setPosition(glm::vec3(0.0f, 2.5f, -256.0f));
+    camera.setRotation(glm::vec3(-23.75f, 41.25f, 21.0f));
+    camera.setPerspective(60.0f, (float)width / (float)height, 0.001f, 256.0f);
+    timerSpeed *= 0.25f;
+    fImageData.resize(height * width * sizeof(uint32_t));
+#elif GEARS
     title = "Vulkan gears";
     camera.type = Camera::CameraType::lookat;
     camera.setPosition(glm::vec3(0.0f, 2.5f, -16.0f));
@@ -699,3 +712,70 @@ void IntervoxHeadlessVulkan::grabImage()
 
 
 
+void IntervoxHeadlessVulkan::rotate(float xRot, float yRot)
+{
+    camera.rotate(glm::vec3(xRot, yRot, 0));
+}
+
+void IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
+{
+#if 1
+    
+    C3DPoint startPoint(0, 0, 0);
+
+    
+    CCubeMarcher marcher(slicesSet, 2, regionValue, startPoint);
+    
+    GeometryInfo info;
+    auto vulkanMesh = std::make_shared<VulkanMesh>(vulkanDevice);
+    
+    bool success = marcher.Get3DMesh(6, info, vulkanMesh, queue);
+        
+    if (success)
+    {
+        fMeshPipelines[0]->addMesh(vulkanMesh);
+    }
+    else
+    {
+        CMyError::DebugMessage("IntervoxHeadlessVulkan::addMeshForRegion failed to create mesh");
+    }
+#else
+    //   code pulledCMyErr from CGLMeshRenderer
+    
+    fWeight = 0;
+    fCenter = C3DPoint(0, 0, 0);
+            fHighResValue = resolution;
+    
+    CJavaArrSlicesSet slicesSet(env, objArrays, width, height);
+    
+    C3DPoint startPoint(0, 0, 0);
+
+    
+    CCubeMarcher marcher(&slicesSet, 2, regionValue, startPoint);
+    
+    GeometryInfo info;
+    
+    fLowResMesh = marcher.GetGLMesh(6, info);
+            
+            if (fHighResValue <= 0)
+            {
+                fHighResValue = 2;
+                if (info.numOfVertices > 12000)
+                {
+                        fHighResValue = 4;
+                }
+                else if (info.numOfVertices > 7000)
+                {
+                        fHighResValue = 3;
+                }
+                }
+    
+    fHighResMesh = marcher.GetGLMesh(fHighResValue, info);
+    
+    if (true)
+    {
+        ComputeWeightedCenter (slicesSet, regionValue);
+    }
+#endif
+
+}

@@ -186,7 +186,7 @@ VulkanGear::~VulkanGear()
 
 #if USE_MESH_PIPELINE
     auto result = std::make_shared<VulkanMesh>(vulkanDevice);
-    result->addVertexData(vBuffer, iBuffer, queue);
+    result->addVertexData(vBuffer, iBuffer, gearinfo->pos, queue);
     
     return result;
 #else
@@ -295,7 +295,7 @@ void VulkanGear::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view, floa
 	ubo.projection = perspective;
 	ubo.view = view;
 	ubo.model = glm::mat4(1.0f);
-	ubo.model = glm::translate(ubo.model, pos);
+    ubo.model = glm::translate(ubo.model, pos);
 	ubo.model = glm::rotate(ubo.model, glm::radians((rotSpeed * timer) + rotOffset), glm::vec3(0.0f, 0.0f, 1.0f));
 	ubo.normal = glm::inverseTranspose(ubo.view * ubo.model);
 	ubo.lightPos = glm::vec3(0.0f, 0.0f, 2.5f);

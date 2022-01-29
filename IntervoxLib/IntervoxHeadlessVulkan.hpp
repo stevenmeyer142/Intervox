@@ -26,6 +26,8 @@
 
 #define ENABLE_VALIDATION 1
 
+class CJavaArrSlicesSet;
+
 class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
 #if GEARS
     struct {
@@ -84,6 +86,11 @@ public:
     virtual void viewChanged();
     
     void grabImage();
+    
+    void rotate(float xRot, float yRot);
+    
+    // TODO change CJavaArrSlicesSet to CSlicesSet
+    void addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
 
 };
 

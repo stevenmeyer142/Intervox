@@ -101,40 +101,6 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pDebugCheck
 }
  
 
-/*
- * Class:     com_brazedblue_intervox_view3D_OpenGLJNI
- * Method:    pCreateGLContext
- * Signature: (Ljava/awt/Rectangle;Lneurosynch/view3D/NativeError;)I
- */
-/*	JNIEXPORT jint JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGLContext
-	(JNIEnv *env, jobject openGLObj, jintArray frameRect, jobjectArray errRecord)
-{
-    COpenGLContext *dataObj = NULL;
-	try
-	{
-		Rect location;
-		
-		if (!JavaIntArrayToRect (env, frameRect, location))
-		{
-			return 0;
-		}
-		
-		dataObj = new COpenGLContext;
-		dataObj->Create (location);
-
-		DebugAddAllocatedObject (dataObj);
-	}
-	catch (CMyError err)
-	{
-		FillErrRecord(env, err, errRecord);
-	}
-	catch (...)
-	{
-	}
-	
-	return (jint)dataObj;
-} */
-
 /**
 	 zoom the context view
 	 @param      howMuch       factor (i.e. .5 = zoom in 50 %)
@@ -199,23 +165,19 @@ long DebugGetFreeVRam()
 
 /*
  * Class:     com_brazedblue_intervox_view3D_OpenGLJNI
- * Method:    pSetRotation 
- * Signature: (I[FLneurosynch/view3D/NativeError;)V
+ * Method:    pSetRotation
+ * Signature: (JFF[Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pSetRotation
-	(JNIEnv *env, jobject openGL, jlong glDisplayObject, jfloatArray  javaMatrix, jobjectArray errRecord)
+  (JNIEnv *env, jobject openGL, jlong glDisplayObject, jfloat xRot, jfloat yRot, jobjectArray errRecord)
+
 {
-#if 0
 	try
 	{
-		COpenGLContext *dataObj = (COpenGLContext*)glDisplayObject;
+		CVulkanContext *dataObj = (CVulkanContext*)glDisplayObject;
 		
-		float matrix[kMatrixSize];
 
-		env->GetFloatArrayRegion(javaMatrix, 0, kMatrixSize, matrix);
-		CMyError::CheckForJNIException(env);
-
-		dataObj->SetRotation (matrix);
+		dataObj->Rotate (xRot, yRot);
 	}
 	catch (CMyError err)
 	{
@@ -224,7 +186,6 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pSetRotatio
 	catch (...)
 	{
 	}
-#endif
 }
 /**
 	 Creates a 3D mesh from slices data
@@ -241,7 +202,7 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGeo
 			jlong geomID,  jint resolution, jobjectArray errRecord)
 {
 	jlong result = NO_OBJECT;
-#
+
 	try
 	{
 		VulkanMeshHolder *meshHolder = new VulkanMeshHolder();

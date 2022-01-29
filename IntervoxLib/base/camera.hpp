@@ -15,9 +15,20 @@
 class Camera
 {
 private:
-	float fov;
-	float znear, zfar;
-
+	float fov = 1.0; // used by perspective
+    float znear = 0.0;
+    float zfar = 0.0;
+    struct
+    {
+        float left = 0.0f;
+        float right = 0.0f;
+        float bottom = 0.0f;
+        float top = 0.0f;
+    } mOrthoFrame;
+    
+    float mZoom = 1.0;
+    
+    
 	void updateViewMatrix()
 	{
 		glm::mat4 rotM = glm::mat4(1.0f);
@@ -47,7 +58,7 @@ private:
 		updated = true;
 	};
 public:
-	enum CameraType { lookat, firstperson };
+	enum CameraType { lookat, firstperson, orthogonal };
 	CameraType type = CameraType::lookat;
 
 	glm::vec3 rotation = glm::vec3();
@@ -73,6 +84,7 @@ public:
 		bool up = false;
 		bool down = false;
 	} keys;
+    
 
 	bool moving()
 	{

@@ -44,7 +44,7 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 
 void VulkanMesh::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {
-    std::cout << "VulkanMesh::Draw" << std::endl;
+    std::cout << "VulkanMesh::Draw indexCount " << indexCount << std::endl;
     VkDeviceSize offsets[1] = { 0 };
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, NULL);
     vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertexBuffer.buffer, offsets);
@@ -118,6 +118,8 @@ void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices, V
 void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uint32_t>& iBuffer,
                                const glm::vec3& position, VkQueue queue)
 {
+    std::cout << "VulkanMesh::addVertexData vBuffer.size " << vBuffer.size() << ", iBuffer.size() " <<
+    iBuffer.size() << std::endl;
     size_t vertexBufferSize = vBuffer.size() * sizeof(MeshVertex);
     size_t indexBufferSize = iBuffer.size() * sizeof(uint32_t);
     pos = position;
@@ -130,13 +132,15 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
 
         // Create staging buffers
         // Vertex data
-        vulkanDevice->createBuffer(
+        std::cout << "VulkanMesh::addVertexData create vBuffer  vertexBufferSize " << vertexBufferSize << std::endl;
+            vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             &vertexStaging,
             vertexBufferSize,
             vBuffer.data());
         // Index data
+        std::cout << "VulkanMesh::addVertexData create vBuffer  indexBufferSize " << indexBufferSize << std::endl;
         vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
@@ -146,12 +150,14 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
 
         // Create device local buffers
         // Vertex buffer
+        std::cout << "VulkanMesh::addVertexData create vBuffer  vertexBufferSize " << vertexBufferSize << std::endl;
         vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             &vertexBuffer,
             vertexBufferSize);
         // Index buffer
+        std::cout << "VulkanMesh::addVertexData create vBuffer  indexBufferSize " << indexBufferSize << std::endl;
         vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,

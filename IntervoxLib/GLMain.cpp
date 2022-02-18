@@ -10,12 +10,15 @@
 //#include "CGLTexFont.h"
 #include <typeinfo>
 #include "extensions/VulkanContext.hpp"
-#include "extensions/VulkanMeshHolder.hpp"
+#include <iostream>
+#include "IntervoxHeadlessVulkan.hpp"
 
 
+IntervoxHeadlessVulkan gIntervoxHeadlessVulkan;
 const jlong NO_OBJECT = 1;
 CMySortedList*	gDebugAllocatedList = NULL;
 void DebugHandleShutDown(JNIEnv *env, jobjectArray errRecord);
+
 
 
 void DisposeVulkanContext(JNIEnv *env, CVulkanContext *renderer, jobjectArray errRecord);
@@ -41,7 +44,7 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGLC
 			return 0;
 		}
 		
-		dataObj = new CVulkanContext;
+		dataObj = new CVulkanContext(&gIntervoxHeadlessVulkan);
 		dataObj->initialize (&location);
 		
 		
@@ -202,12 +205,14 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGeo
 			jlong geomID,  jint resolution, jobjectArray errRecord)
 {
 	jlong result = NO_OBJECT;
-
+    std::cout << "Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGeometryFromRegion" << std::endl;
 	try
 	{
-		VulkanMeshHolder *meshHolder = new VulkanMeshHolder();
-		meshHolder->CreateGeometries (env, width, height, objArrays, regionValue, geomID, resolution);
-		
+//		VulkanMeshHolder *meshHolder = new VulkanMeshHolder();
+//		meshHolder->CreateGeometries (env, width, height, objArrays, regionValue, geomID, resolution);
+        CJavaArrSlicesSet slicesSet(env, objArrays, width, height);
+        auto meshHolder = gIntervoxHeadlessVulkan.addMeshForRegion(&slicesSet, regionValue);
+
 		result = (jlong)meshHolder;
 		
 	//	DebugAddAllocatedObject(meshHolder);

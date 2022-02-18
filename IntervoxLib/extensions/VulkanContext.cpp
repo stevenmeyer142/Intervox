@@ -13,24 +13,16 @@
 
 const static bool DEBUG_MODULE = true;
 
-CVulkanContext::CVulkanContext() {
-
-
+CVulkanContext::CVulkanContext(IntervoxHeadlessVulkan * offscreenRenderer) :
+    fOffscreenRenderer(offscreenRenderer)
+{
 }
 
 CVulkanContext::~CVulkanContext() {
-	if (NULL != fOffscreenRenderer)
-	{
-		delete fOffscreenRenderer;
-	}
 }
 
 void CVulkanContext::initialize(const Rect *rect)
 {
-	if (NULL == fOffscreenRenderer)
-	{
-		fOffscreenRenderer = new IntervoxHeadlessVulkan();
-	}
 	fOffscreenRenderer->initialize(rect->right - rect->left, rect->bottom - rect->top);
 }
 
@@ -91,9 +83,3 @@ void CVulkanContext::AbsoluteZoom(float zoom)
     
 }
 
-void CVulkanContext::CreateGeometries(JNIEnv *env, jint width, jint height, jobjectArray objArrays,
-                    jint regionValue, jint geomID, int resolution)
-{
-    CJavaArrSlicesSet slicesSet(env, objArrays, width, height);
-    fOffscreenRenderer->addMeshForRegion(&slicesSet, regionValue);
- }

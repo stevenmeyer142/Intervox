@@ -64,7 +64,7 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
     VkPipelineRasterizationStateCreateInfo rasterizationState =
         vks::initializers::pipelineRasterizationStateCreateInfo(
             VK_POLYGON_MODE_FILL,
-            VK_CULL_MODE_BACK_BIT,
+            VK_CULL_MODE_NONE, //VK_CULL_MODE_BACK_BIT,
             VK_FRONT_FACE_CLOCKWISE,
        //     VK_CULL_MODE_NONE,
         //    VK_FRONT_FACE_COUNTER_CLOCKWISE,

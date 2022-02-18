@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <memory>
+#include <atomic>
 
 #if USE_MESH_PIPELINE
 #include "extensions/VulkanMeshPipeline.hpp"
@@ -52,6 +53,7 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     std::vector<std::shared_ptr<VulkanMeshPipeline>> fMeshPipelines;
 #endif
 
+    bool fInitialized = false;
 public:
     IntervoxHeadlessVulkan();
 
@@ -90,7 +92,7 @@ public:
     void rotate(float xRot, float yRot);
     
     // TODO change CJavaArrSlicesSet to CSlicesSet
-    void addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
+    void* addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
 
 };
 

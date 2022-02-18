@@ -17,13 +17,14 @@ static bool DEV_DEBUG = true;
 #define VERTEX_BUFFER_BIND_ID 0
 
 IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALIDATION)
+
 {
     width = 256;
     height = 256;
     
-#if 0
+#if 1
     camera.type = Camera::CameraType::lookat;
-    camera.setPosition(glm::vec3(0.0f, 2.5f, -256.0f));
+    camera.setPosition(glm::vec3(0.0f, 2.5f, -48.0f));
     camera.setRotation(glm::vec3(-23.75f, 41.25f, 21.0f));
     camera.setPerspective(60.0f, (float)width / (float)height, 0.001f, 256.0f);
     timerSpeed *= 0.25f;
@@ -38,6 +39,7 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALI
     fImageData.resize(height * width * sizeof(uint32_t));
 
 #endif
+    initialize(256, 256);
 }
 
 
@@ -73,12 +75,16 @@ void IntervoxHeadlessVulkan::renderScene()
 
 void IntervoxHeadlessVulkan::initialize(uint32_t aWidth, uint32_t aHeight)
 {
-    width = aWidth;
-    height = aHeight;
-    fImageData.resize(height * width * sizeof(uint32_t));
-    
-    initVulkan();
-    prepare();
+    if (!fInitialized)
+    {
+        fInitialized = true;
+        width = aWidth;
+        height = aHeight;
+        fImageData.resize(height * width * sizeof(uint32_t));
+        
+        initVulkan();
+        prepare();
+    }
 }
 
 void IntervoxHeadlessVulkan::copyImageData_RGBA_8888(uint32_t* toBuffer, uint32_t aWidth, uint32_t aHeight)
@@ -449,6 +455,7 @@ void IntervoxHeadlessVulkan::prepare()
 #endif
     updateUniformBuffers();
     buildCommandBuffers();
+ 
     prepared = true;
 }
 
@@ -717,9 +724,13 @@ void IntervoxHeadlessVulkan::rotate(float xRot, float yRot)
     camera.rotate(glm::vec3(xRot, yRot, 0));
 }
 
-void IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
+void* IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
 {
+    std::cout << "addMeshForRegion fInitialized " << fInitialized << std::endl;
 #if 1
+ //   prepareVertices();
+    return this;
+#elif 0
     
     C3DPoint startPoint(0, 0, 0);
 
@@ -734,10 +745,12 @@ void IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int 
     if (success)
     {
         fMeshPipelines[0]->addMesh(vulkanMesh);
+        return vulkanMesh.get();  // this is only used as an id.  
     }
     else
     {
         CMyError::DebugMessage("IntervoxHeadlessVulkan::addMeshForRegion failed to create mesh");
+        return nullptr;
     }
 #else
     //   code pulledCMyErr from CGLMeshRenderer

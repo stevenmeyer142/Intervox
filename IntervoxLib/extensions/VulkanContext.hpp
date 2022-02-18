@@ -16,7 +16,7 @@ class IntervoxHeadlessVulkan;
 
 class CVulkanContext {
 public:
-	CVulkanContext();
+	CVulkanContext(IntervoxHeadlessVulkan * offscreenRenderer);
 
     virtual ~CVulkanContext();
     
@@ -30,9 +30,6 @@ public:
     
     void AbsoluteZoom(float zoom);
 
-    void CreateGeometries(JNIEnv *env, jint width, jint height, jobjectArray objArrays,
-                        jint regionValue, jint geomID, int resolution);
-    
 private:
 	IntervoxHeadlessVulkan *fOffscreenRenderer = NULL;
 };

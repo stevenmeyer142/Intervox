@@ -213,6 +213,7 @@ void VulkanMeshPipeline::setupDescriptorsAndPipeline(const std::string& shadersP
     
     for (auto& mesh :fMeshes)
     {
+        std::cout << "setup descripter set" << std::endl;
         mesh->setupDescriptorSet(pool, fDescriptorSetLayout);
     }
 }

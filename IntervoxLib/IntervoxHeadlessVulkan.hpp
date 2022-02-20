@@ -41,7 +41,7 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
         VkPipeline solid;
     } pipelines;
 
-    std::vector<VulkanGear*> gears;
+    std::vector<std::shared_ptr<VulkanGear>> fGears;
 
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
     VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
@@ -67,7 +67,7 @@ public:
 
     void buildCommandBuffers();
 
-    void prepareVertices();
+    void prepareVertices(bool offset);
 
     void setupDescriptorPool();
     

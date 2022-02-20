@@ -55,11 +55,8 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
     vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 #endif
-
-    for (auto& gear : gears)
-    {
-        delete(gear);
-    }
+    
+    fGears.clear();
 #endif
 #if USE_MESH_PIPELINE
     fMeshPipelines.clear();
@@ -154,10 +151,11 @@ void IntervoxHeadlessVulkan::buildCommandBuffers()
 #endif
 }
 
-void IntervoxHeadlessVulkan::prepareVertices()
+void IntervoxHeadlessVulkan::prepareVertices(bool offset)
 {
 
 #if GEARS
+    std::vector<std::shared_ptr<VulkanGear>> gears;
     // Gear definitions
     std::vector<float> innerRadiuses = { 1.0f, 0.5f, 1.3f };
     std::vector<float> outerRadiuses = { 4.0f, 2.0f, 2.0f };
@@ -191,14 +189,21 @@ void IntervoxHeadlessVulkan::prepareVertices()
         gearInfo.rotSpeed = rotationSpeeds[i];
         gearInfo.rotOffset = rotationOffsets[i];
 
-        gears[i] = new VulkanGear(vulkanDevice);
+        gears[i] = std::make_shared<VulkanGear>(vulkanDevice);
 #if USE_MESH_PIPELINE
         auto mesh = gears[i]->generate(&gearInfo, queue);
+        
+        if (offset)
+        {
+            mesh->offset(glm::vec3(12, 0, 0));
+        }
         fMeshPipelines[0]->addMesh(mesh);
 #else
         gears[i]->generate(&gearInfo, queue);
 #endif
     }
+    
+    fGears.insert(fGears.end(), gears.begin(), gears.end());
 
 #if !USE_MESH_PIPELINE
     // Binding and attribute descriptions are shared across all gears
@@ -252,7 +257,7 @@ void IntervoxHeadlessVulkan::setupDescriptorPool()
     // One UBO for each gear
     std::vector<VkDescriptorPoolSize> poolSizes =
     {
-        vks::initializers::descriptorPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 3),
+        vks::initializers::descriptorPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 6),
     };
 
     VkDescriptorPoolCreateInfo descriptorPoolInfo =
@@ -260,7 +265,7 @@ void IntervoxHeadlessVulkan::setupDescriptorPool()
             static_cast<uint32_t>(poolSizes.size()),
             poolSizes.data(),
             // Three descriptor sets (for each gear)
-            3);
+            6);
 
     VK_CHECK_RESULT(vkCreateDescriptorPool(device, &descriptorPoolInfo, nullptr, &descriptorPool));
 #endif
@@ -297,7 +302,7 @@ void IntervoxHeadlessVulkan::setupDescriptorSetLayout()
 void IntervoxHeadlessVulkan::setupDescriptorSets()
 {
 #if GEARS
-    for (auto& gear : gears)
+    for (auto& gear : fGears)
     {
         gear->setupDescriptorSet(descriptorPool, descriptorSetLayout);
     }
@@ -439,7 +444,6 @@ void IntervoxHeadlessVulkan::prepare()
     fMeshPipelines.push_back(meshPipeLine);
 #endif
 
-    prepareVertices();
 #if !USE_MESH_PIPELINE
     setupDescriptorSetLayout();
     preparePipelines();
@@ -447,6 +451,8 @@ void IntervoxHeadlessVulkan::prepare()
     setupDescriptorSets();
 #else
     setupDescriptorPool();
+    prepareVertices(false);
+    prepareVertices(true);
     auto shadersPath = getShadersPath();
     for (auto& meshPipeLine : fMeshPipelines)
     {

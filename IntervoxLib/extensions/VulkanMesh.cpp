@@ -41,6 +41,12 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
     memcpy(uniformBuffer.mapped, &ubo, sizeof(ubo));
 }
 
+void VulkanMesh::offset(const glm::vec3 offset)
+{
+    pos = pos + offset;
+}
+
+
 
 void VulkanMesh::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {

@@ -431,9 +431,9 @@ void IntervoxHeadlessVulkan::draw(VkCommandBuffer drawCommandBuffer)
     VulkanExampleBase::prepareFrame();
 #endif
 
-    // Command buffer to be submitted to the queue
+    VkSubmitInfo submitInfo = vks::initializers::submitInfo();
+   // Command buffer to be submitted to the queue
     submitInfo.commandBufferCount = 1;
- //   submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer];
     submitInfo.pCommandBuffers = &drawCommandBuffer;
 
 #ifndef INTERVOX_LIB

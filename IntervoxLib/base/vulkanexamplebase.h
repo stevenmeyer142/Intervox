@@ -162,10 +162,10 @@ protected:
 	VkCommandPool cmdPool = VK_NULL_HANDLE;
 	/** @brief Pipeline stages used to wait at for graphics queue submissions */
 	VkPipelineStageFlags submitPipelineStages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+#ifndef INTERVOX_LIB
 	// Contains command buffers and semaphores to be presented to the queue
     VkSubmitInfo submitInfo{};
 	// Command buffers used for rendering
-#ifndef INTERVOX_LIB
 	std::vector<VkCommandBuffer> drawCmdBuffers;
 #endif
 

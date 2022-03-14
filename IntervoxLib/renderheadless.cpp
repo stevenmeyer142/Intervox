@@ -137,7 +137,9 @@ public:
 	*/
 	void submitWork(VkCommandBuffer cmdBuffer, VkQueue queue)
 	{
-		VkSubmitInfo submitInfo = vks::initializers::submitInfo();
+        VK_CHECK_RESULT(vkEndCommandBuffer(cmdBuffer));
+
+        VkSubmitInfo submitInfo = vks::initializers::submitInfo();
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &cmdBuffer;
 		VkFenceCreateInfo fenceInfo = vks::initializers::fenceCreateInfo();
@@ -532,7 +534,9 @@ public:
 				vks::initializers::pipelineInputAssemblyStateCreateInfo(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, 0, VK_FALSE);
 
 			VkPipelineRasterizationStateCreateInfo rasterizationState =
-				vks::initializers::pipelineRasterizationStateCreateInfo(VK_POLYGON_MODE_FILL, VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_CLOCKWISE);
+				vks::initializers::pipelineRasterizationStateCreateInfo(VK_POLYGON_MODE_FILL,
+                                                                        VK_CULL_MODE_FRONT_AND_BACK, VK_FRONT_FACE_CLOCKWISE);
+                                                                        //VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_CLOCKWISE);
 
 			VkPipelineColorBlendAttachmentState blendAttachmentState =
 				vks::initializers::pipelineColorBlendAttachmentState(0xf, VK_FALSE);

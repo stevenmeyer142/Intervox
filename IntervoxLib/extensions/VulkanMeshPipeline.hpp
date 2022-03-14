@@ -13,24 +13,27 @@
 #include <vulkan/vulkan.h>
 #include "extensions/VulkanMesh.hpp"
 #include "base/vulkanexamplebase.h"
+#include "extensions/VulkanPipeline.hpp"
 
-class VulkanMeshPipeline
+class VulkanMeshPipeline : public VulkanPipeline
 {
-    public :
+public :
     VulkanMeshPipeline(VkDevice device);
     
     virtual ~VulkanMeshPipeline();
     
-    virtual void Draw(VkCommandBuffer commandBuffer);
+    virtual void Draw(VkCommandBuffer commandBuffer) override;
     
     void addMesh(std::shared_ptr<VulkanMesh> mesh);
     
-    void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view);
+    virtual void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view) override;
     
-    void setupDescriptorsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass,
-                                     VkPipelineCache pipelineCache, VkDescriptorPool pool);
+    virtual void setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache) override;
     
-
+    virtual void setupDescripterSets(VkDescriptorPool pool) override;
+    
+    virtual uint32_t getUniformBufferCount() override;
+    
 
 private:
     

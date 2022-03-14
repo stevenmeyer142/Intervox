@@ -186,7 +186,8 @@ VulkanGear::~VulkanGear()
 
 #if USE_MESH_PIPELINE
     auto result = std::make_shared<VulkanMesh>(vulkanDevice);
-    result->addVertexData(vBuffer, iBuffer, gearinfo->pos, queue);
+    result->addVertexData(vBuffer, iBuffer, queue);
+    
     
     return result;
 #else

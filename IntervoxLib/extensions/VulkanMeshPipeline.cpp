@@ -43,6 +43,13 @@ void VulkanMeshPipeline::addMesh(std::shared_ptr<VulkanMesh> mesh)
     fMeshes.push_back(mesh);
 }
 
+uint32_t VulkanMeshPipeline::getUniformBufferCount()
+{
+    return static_cast<uint32_t>(fMeshes.size());
+}
+
+
+
 void VulkanMeshPipeline::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 {
     for (auto mesh : fMeshes)
@@ -68,7 +75,7 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
             VK_FRONT_FACE_CLOCKWISE,
        //     VK_CULL_MODE_NONE,
         //    VK_FRONT_FACE_COUNTER_CLOCKWISE,
-            0);
+                                                                0);
 
     VkPipelineColorBlendAttachmentState blendAttachmentState =
         vks::initializers::pipelineColorBlendAttachmentState(
@@ -204,19 +211,25 @@ void VulkanMeshPipeline::setupVertexDescriptions()
 
 }
 
-void VulkanMeshPipeline::setupDescriptorsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass,
-                    VkPipelineCache pipelineCache, VkDescriptorPool pool)
+// this should only need to be called once
+void VulkanMeshPipeline::setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache)
 {
     setupDescriptorSetLayout();
     setupVertexDescriptions();
     createPipeline(shadersPath, renderPass, pipelineCache);
-    
+}
+
+// this must be called every time the meshes change
+void VulkanMeshPipeline::setupDescripterSets(VkDescriptorPool pool)
+{
     for (auto& mesh :fMeshes)
     {
         std::cout << "setup descripter set" << std::endl;
         mesh->setupDescriptorSet(pool, fDescriptorSetLayout);
     }
 }
+
+
 
 VkPipelineShaderStageCreateInfo VulkanMeshPipeline::loadShader(std::string fileName, VkShaderStageFlagBits stage)
 {

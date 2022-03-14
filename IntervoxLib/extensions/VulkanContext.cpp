@@ -41,7 +41,7 @@ void CVulkanContext::FillInJavaRGBArray(JNIEnv *env, jintArray array, long width
 	CMyError::CheckForJNIException(env);
 	if (size == width * height)
 	{
-		fOffscreenRenderer->renderScene();
+		fOffscreenRenderer->renderScene(fRenderSettings);
 
 		if (sizeof(*toBuffer) == sizeof(uint32_t))
 		{

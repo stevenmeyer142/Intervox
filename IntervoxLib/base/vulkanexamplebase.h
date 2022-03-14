@@ -45,6 +45,7 @@
 #include <random>
 #include <algorithm>
 #include <sys/stat.h>
+#include <map>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -114,12 +115,16 @@ private:
 #endif
 	void createPipelineCache();
 	void createCommandPool();
+#ifndef INTERVOX_LIB
 	void createSynchronizationPrimitives();
+#endif
 #ifndef INTERVOX_LIB
 	void setupSwapChain();
 #endif
+#ifndef INTERVOX_LIB
 	void createCommandBuffers();
 	void destroyCommandBuffers();
+#endif
 	std::string shaderDir = "glsl";
 protected:
 	// Returns the path to the root of the glsl or hlsl shader directory.
@@ -160,7 +165,10 @@ protected:
 	// Contains command buffers and semaphores to be presented to the queue
     VkSubmitInfo submitInfo{};
 	// Command buffers used for rendering
+#ifndef INTERVOX_LIB
 	std::vector<VkCommandBuffer> drawCmdBuffers;
+#endif
+
 	// Global render pass for frame buffer writes
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 	// List of available frame buffers (same as number of swap chain images)
@@ -197,7 +205,7 @@ protected:
 		VkSemaphore renderComplete;
 	} semaphores;
 #endif
-    std::vector<VkFence> waitFences;
+    std::vector<VkFence> waitFences; // TODO nis this needed
 public:
 	bool prepared = false;
 	bool resized = false;
@@ -433,8 +441,10 @@ public:
 	/** @brief Presents the current image to the swap chain */
 	void submitFrame();
 #endif
-	/** @brief (Virtual) Default image acquire + submission and command buffer submission function */
+#ifndef INTERVOX_LIB
+    /** @brief (Virtual) Default image acquire + submission and command buffer submission function */
 	virtual void renderFrame();
+#endif
 #ifndef INTERVOX_LIB
 	/** @brief (Virtual) Called when the UI overlay is updating, can be used to add custom elements to the overlay */
 	virtual void OnUpdateUIOverlay(vks::UIOverlay *overlay);

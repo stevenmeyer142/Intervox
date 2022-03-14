@@ -20,9 +20,11 @@
 #include <vector>
 #include <memory>
 #include <atomic>
+#include <map>
 
 #if USE_MESH_PIPELINE
 #include "extensions/VulkanMeshPipeline.hpp"
+#include "extensions/VulkanPipeline.hpp"
 #endif
 
 #define ENABLE_VALIDATION 1
@@ -50,10 +52,13 @@ class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
     std::vector<uint8_t> fImageData;
 
 #if USE_MESH_PIPELINE
-    std::vector<std::shared_ptr<VulkanMeshPipeline>> fMeshPipelines;
+    std::map<VulkanPipelineTypes, std::shared_ptr<VulkanPipeline>> fPipelines;
 #endif
 
-    bool fInitialized = false;
+    bool            fInitialized = false;
+    int32_t         fPipelinesVersion = 0;
+    std::map<std::string, VkCommandBuffer> fContextCommandBuffers;
+
 public:
     IntervoxHeadlessVulkan();
 
@@ -61,11 +66,11 @@ public:
     
     void initialize(uint32_t width, uint32_t height);
     
-    void renderScene();
+    void renderScene(RenderCommandSettings &renderCommandSettings);
     
     void copyImageData_RGBA_8888(uint32_t* toBuffer, uint32_t aWidth, uint32_t aHeight);
 
-    void buildCommandBuffers();
+    void buildCommandBuffers(RenderCommandSettings &renderCommandSettings, VkCommandBuffer drawCommandBuffer);
 
     void prepareVertices(bool offset);
 
@@ -79,11 +84,13 @@ public:
  
     void updateUniformBuffers();
 
-    void draw();
+    void draw(VkCommandBuffer drawCommandBuffer);
 
     void prepare();
 
-    virtual void render();
+    void render(VkCommandBuffer drawCommandBuffer);
+    
+    virtual void render() {}
 
     virtual void viewChanged();
     
@@ -93,6 +100,15 @@ public:
     
     // TODO change CJavaArrSlicesSet to CSlicesSet
     void* addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
+    
+private:
+    void updateDescriptorLayouts();
+
+    void ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet, short region, std::shared_ptr<VulkanMesh> mesh);
+    
+    VkCommandBuffer getCommandBuffer(RenderCommandSettings &renderCommandSettings);
+    
+    std::shared_ptr<VulkanMeshPipeline> getMeshPipeline();
 
 };
 

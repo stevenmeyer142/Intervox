@@ -10,6 +10,7 @@
 
 #include <stddef.h>
 #include <jni.h>
+#include "extensions/VulkanPipeline.hpp"
 
 
 class IntervoxHeadlessVulkan;
@@ -32,6 +33,7 @@ public:
 
 private:
 	IntervoxHeadlessVulkan *fOffscreenRenderer = NULL;
+    RenderCommandSettings fRenderSettings;
 };
 
 #endif /* CVULKANCONTEXT_H_ */

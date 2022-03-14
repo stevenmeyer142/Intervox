@@ -59,7 +59,6 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 	instanceExtensions.push_back(VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME);
 #endif
 
-
 	// Get extensions supported by the instance and store for later use
 	uint32_t extCount = 0;
 	vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
@@ -131,32 +130,26 @@ VkResult VulkanExampleBase::createInstance(bool enableValidation)
 	return vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 }
 
+#ifndef INTERVOX_LIB
 void VulkanExampleBase::renderFrame()
 {
-#ifndef INTERVOX_LIB
     VulkanExampleBase::prepareFrame();
-#endif
     
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer];
     
-#ifdef INTERVOX_LIB
     VkFenceCreateInfo fenceInfo = vks::initializers::fenceCreateInfo();
     VkFence fence;
     VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &fence));
-#endif
     
 	VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE));
     
-#ifndef INTERVOX_LIB
 	VulkanExampleBase::submitFrame();
-#endif
     
-#ifdef INTERVOX_LIB
     VK_CHECK_RESULT(vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
     vkDestroyFence(device, fence, nullptr);
-#endif
 }
+#endif
 
 std::string VulkanExampleBase::getWindowTitle()
 {
@@ -169,6 +162,7 @@ std::string VulkanExampleBase::getWindowTitle()
 	return windowTitle;
 }
 
+#ifndef INTERVOX_LIB
 void VulkanExampleBase::createCommandBuffers()
 {
 	// Create one command buffer for each swap chain image and reuse for rendering
@@ -182,11 +176,14 @@ void VulkanExampleBase::createCommandBuffers()
 
 	VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, drawCmdBuffers.data()));
 }
+#endif
 
+#ifndef INTERVOX_LIB
 void VulkanExampleBase::destroyCommandBuffers()
 {
 	vkFreeCommandBuffers(device, cmdPool, static_cast<uint32_t>(drawCmdBuffers.size()), drawCmdBuffers.data());
 }
+#endif
 
 std::string VulkanExampleBase::getShadersPath() const
 {
@@ -208,12 +205,15 @@ void VulkanExampleBase::prepare()
 #ifndef INTERVOX_LIB
     initSwapchain();
 #endif
+
 	createCommandPool();
 #ifndef INTERVOX_LIB
 	setupSwapChain();
 #endif
+#ifndef INTERVOX_LIB
 	createCommandBuffers();
 	createSynchronizationPrimitives();
+#endif
 	setupDepthStencil();
 	setupRenderPass();
 	createPipelineCache();
@@ -878,7 +878,9 @@ VulkanExampleBase::~VulkanExampleBase()
 	{
 		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	}
+#ifndef INTERVOX_LIB
 	destroyCommandBuffers();
+#endif
 	vkDestroyRenderPass(device, renderPass, nullptr);
 	for (uint32_t i = 0; i < frameBuffers.size(); i++)
 	{
@@ -2567,6 +2569,7 @@ void VulkanExampleBase::mouseMoved(double x, double y, bool & handled) {}
 
 void VulkanExampleBase::buildCommandBuffers() {}
 
+#ifndef INTERVOX_LIB
 void VulkanExampleBase::createSynchronizationPrimitives()
 {
 	// Wait fences to sync command buffer access
@@ -2576,6 +2579,7 @@ void VulkanExampleBase::createSynchronizationPrimitives()
 		VK_CHECK_RESULT(vkCreateFence(device, &fenceCreateInfo, nullptr, &fence));
 	}
 }
+#endif
 
 void VulkanExampleBase::createCommandPool()
 {
@@ -2781,8 +2785,10 @@ void VulkanExampleBase::windowResize()
 
 	// Command buffers need to be recreated as they may store
 	// references to the recreated frame buffer
+#ifndef INTERVOX_LIB
 	destroyCommandBuffers();
 	createCommandBuffers();
+#endif
 	buildCommandBuffers();
 
 	vkDeviceWaitIdle(device);

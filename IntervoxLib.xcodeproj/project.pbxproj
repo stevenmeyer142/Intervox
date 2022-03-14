@@ -93,6 +93,7 @@
 		4F051A6027348B0200D3E3FE /* conanbuildinfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = conanbuildinfo.xcconfig; sourceTree = "<group>"; };
 		4F12A3BC2774F4A50077B64C /* VulkanMeshPipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VulkanMeshPipeline.hpp; path = extensions/VulkanMeshPipeline.hpp; sourceTree = "<group>"; };
 		4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanMeshPipeline.cpp; path = extensions/VulkanMeshPipeline.cpp; sourceTree = "<group>"; };
+		4F2ED04627C8427B00E0D193 /* VulkanPipeline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = VulkanPipeline.hpp; path = extensions/VulkanPipeline.hpp; sourceTree = "<group>"; };
 		4F2F881E274570BC00C363E4 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../vulkan/vulkan_git/MoltenVK/Package/Debug/MoltenVK/dylib/macOS/libMoltenVK.dylib; sourceTree = "<group>"; };
 		4F5E1EB5272F1917004C6AA4 /* IntervoxLib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IntervoxLib; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F5E1EBF272F1B2E004C6AA4 /* renderheadless_objc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderheadless_objc.mm; sourceTree = "<group>"; };
@@ -265,6 +266,7 @@
 				4F71AADB274D3B5F00C64F39 /* VulkanMeshHolder.hpp */,
 				4F12A3BD2774F4A60077B64C /* VulkanMeshPipeline.cpp */,
 				4F12A3BC2774F4A50077B64C /* VulkanMeshPipeline.hpp */,
+				4F2ED04627C8427B00E0D193 /* VulkanPipeline.hpp */,
 			);
 			name = extensions;
 			sourceTree = "<group>";

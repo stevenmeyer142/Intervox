@@ -59,14 +59,20 @@ IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
     fGears.clear();
 #endif
 #if USE_MESH_PIPELINE
-    fMeshPipelines.clear();
+    fPipelines.clear();
 #endif
 }
 
 
-void IntervoxHeadlessVulkan::renderScene()
+void IntervoxHeadlessVulkan::renderScene(RenderCommandSettings &renderCommandSettings)
 {
-    render();
+    VkCommandBuffer drawCommandBuffer = getCommandBuffer(renderCommandSettings);
+    if (renderCommandSettings.fPipelinesVersion != fPipelinesVersion)
+    {
+        buildCommandBuffers(renderCommandSettings, drawCommandBuffer);
+    }
+    updateUniformBuffers();
+    render(drawCommandBuffer);
     grabImage();
 }
 
@@ -97,7 +103,7 @@ void IntervoxHeadlessVulkan::copyImageData_RGBA_8888(uint32_t* toBuffer, uint32_
 }    
 
 
-void IntervoxHeadlessVulkan::buildCommandBuffers()
+void IntervoxHeadlessVulkan::buildCommandBuffers(RenderCommandSettings &renderCommandSettings, VkCommandBuffer drawCommandBuffer)
 {
 #if GEARS
     VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();
@@ -116,38 +122,37 @@ void IntervoxHeadlessVulkan::buildCommandBuffers()
     renderPassBeginInfo.clearValueCount = 2;
     renderPassBeginInfo.pClearValues = clearValues;
 
-    for (int32_t i = 0; i < drawCmdBuffers.size(); ++i)
-    {
-        renderPassBeginInfo.framebuffer = frameBuffers[i];
+    // TODO  for now just one framebuffer, and multiple command buffers
+     renderPassBeginInfo.framebuffer = frameBuffers[0];
 
-        VK_CHECK_RESULT(vkBeginCommandBuffer(drawCmdBuffers[i], &cmdBufInfo));
+    VK_CHECK_RESULT(vkBeginCommandBuffer(drawCommandBuffer, &cmdBufInfo));
 
-        vkCmdBeginRenderPass(drawCmdBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(drawCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        VkViewport viewport = vks::initializers::viewport((float)width, (float)height, 0.0f, 1.0f);
-        vkCmdSetViewport(drawCmdBuffers[i], 0, 1, &viewport);
+    VkViewport viewport = vks::initializers::viewport((float)width, (float)height, 0.0f, 1.0f);
+    vkCmdSetViewport(drawCommandBuffer, 0, 1, &viewport);
 
-        VkRect2D scissor = vks::initializers::rect2D(width, height, 0, 0);
-        vkCmdSetScissor(drawCmdBuffers[i], 0, 1, &scissor);
+    VkRect2D scissor = vks::initializers::rect2D(width, height, 0, 0);
+    vkCmdSetScissor(drawCommandBuffer, 0, 1, &scissor);
 
 #if !USE_MESH_PIPELINE
-        vkCmdBindPipeline(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.solid);
+    vkCmdBindPipeline(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.solid);
 
-        for (auto& gear : gears)
-        {
-            gear->draw(drawCmdBuffers[i], pipelineLayout);
-        }
+    for (auto& gear : gears)
+    {
+        gear->draw(drawCmdBuffers[i], pipelineLayout);
+    }
 #else
-        for (auto& pipeline : fMeshPipelines)
-        {
-            pipeline->Draw(drawCmdBuffers[i]);
-        }
+    // TODO draw pipelines in proper order
+    for (auto& pipelinesPair : fPipelines)
+    {
+        pipelinesPair.second->Draw(drawCommandBuffer);
+    }
 #endif
 
-        vkCmdEndRenderPass(drawCmdBuffers[i]);
+    vkCmdEndRenderPass(drawCommandBuffer);
 
-        VK_CHECK_RESULT(vkEndCommandBuffer(drawCmdBuffers[i]));
-    }
+    VK_CHECK_RESULT(vkEndCommandBuffer(drawCommandBuffer));
 #endif
 }
 
@@ -193,11 +198,14 @@ void IntervoxHeadlessVulkan::prepareVertices(bool offset)
 #if USE_MESH_PIPELINE
         auto mesh = gears[i]->generate(&gearInfo, queue);
         
+        glm::mat4 model;
+        model = glm::translate(model, positions[i]);
         if (offset)
         {
-            mesh->offset(glm::vec3(12, 0, 0));
+            model = glm::translate(model, glm::vec3(12, 0, 0));
         }
-        fMeshPipelines[0]->addMesh(mesh);
+        mesh->setModelMatrix(model);
+        getMeshPipeline()->addMesh(mesh);
 #else
         gears[i]->generate(&gearInfo, queue);
 #endif
@@ -250,25 +258,35 @@ void IntervoxHeadlessVulkan::prepareVertices(bool offset)
 
 void IntervoxHeadlessVulkan::setupDescriptorPool()
 {
-#if GEARS
-    // TODO  class method for VulkanMeshPipeline to return pool sizes.
-    // move descriptorsetlayout from mesh to pipeline
     
-    // One UBO for each gear
+    if (VK_NULL_HANDLE != descriptorPool)
+    {
+        vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+        descriptorPool = VK_NULL_HANDLE;
+    }
+    
+    uint32_t uniformBufferCount = 0;
+
+    for (auto& pipelinePair : fPipelines)
+    {
+        uniformBufferCount += pipelinePair.second->getUniformBufferCount();
+    }
+    
+    uniformBufferCount = std::max(uniformBufferCount, 1u);
+
     std::vector<VkDescriptorPoolSize> poolSizes =
     {
-        vks::initializers::descriptorPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 6),
+        vks::initializers::descriptorPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, uniformBufferCount),
     };
 
     VkDescriptorPoolCreateInfo descriptorPoolInfo =
         vks::initializers::descriptorPoolCreateInfo(
             static_cast<uint32_t>(poolSizes.size()),
             poolSizes.data(),
-            // Three descriptor sets (for each gear)
-            6);
+            uniformBufferCount);
 
     VK_CHECK_RESULT(vkCreateDescriptorPool(device, &descriptorPoolInfo, nullptr, &descriptorPool));
-#endif
+
 }
 
 void IntervoxHeadlessVulkan::setupDescriptorSetLayout()
@@ -321,7 +339,7 @@ void IntervoxHeadlessVulkan::preparePipelines()
     VkPipelineRasterizationStateCreateInfo rasterizationState =
         vks::initializers::pipelineRasterizationStateCreateInfo(
             VK_POLYGON_MODE_FILL,
-            VK_CULL_MODE_BACK_BIT,
+                                                                VK_CULL_MODE_NONE, // VK_CULL_MODE_BACK_BIT,
             VK_FRONT_FACE_CLOCKWISE,
             0);
 
@@ -398,15 +416,16 @@ void IntervoxHeadlessVulkan::updateUniformBuffers()
 #endif
 #endif
 #if USE_MESH_PIPELINE
-    for (auto pipeline : fMeshPipelines)
+    for (auto pipelinePair : fPipelines)
     {
-        pipeline->updateUniformBuffer(camera.matrices.perspective,  camera.matrices.view);
+        pipelinePair.second->updateUniformBuffer(camera.matrices.perspective,  camera.matrices.view);
     }
 #endif
 }
 
-void IntervoxHeadlessVulkan::draw()
+void IntervoxHeadlessVulkan::draw(VkCommandBuffer drawCommandBuffer)
 {
+    // TODO combine this with wait idle in render
 #if GEARS
 #ifndef INTERVOX_LIB
     VulkanExampleBase::prepareFrame();
@@ -414,7 +433,8 @@ void IntervoxHeadlessVulkan::draw()
 
     // Command buffer to be submitted to the queue
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer];
+ //   submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer];
+    submitInfo.pCommandBuffers = &drawCommandBuffer;
 
 #ifndef INTERVOX_LIB
     VkFenceCreateInfo fenceInfo = vks::initializers::fenceCreateInfo();
@@ -439,44 +459,40 @@ void IntervoxHeadlessVulkan::draw()
 void IntervoxHeadlessVulkan::prepare()
 {
     VulkanExampleBase::prepare();
-#if USE_MESH_PIPELINE
     auto meshPipeLine = std::make_shared<VulkanMeshPipeline>(device);
-    fMeshPipelines.push_back(meshPipeLine);
-#endif
+    fPipelines[MESH_PIPELINE] = meshPipeLine;
 
-#if !USE_MESH_PIPELINE
-    setupDescriptorSetLayout();
-    preparePipelines();
-    setupDescriptorPool();
-    setupDescriptorSets();
-#else
-    setupDescriptorPool();
-    prepareVertices(false);
-    prepareVertices(true);
+  //  prepareVertices(false);
+  //  prepareVertices(true);
+    
     auto shadersPath = getShadersPath();
-    for (auto& meshPipeLine : fMeshPipelines)
+    for (auto& pipelinesPair : fPipelines)
     {
-        meshPipeLine->setupDescriptorsAndPipeline(shadersPath, renderPass, pipelineCache, descriptorPool);
+        pipelinesPair.second->setupLayoutsAndPipeline(shadersPath, renderPass, pipelineCache);
     }
-#endif
-    updateUniformBuffers();
-    buildCommandBuffers();
- 
+
+    updateDescriptorLayouts();
+  
     prepared = true;
 }
 
-void IntervoxHeadlessVulkan::render()
+void IntervoxHeadlessVulkan::updateDescriptorLayouts()
+{
+    setupDescriptorPool();
+    for (auto& pipelinesPair : fPipelines)
+    {
+        pipelinesPair.second->setupDescripterSets(descriptorPool);
+    }
+}
+
+void IntervoxHeadlessVulkan::render(VkCommandBuffer drawCommandBuffer)
 {
     if (!prepared)
         return;
     vkDeviceWaitIdle(device);
-    draw();
+    draw(drawCommandBuffer);
     vkDeviceWaitIdle(device);
-    if (!paused)
-    {
-        updateUniformBuffers();
-    }
-}
+ }
 
 
 void IntervoxHeadlessVulkan::viewChanged()
@@ -494,14 +510,14 @@ void IntervoxHeadlessVulkan::grabImage()
     // Check if the device supports blitting from optimal images (the swapchain images are in optimal format)
     vkGetPhysicalDeviceFormatProperties(physicalDevice, getColorFormat(), &formatProps);
     if (!(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT)) {
-        std::cerr << "Device does not support blitting from optimal tiled images, using copy instead of blit!" << std::endl;
+ //       std::cerr << "Device does not support blitting from optimal tiled images, using copy instead of blit!" << std::endl;
         supportsBlit = false;
     }
 
     // Check if the device supports blitting to linear images
     vkGetPhysicalDeviceFormatProperties(physicalDevice, VK_FORMAT_R8G8B8A8_UNORM, &formatProps);
     if (!(formatProps.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT)) {
-        std::cerr << "Device does not support blitting to linear tiled images, using copy instead of blit!" << std::endl;
+//        std::cerr << "Device does not support blitting to linear tiled images, using copy instead of blit!" << std::endl;
         supportsBlit = false;
     }
 
@@ -656,7 +672,7 @@ void IntervoxHeadlessVulkan::grabImage()
     }
 
  
-#if 1  // debugging code
+#if 0 // debugging code
     std::ofstream file("saved_intevox.ppm", std::ios::out | std::ios::binary);
 
     // ppm header
@@ -733,10 +749,11 @@ void IntervoxHeadlessVulkan::rotate(float xRot, float yRot)
 void* IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
 {
     std::cout << "addMeshForRegion fInitialized " << fInitialized << std::endl;
-#if 1
- //   prepareVertices();
+#if 0
+    prepareVertices(true);
+    updateCommandBuffers();
     return this;
-#elif 0
+#elif 1
     
     C3DPoint startPoint(0, 0, 0);
 
@@ -750,7 +767,9 @@ void* IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int
         
     if (success)
     {
-        fMeshPipelines[0]->addMesh(vulkanMesh);
+      //  ComputeWeightedCenter(slicesSet, regionValue, vulkanMesh);
+        getMeshPipeline()->addMesh(vulkanMesh);
+        updateDescriptorLayouts();
         return vulkanMesh.get();  // this is only used as an id.  
     }
     else
@@ -798,3 +817,78 @@ void* IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int
 #endif
 
 }
+
+void IntervoxHeadlessVulkan::ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet, short region,
+                                                   std::shared_ptr<VulkanMesh> mesh)
+{
+    // TODO change C3DPoint to glm::vec3
+    C3DPoint center = C3DPoint(0, 0, 0);
+    long weight = 0;
+    
+    long depth = slicesSet->GetDepth ();
+    long width = slicesSet->GetWidth ();
+    long height = slicesSet->GetHeight ();
+    
+    for (long z = 0; z < depth; z++)
+    {
+        for (long y = 0; y < height; y++)
+        {
+            for (long x = 0; x < width; x++)
+            {
+                if (slicesSet->GetPixelValue (x, y, z) & region)
+                {
+                    center += C3DPoint(x, y, z);
+                    weight++;
+                }
+            }
+        }
+    }
+    
+    if (weight != 0)
+    {
+        center.fX /= weight;
+        center.fY /= weight;
+        center.fZ /= weight;
+    }
+    
+    glm::vec3 vecCenter(center.fX, center.fY, center.fZ);
+    mesh->setWeightedCenter(vecCenter);
+    mesh->setWeight(weight);
+    
+    glm::mat4 model;
+    model = glm::translate(model, -vecCenter);
+    
+    // TODO why is this -60?
+    model = glm::scale(model, glm::vec3(-60));
+    mesh->setModelMatrix(model);
+}
+
+
+VkCommandBuffer IntervoxHeadlessVulkan::getCommandBuffer(RenderCommandSettings &renderCommandSettings)
+{
+    auto iter = fContextCommandBuffers.find(renderCommandSettings.fContextID);
+    
+    VkCommandBuffer result = VK_NULL_HANDLE;
+    if (iter == fContextCommandBuffers.end())
+    {
+        VkCommandBufferAllocateInfo cmdBufAllocateInfo =
+            vks::initializers::commandBufferAllocateInfo(
+                cmdPool,
+                VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                1);
+        VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &result));
+        fContextCommandBuffers[renderCommandSettings.fContextID] = result;
+    }
+    else
+    {
+        result = iter->second;
+    }
+    
+    return result;
+}
+
+std::shared_ptr<VulkanMeshPipeline> IntervoxHeadlessVulkan::getMeshPipeline()
+{
+    return std::static_pointer_cast<VulkanMeshPipeline>(fPipelines[MESH_PIPELINE]);
+}
+

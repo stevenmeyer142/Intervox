@@ -15,7 +15,7 @@
 
 VulkanMesh::VulkanMesh(vks::VulkanDevice *aVulkanDevice)  :
     vulkanDevice(aVulkanDevice)
-    
+    , color(1, 0, 0)
 {
 }
 
@@ -30,9 +30,6 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 {
     ubo.projection = perspective;
     ubo.view = view;
-    ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::translate(ubo.model, pos);
- //   ubo.model = glm::rotate(ubo.model, glm::radians((rotSpeed * timer) + rotOffset), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.normal = glm::inverseTranspose(ubo.view * ubo.model);
     ubo.lightPos = glm::vec3(0.0f, 0.0f, 2.5f);
     ubo.lightPos.x = 0.0f; //sin(glm::radians(timer)) * 8.0f;
@@ -41,10 +38,6 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
     memcpy(uniformBuffer.mapped, &ubo, sizeof(ubo));
 }
 
-void VulkanMesh::offset(const glm::vec3 offset)
-{
-    pos = pos + offset;
-}
 
 
 
@@ -117,18 +110,30 @@ void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices, V
             }
         }
     }
-    glm::vec3 position;
-    addVertexData(vBuffer, iBuffer, position, queue);
+    addVertexData(vBuffer, iBuffer, queue);
 }
 
 void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uint32_t>& iBuffer,
-                               const glm::vec3& position, VkQueue queue)
+                               VkQueue queue)
 {
-    std::cout << "VulkanMesh::addVertexData vBuffer.size " << vBuffer.size() << ", iBuffer.size() " <<
-    iBuffer.size() << std::endl;
-    size_t vertexBufferSize = vBuffer.size() * sizeof(MeshVertex);
-    size_t indexBufferSize = iBuffer.size() * sizeof(uint32_t);
-    pos = position;
+  
+    size_t vertexBufferSize = vBuffer.size() * sizeof(vBuffer[0]);
+    size_t indexBufferSize = iBuffer.size() * sizeof(iBuffer[0]);
+    
+    size_t alignedVertexBufferSize = vulkanDevice->getAlignedMemory(vertexBufferSize);
+    
+    // add dummy vertices to have greater than aligned size
+    if (vertexBufferSize != alignedVertexBufferSize)
+    {
+        size_t verticesToAdd = ((alignedVertexBufferSize - vertexBufferSize) / sizeof(vBuffer[0])) + 1;
+        vBuffer.insert(vBuffer.end(), verticesToAdd, MeshVertex());
+    }
+    size_t alignedIndexBufferSize = vulkanDevice->getAlignedMemory(indexBufferSize);
+    if (indexBufferSize != alignedIndexBufferSize)
+    {
+        size_t verticesToAdd = ((alignedIndexBufferSize - indexBufferSize) / sizeof(iBuffer[0])) + 1;
+        iBuffer.insert(iBuffer.end(), verticesToAdd, 0);
+    }
 
     bool useStaging = true;
 
@@ -138,37 +143,33 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
 
         // Create staging buffers
         // Vertex data
-        std::cout << "VulkanMesh::addVertexData create vBuffer  vertexBufferSize " << vertexBufferSize << std::endl;
             vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             &vertexStaging,
-            vertexBufferSize,
+            alignedVertexBufferSize,
             vBuffer.data());
         // Index data
-        std::cout << "VulkanMesh::addVertexData create vBuffer  indexBufferSize " << indexBufferSize << std::endl;
         vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             &indexStaging,
-            indexBufferSize,
+            alignedIndexBufferSize,
             iBuffer.data());
 
         // Create device local buffers
         // Vertex buffer
-        std::cout << "VulkanMesh::addVertexData create vBuffer  vertexBufferSize " << vertexBufferSize << std::endl;
-        vulkanDevice->createBuffer(
+         vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             &vertexBuffer,
-            vertexBufferSize);
+            alignedVertexBufferSize);
         // Index buffer
-        std::cout << "VulkanMesh::addVertexData create vBuffer  indexBufferSize " << indexBufferSize << std::endl;
         vulkanDevice->createBuffer(
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             &indexBuffer,
-            indexBufferSize);
+            alignedIndexBufferSize);
 
         // Copy from staging buffers
         VkCommandBuffer copyCmd = vulkanDevice->createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
@@ -183,7 +184,7 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
             1,
             &copyRegion);
 
-        copyRegion.size = indexBufferSize;
+        copyRegion.size = alignedIndexBufferSize;
         vkCmdCopyBuffer(
             copyCmd,
             indexStaging.buffer,
@@ -205,7 +206,7 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             &vertexBuffer,
-            vertexBufferSize,
+            alignedVertexBufferSize,
             vBuffer.data());
         // Index buffer
         vulkanDevice->createBuffer(

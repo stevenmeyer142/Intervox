@@ -582,4 +582,25 @@ namespace vks
 		throw std::runtime_error("Could not find a matching depth format");
 	}
 
+    VkDeviceSize VulkanDevice::getAlignedMemory(VkDeviceSize size)
+    {
+        VkDeviceSize alignmentSize = properties.limits.nonCoherentAtomSize;
+        
+        if (alignmentSize == 0)
+        {
+            return size;
+        }
+        
+        auto multiple = size / alignmentSize;
+        
+        
+        if ((size % alignmentSize) != 0)
+        {
+            multiple++;
+        }
+        
+        return multiple * alignmentSize;
+    }
+
+
 };

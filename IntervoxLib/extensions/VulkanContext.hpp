@@ -15,6 +15,7 @@
 
 class IntervoxHeadlessVulkan;
 
+
 class CVulkanContext {
 public:
 	CVulkanContext(IntervoxHeadlessVulkan * offscreenRenderer);
@@ -30,6 +31,10 @@ public:
     void Zoom(float factor);
     
     void AbsoluteZoom(float zoom);
+    
+    void addMesh(int32_t meshID);
+    
+    void removeMesh(int32_t meshID);
 
 private:
 	IntervoxHeadlessVulkan *fOffscreenRenderer = NULL;

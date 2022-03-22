@@ -224,10 +224,23 @@ void VulkanMeshPipeline::setupDescripterSets(VkDescriptorPool pool)
 {
     for (auto& mesh :fMeshes)
     {
-        std::cout << "setup descripter set" << std::endl;
         mesh->setupDescriptorSet(pool, fDescriptorSetLayout);
     }
 }
+
+void VulkanMeshPipeline::setMeshColor(int32_t meshID, const glm::vec3& color)
+{
+    for (auto& mesh :fMeshes)
+    {
+        if (mesh->getMeshID() == meshID)
+        {
+            mesh->setColor(color);
+            break;
+        }
+    }
+}
+
+
 
 
 

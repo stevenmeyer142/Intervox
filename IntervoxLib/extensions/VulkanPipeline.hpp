@@ -39,7 +39,7 @@ struct PipelineSettings
 
 struct MeshPipelineSettings : public PipelineSettings
 {
-    std::vector<std::string> fMeshIds;
+    std::vector<int32_t> fMeshIds;
 };
 
 struct RenderCommandSettings

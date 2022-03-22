@@ -746,14 +746,8 @@ void IntervoxHeadlessVulkan::rotate(float xRot, float yRot)
     camera.rotate(glm::vec3(xRot, yRot, 0));
 }
 
-void* IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
+int32_t IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
 {
-    std::cout << "addMeshForRegion fInitialized " << fInitialized << std::endl;
-#if 0
-    prepareVertices(true);
-    updateCommandBuffers();
-    return this;
-#elif 1
     
     C3DPoint startPoint(0, 0, 0);
 
@@ -763,60 +757,29 @@ void* IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int
     GeometryInfo info;
     auto vulkanMesh = std::make_shared<VulkanMesh>(vulkanDevice);
     
-    bool success = marcher.Get3DMesh(6, info, vulkanMesh, queue);
+    bool success = marcher.Get3DMesh(2, info, vulkanMesh, queue);
         
     if (success)
     {
       //  ComputeWeightedCenter(slicesSet, regionValue, vulkanMesh);
         getMeshPipeline()->addMesh(vulkanMesh);
         updateDescriptorLayouts();
-        return vulkanMesh.get();  // this is only used as an id.  
+        return vulkanMesh->getMeshID();  // this is only used as an id.
     }
     else
     {
         CMyError::DebugMessage("IntervoxHeadlessVulkan::addMeshForRegion failed to create mesh");
-        return nullptr;
+        return -1;
     }
-#else
-    //   code pulledCMyErr from CGLMeshRenderer
-    
-    fWeight = 0;
-    fCenter = C3DPoint(0, 0, 0);
-            fHighResValue = resolution;
-    
-    CJavaArrSlicesSet slicesSet(env, objArrays, width, height);
-    
-    C3DPoint startPoint(0, 0, 0);
-
-    
-    CCubeMarcher marcher(&slicesSet, 2, regionValue, startPoint);
-    
-    GeometryInfo info;
-    
-    fLowResMesh = marcher.GetGLMesh(6, info);
-            
-            if (fHighResValue <= 0)
-            {
-                fHighResValue = 2;
-                if (info.numOfVertices > 12000)
-                {
-                        fHighResValue = 4;
-                }
-                else if (info.numOfVertices > 7000)
-                {
-                        fHighResValue = 3;
-                }
-                }
-    
-    fHighResMesh = marcher.GetGLMesh(fHighResValue, info);
-    
-    if (true)
-    {
-        ComputeWeightedCenter (slicesSet, regionValue);
-    }
-#endif
-
 }
+
+void IntervoxHeadlessVulkan::setMeshColor(int32_t meshID, float red, float green, float blue)
+{
+    auto meshPipeline = getMeshPipeline();
+    meshPipeline->setMeshColor(meshID, glm::vec3(red, green, blue));
+}
+
+
 
 void IntervoxHeadlessVulkan::ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet, short region,
                                                    std::shared_ptr<VulkanMesh> mesh)

@@ -34,7 +34,8 @@ public :
     
     virtual uint32_t getUniformBufferCount() override;
     
-
+    void setMeshColor(int32_t meshID, const glm::vec3& color);
+    
 private:
     
     void setupDescriptorSetLayout();

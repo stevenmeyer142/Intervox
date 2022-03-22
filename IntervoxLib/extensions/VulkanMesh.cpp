@@ -11,12 +11,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
+#include <iostream>
 
+int32_t VulkanMesh::gNextMeshID = 1;
 
 VulkanMesh::VulkanMesh(vks::VulkanDevice *aVulkanDevice)  :
-    vulkanDevice(aVulkanDevice)
-    , color(1, 0, 0)
+    fVulkanDevice(aVulkanDevice)
+    , fColor(1, 0, 0)
 {
+    fMeshID = gNextMeshID++;
 }
 
 
@@ -28,14 +31,12 @@ VulkanMesh::~VulkanMesh()
 
 void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 {
-    ubo.projection = perspective;
-    ubo.view = view;
-    ubo.normal = glm::inverseTranspose(ubo.view * ubo.model);
-    ubo.lightPos = glm::vec3(0.0f, 0.0f, 2.5f);
-    ubo.lightPos.x = 0.0f; //sin(glm::radians(timer)) * 8.0f;
-    ubo.lightPos.z = 8.0f; // cos(glm::radians(timer)) * 8.0f;
+    fUbo.projection = perspective;
+    fUbo.view = view;
+    fUbo.normal = glm::inverseTranspose(fUbo.view * fUbo.model);
+    fUbo.lightPos = glm::vec3(0.0f, 2.5f, 2.5f);
  //   ubo.color = color; // TODO uncomment this
-    memcpy(uniformBuffer.mapped, &ubo, sizeof(ubo));
+    memcpy(fUniformBuffer.mapped, &fUbo, sizeof(fUbo));
 }
 
 
@@ -43,12 +44,11 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
 
 void VulkanMesh::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {
-    std::cout << "VulkanMesh::Draw indexCount " << indexCount << std::endl;
     VkDeviceSize offsets[1] = { 0 };
-    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, NULL);
-    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertexBuffer.buffer, offsets);
-    vkCmdBindIndexBuffer(cmdbuffer, indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
-    vkCmdDrawIndexed(cmdbuffer, indexCount, 1, 0, 0, 1);
+    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &fDescriptorSet, 0, NULL);
+    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &fVertexBuffer.buffer, offsets);
+    vkCmdBindIndexBuffer(cmdbuffer, fIndexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+    vkCmdDrawIndexed(cmdbuffer, static_cast<uint32_t>(fIndexCount), 1, 0, 0, 1);
 }
 
 void VulkanMesh::setupDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout descriptorSetLayout)
@@ -59,17 +59,17 @@ void VulkanMesh::setupDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout
             &descriptorSetLayout,
             1);
 
-    VK_CHECK_RESULT(vkAllocateDescriptorSets(vulkanDevice->logicalDevice, &allocInfo, &descriptorSet));
+    VK_CHECK_RESULT(vkAllocateDescriptorSets(fVulkanDevice->logicalDevice, &allocInfo, &fDescriptorSet));
 
     // Binding 0 : Vertex shader uniform buffer
     VkWriteDescriptorSet writeDescriptorSet =
         vks::initializers::writeDescriptorSet(
-            descriptorSet,
+            fDescriptorSet,
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
             0,
-            &uniformBuffer.descriptor);
+            &fUniformBuffer.descriptor);
 
-    vkUpdateDescriptorSets(vulkanDevice->logicalDevice, 1, &writeDescriptorSet, 0, NULL);
+    vkUpdateDescriptorSets(fVulkanDevice->logicalDevice, 1, &writeDescriptorSet, 0, NULL);
 
 }
 
@@ -90,7 +90,7 @@ void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices, V
         vertexClass = (CVertex*)vertices.At((long)i);
         vertexClass->GetXYZ(vertex);
         vertexClass->GetNormalXYZ(normal);
-        vBuffer.push_back(MeshVertex(vertex, normal, color));
+        vBuffer.push_back(MeshVertex(vertex, normal, fColor));
     }
                 
      CTriangle* triangleClass;
@@ -119,8 +119,9 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
   
     size_t vertexBufferSize = vBuffer.size() * sizeof(vBuffer[0]);
     size_t indexBufferSize = iBuffer.size() * sizeof(iBuffer[0]);
-    
-    size_t alignedVertexBufferSize = vulkanDevice->getAlignedMemory(vertexBufferSize);
+    fIndexCount = iBuffer.size();
+
+    size_t alignedVertexBufferSize = fVulkanDevice->getAlignedMemory(vertexBufferSize);
     
     // add dummy vertices to have greater than aligned size
     if (vertexBufferSize != alignedVertexBufferSize)
@@ -128,7 +129,8 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
         size_t verticesToAdd = ((alignedVertexBufferSize - vertexBufferSize) / sizeof(vBuffer[0])) + 1;
         vBuffer.insert(vBuffer.end(), verticesToAdd, MeshVertex());
     }
-    size_t alignedIndexBufferSize = vulkanDevice->getAlignedMemory(indexBufferSize);
+    size_t alignedIndexBufferSize = fVulkanDevice->getAlignedMemory(indexBufferSize);
+
     if (indexBufferSize != alignedIndexBufferSize)
     {
         size_t verticesToAdd = ((alignedIndexBufferSize - indexBufferSize) / sizeof(iBuffer[0])) + 1;
@@ -143,14 +145,14 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
 
         // Create staging buffers
         // Vertex data
-            vulkanDevice->createBuffer(
+            fVulkanDevice->createBuffer(
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             &vertexStaging,
             alignedVertexBufferSize,
             vBuffer.data());
         // Index data
-        vulkanDevice->createBuffer(
+        fVulkanDevice->createBuffer(
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             &indexStaging,
@@ -159,20 +161,20 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
 
         // Create device local buffers
         // Vertex buffer
-         vulkanDevice->createBuffer(
+         fVulkanDevice->createBuffer(
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            &vertexBuffer,
+            &fVertexBuffer,
             alignedVertexBufferSize);
         // Index buffer
-        vulkanDevice->createBuffer(
+        fVulkanDevice->createBuffer(
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            &indexBuffer,
+            &fIndexBuffer,
             alignedIndexBufferSize);
 
         // Copy from staging buffers
-        VkCommandBuffer copyCmd = vulkanDevice->createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
+        VkCommandBuffer copyCmd = fVulkanDevice->createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
 
         VkBufferCopy copyRegion = {};
 
@@ -180,7 +182,7 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
         vkCmdCopyBuffer(
             copyCmd,
             vertexStaging.buffer,
-            vertexBuffer.buffer,
+            fVertexBuffer.buffer,
             1,
             &copyRegion);
 
@@ -188,36 +190,35 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
         vkCmdCopyBuffer(
             copyCmd,
             indexStaging.buffer,
-            indexBuffer.buffer,
+            fIndexBuffer.buffer,
             1,
             &copyRegion);
 
-        vulkanDevice->flushCommandBuffer(copyCmd, queue, true);
+        fVulkanDevice->flushCommandBuffer(copyCmd, queue, true);
 
-        vkDestroyBuffer(vulkanDevice->logicalDevice, vertexStaging.buffer, nullptr);
-        vkFreeMemory(vulkanDevice->logicalDevice, vertexStaging.memory, nullptr);
-        vkDestroyBuffer(vulkanDevice->logicalDevice, indexStaging.buffer, nullptr);
-        vkFreeMemory(vulkanDevice->logicalDevice, indexStaging.memory, nullptr);
+        vkDestroyBuffer(fVulkanDevice->logicalDevice, vertexStaging.buffer, nullptr);
+        vkFreeMemory(fVulkanDevice->logicalDevice, vertexStaging.memory, nullptr);
+        vkDestroyBuffer(fVulkanDevice->logicalDevice, indexStaging.buffer, nullptr);
+        vkFreeMemory(fVulkanDevice->logicalDevice, indexStaging.memory, nullptr);
     }
     else
     {
         // Vertex buffer
-        vulkanDevice->createBuffer(
+        fVulkanDevice->createBuffer(
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            &vertexBuffer,
+            &fVertexBuffer,
             alignedVertexBufferSize,
             vBuffer.data());
         // Index buffer
-        vulkanDevice->createBuffer(
+        fVulkanDevice->createBuffer(
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            &indexBuffer,
+            &fIndexBuffer,
             indexBufferSize,
             iBuffer.data());
     }
 
-    indexCount = iBuffer.size();
 
     prepareUniformBuffer();
 
@@ -226,9 +227,9 @@ void VulkanMesh::addVertexData(std::vector<MeshVertex>& vBuffer, std::vector<uin
 void VulkanMesh::freeBuffers()
 {
     
-    uniformBuffer.destroy();
-    vertexBuffer.destroy();
-    indexBuffer.destroy();
+    fUniformBuffer.destroy();
+    fVertexBuffer.destroy();
+    fIndexBuffer.destroy();
 
 }
 
@@ -350,13 +351,13 @@ CMyError::CheckForGLError (false, true);
 
 void VulkanMesh::prepareUniformBuffer()
 {
-    VK_CHECK_RESULT(vulkanDevice->createBuffer(
+    VK_CHECK_RESULT(fVulkanDevice->createBuffer(
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        &uniformBuffer,
-        sizeof(ubo)));
+        &fUniformBuffer,
+        sizeof(fUbo)));
     // Map persistent
-    VK_CHECK_RESULT(uniformBuffer.map());
+    VK_CHECK_RESULT(fUniformBuffer.map());
 }
 
 

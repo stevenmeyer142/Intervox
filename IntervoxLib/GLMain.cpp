@@ -115,12 +115,11 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pDebugCheck
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pZoomContext
 	(JNIEnv *env, jobject openGL, jfloat amount, jlong glDisplayObject, jobjectArray errRecord)
 {
-#if 0
 	try
 	{
-		COpenGLContext *dataObj = (COpenGLContext*)glDisplayObject;
+        CVulkanContext *dataObj = (CVulkanContext*)glDisplayObject;
 
-		dataObj->Zoom (amount );
+		dataObj->Zoom (amount);
 	}
 	catch (CMyError err)
 	{
@@ -129,7 +128,6 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pZoomContex
 	catch (...)
 	{
 	}
-#endif
 }
 
 
@@ -146,24 +144,14 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pDisposeGLC
 	::DisposeVulkanContext (env, glObject, errRecord);
 }
 
-void DisposeVulkanContext(JNIEnv *env, CVulkanContext *renderer, jobjectArray errRecord)
+void DisposeVulkanContext(JNIEnv *env, CVulkanContext *vulkanContext, jobjectArray errRecord)
 {
 //	DebugRemoveAllocatedObject (context);
 	
-     delete renderer;
+     delete vulkanContext;
 }
 
 
-/*
-long DebugGetFreeVRam()
-{
-	CGrafPtr port;
-	GDHandle device;
-	::GetGWorld(&port, &device); // save window's graphics port
-	
-	return ATIMem_GetFreeVRAM(device);
-
-}*/
 
 
 /*
@@ -178,7 +166,6 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pSetRotatio
 	try
 	{
 		CVulkanContext *dataObj = (CVulkanContext*)glDisplayObject;
-		
 
 		dataObj->Rotate (xRot, yRot);
 	}
@@ -205,17 +192,12 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGeo
 			jlong geomID,  jint resolution, jobjectArray errRecord)
 {
 	jlong result = NO_OBJECT;
-    std::cout << "Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGeometryFromRegion" << std::endl;
-	try
+ 	try
 	{
-//		VulkanMeshHolder *meshHolder = new VulkanMeshHolder();
-//		meshHolder->CreateGeometries (env, width, height, objArrays, regionValue, geomID, resolution);
         CJavaArrSlicesSet slicesSet(env, objArrays, width, height);
-        auto meshHolder = gIntervoxHeadlessVulkan.addMeshForRegion(&slicesSet, regionValue);
+        int32_t meshID = gIntervoxHeadlessVulkan.addMeshForRegion(&slicesSet, regionValue);
 
-		result = (jlong)meshHolder;
-		
-	//	DebugAddAllocatedObject(meshHolder);
+		result = meshID;
  	}
 	catch (CMyError err)
 	{
@@ -225,7 +207,6 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGeo
 	{
 	
 	}
-
 	
 	return result; 
 }
@@ -341,7 +322,7 @@ JNIEXPORT jboolean JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pViewHa
  * Signature: (IILneurosynch/view3D/NativeError;)V
  */
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAddGeometryToView
-	(JNIEnv *env, jobject openGL, jlong meshObj, jlong glContext,  jobjectArray errRecord)
+	(JNIEnv *env, jobject openGL, jlong meshID, jlong glContext,  jobjectArray errRecord)
 {
 #if 0
 	try
@@ -365,13 +346,12 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAddGeometr
  * Signature: (IFFFLneurosynch/view3D/NativeError;)V
  */
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pSetGeometryColor
-	(JNIEnv *env, jobject, jlong glMesh, jfloat red, jfloat green, jfloat blue, jobjectArray errRecord)
+	(JNIEnv *env, jobject, jlong meshID, jfloat red, jfloat green, jfloat blue, jobjectArray errRecord)
 {
-#if 0
+
 	try
 	{
-		CGLMeshHolder *mesh = (CGLMeshHolder*)glMesh;
-		mesh->SetGeometryColor(red, green, blue);
+        gIntervoxHeadlessVulkan.setMeshColor(static_cast<int32_t>(meshID), red, green, blue);
 	}
 	catch (CMyError err)
 	{
@@ -381,7 +361,7 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pSetGeometr
 	{
 	
 	}
-#endif
+
 }
 
 /*

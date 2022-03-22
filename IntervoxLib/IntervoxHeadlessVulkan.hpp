@@ -99,7 +99,9 @@ public:
     void rotate(float xRot, float yRot);
     
     // TODO change CJavaArrSlicesSet to CSlicesSet
-    void* addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
+    int32_t addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
+    
+    void setMeshColor(int32_t meshID, float red, float green, float blue);
     
 private:
     void updateDescriptorLayouts();

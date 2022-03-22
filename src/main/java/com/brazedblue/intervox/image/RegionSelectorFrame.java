@@ -65,25 +65,7 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
                 setOpaque(true);
                 
 		fSlicesSet = new RegionedImageSlicesSet();
-		fRangeValuesHandler = new RegionSelectorFrameRangeValuesHandler(data.GetImageFilterAccessor(), fSlicesSet.GetHistogram());
-		
-/*		ImageViewType viewType = new ImageViewType(OrthoImageSetController.kAxial, 1, true, false, false, false);
-		fImageSeriesView = new ImageSeriesView(viewType, fSlicesSet);
-		
-		fImageSeriesView.SetShowsImageSpaceSelect(false);
-		fImageSeriesView.SetShowsSettings(false);
-
-		fImageSeriesView.SetData(data);
-		fImageSeriesView.setMaximumSize(fImageSeriesView.getPreferredSize());
-
-		fAdjustmentListener = new RegionAdjustmentListener();
-		JScrollBar seederViewScrollBar = fImageSeriesView.GetScrollbar();
-		seederViewScrollBar.addAdjustmentListener(fAdjustmentListener); 
-                
-                JComponent imageComponent = fImageSeriesView.GetImageComponent();
-		imageComponent.addMouseListener(fAdjustmentListener);
-		imageComponent.addMouseMotionListener(fAdjustmentListener); */
-                
+		fRangeValuesHandler = new RegionSelectorFrameRangeValuesHandler(data.GetImageFilterAccessor(), fSlicesSet.GetHistogram());                
 
 		Container contentPane = getContentPane();
 
@@ -98,81 +80,8 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
 		JPanel horizontalPanel2 = new JPanel();
 		horizontalPanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
 		contentPane.add(horizontalPanel2);
-                Install3DControls(horizontalPanel2, data);
+        Install3DControls(horizontalPanel2, data);
                 		
-/*		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		horizontalPanel.add(panel); */
-
-/*		JPanel currentRegionPanel = new JPanel();
-		currentRegionPanel.setLayout(new BoxLayout(currentRegionPanel, BoxLayout.Y_AXIS));
-		currentRegionPanel.setBorder(kBevelBorder);
-		panel.add(currentRegionPanel); */
-		
-/*		fImageSpaceSelector = new ImageSpaceSelector();
-		fImageSpaceSelector.SetImageSpacesAccessor(data.GetImageSpacesAccessor());
-		currentRegionPanel.add(fImageSpaceSelector.GetControl());
-		
-		Border border = new TitledBorder(kBevelBorder, "Selection Range", 
-						kTitleJustification, kTitlePosition) ;
-		fSlider = new HistogramSlider(fSlicesSet.GetHistogram(), border);
-
-		int preferredWidth = fSlider.getPreferredSize().width;
-		
-		currentRegionPanel.add(fSlider);
-		fSlider.addActionListener(this); */
-		
-		
-		// current slice button panel
-//		CreateCurrentSlicePanel(currentRegionPanel, preferredWidth);
-
-		// all slices button panel
-//		CreateAllSlicesPanel(currentRegionPanel, preferredWidth);
-		
-		// regions settings
-/*		CreateRegionsSettingsPanel(currentRegionPanel, preferredWidth);
-		
-		// 3d button panel
-		CreateRegionGenerationPanel(currentRegionPanel, preferredWidth);
-
-		// add region selection
-//		CreateRegionsChoicePanel(panel, preferredWidth, data.GetRegionsOfInterest(SingleSpaceID.GetDefaultVirtualSpaceID()));
-		fRegionsChoicesHandler = new RegionSelectorFrameRegionsChoicesHandler();
-		fRegionsChoicesHandler.SetData(data);
-		fRegionsChoicesHandler.SetupChoicesPanel(panel, preferredWidth);
-		SetRegion(kDefaultRegion);
-
-		fImage3DView = new Image3DView(1.0f, false);
-		fImage3DView.SetShowsImageSpaceSelect(false);
-		fImage3DView.SetShowsSettings(false);
-		fImage3DView.SetData(data);
-		fImage3DView.setMaximumSize(fImage3DView.getPreferredSize());
-		
-		horizontalPanel.add(fImage3DView); */
-
-			// second horizontal panel
-/*		JPanel horizontalPanel2 = new JPanel();
-		horizontalPanel2.setLayout(new BoxLayout(horizontalPanel2, BoxLayout.X_AXIS));
-		contentPane.add(horizontalPanel2);
-		
-
-		RegionSelectCrossSectionListener listener = new RegionSelectCrossSectionListener(seederViewScrollBar);
-		
-		fCrossSectionView = new RegionCrossSectionView(fSlicesSet);
-		horizontalPanel2.add (fImageSeriesView);
-		horizontalPanel2.add(fCrossSectionView); */
-
-//		fCrossSectionView.addMouseListener(listener); 
-                
-//                fCrossSectionView.setVisible(true);
-		
-//		seederViewScrollBar.setValue(0);
-		
-		
-//		RegionSelectorFrameSpaceChanger spaceChanger = new RegionSelectorFrameSpaceChanger(viewType, fImageSpaceSelector);
-    
-//		addInternalFrameListener(new RegionSelectorFrameInternalFrameListener());
-
 	}
         
         private void InstallSliceRegionSelector(Container parent, PatientData data)
@@ -197,14 +106,6 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
 		
 		// current slice button panel
 		CreateCurrentSlicePanel(currentRegionPanel, preferredWidth);
-/*			// second horizontal panel
-		JPanel horizontalPanel2 = new JPanel();
-		horizontalPanel2.setLayout(new BoxLayout(horizontalPanel2, BoxLayout.X_AXIS));
-		contentPane.add(horizontalPanel2); */
-		
-
-	//	fSlicesSet = new RegionedImageSlicesSet();
-	//	fRangeValuesHandler = new RegionSelectorFrameRangeValuesHandler(data.GetImageFilterAccessor(), fSlicesSet.GetHistogram());
 		
 		ImageViewType viewType = new ImageViewType(OrthoImageSetController.kAxial, 1, true, false, false, false);
 		fImageSeriesView = new ImageSeriesView(viewType, fSlicesSet);
@@ -219,7 +120,7 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
 		JScrollBar seederViewScrollBar = fImageSeriesView.GetScrollbar();
 		seederViewScrollBar.addAdjustmentListener(fAdjustmentListener);
 
-                JComponent imageComponent = fImageSeriesView.GetImageComponent();
+        JComponent imageComponent = fImageSeriesView.GetImageComponent();
 		imageComponent.addMouseListener(fAdjustmentListener);
 		imageComponent.addMouseMotionListener(fAdjustmentListener);
 		RegionSelectCrossSectionListener listener = new RegionSelectCrossSectionListener(seederViewScrollBar);
@@ -254,7 +155,6 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
 		CreateRegionGenerationPanel(threeDControlsPanel, preferredWidth);
 
 		// add region selection
-//		CreateRegionsChoicePanel(panel, preferredWidth, data.GetRegionsOfInterest(SingleSpaceID.GetDefaultVirtualSpaceID()));
 		fRegionsChoicesHandler = new RegionSelectorFrameRegionsChoicesHandler();
 		fRegionsChoicesHandler.SetData(data);
 		fRegionsChoicesHandler.SetupChoicesPanel(threeDControlsPanel, preferredWidth);
@@ -318,17 +218,7 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
 			UpdateRegionColor();
 		}
 	}
-	
-/*	public void stateChanged(ChangeEvent e)
-	{
-		System.out.println("RegionSelectorFrame.stateChanged. " + e);
-		System.out.println("Value is adjusting- " + (fTransparencySlider.getValueIsAdjusting() ? "T" : "F"));
-		
-		if ((e.getSource() == fTransparencySlider) && !fTransparencySlider.getValueIsAdjusting())
-		{
-			UpdateRegionTransparency();
-		}
-	} */
+
 	
 	private void CreateAllSlicesPanel(Container parent, int width)
 	{
@@ -417,7 +307,7 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
 		
 		fSelectColorButton.addActionListener(this);
                 
-                f3DMeshResolution = new ThreeDMeshResolutionControls(parent);
+        f3DMeshResolution = new ThreeDMeshResolutionControls(parent);
 	}
 	
 	private void Close()
@@ -434,14 +324,14 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
         {
             JComboBox		fResolutionCombo;
             String		fDefaultLabel = "Default";
-            StringBuffer 	fDefaultStrBuffer = new StringBuffer(fDefaultLabel);	//updateable without string insert/remove, avoids recursion
+            StringBuffer 	fDefaultStrBuffer = new StringBuffer(fDefaultLabel);	
             int			fDefaultIndex = 0;
             boolean		fUpdating = false;
            
             ThreeDMeshResolutionControls(Container parent)
             {
- 		JPanel horizontalPanel = new JPanel();
-		horizontalPanel.setLayout(new BoxLayout(horizontalPanel, BoxLayout.X_AXIS));
+            	JPanel horizontalPanel = new JPanel();
+            	horizontalPanel.setLayout(new BoxLayout(horizontalPanel, BoxLayout.X_AXIS));
                 horizontalPanel.setBorder(kBevelBorder);
                 
                 parent.add(horizontalPanel);
@@ -529,40 +419,7 @@ public class RegionSelectorFrame extends NSInternalFrame implements ActionListen
                 }
 
 	}
-/*	
-	private void CreateRegionsChoicePanel(Container parent, int width, RegionsOfInterest regions)
-	{
-		JPanel regionsChoicesPanel = new JPanel();
-		regionsChoicesPanel.setLayout(new BoxLayout(regionsChoicesPanel, BoxLayout.Y_AXIS));
-		regionsChoicesPanel.setBorder(new TitledBorder(kBevelBorder, "Selected Region", kTitleJustification, kTitlePosition));
-		JPanel regionsPanel = new JPanel();
-		regionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-		regionsPanel.setBorder(kBevelBorder);
-		regionsChoicesPanel.add(regionsPanel);
 
-		ButtonGroup group = new ButtonGroup();
-		
-		String[] labels = regions.GetRegionsLabels();
-		for (int i = 0; i < labels.length; i++)
-		{
-			String actionCmd = kRegionPrefixString.concat(labels[i]);
-			// label.concat
-			JRadioButton button =  new JRadioButton(labels[i], i == 0); 
-			button.setActionCommand(actionCmd);
-			
-			group.add(button);
-			regionsPanel.add(button);
-			button.addActionListener(this);
-		}
-		
-		JButton addVersionBtn = new JButton(kAddRegionVersionString);
-		regionsChoicesPanel.add(addVersionBtn);
-		
-		addVersionBtn.addActionListener(this);
-		
-		parent.add(regionsChoicesPanel);
-	}
-*/	
 	private void UpdateRegionColor()
 	{
 		Color oldColor = fSlicesSet.GetCurrentGeometryColor();
@@ -915,7 +772,6 @@ class MyJSlider extends JSlider
 	boolean resizeEventInvoked = false;
 	MyJSlider()
 	{
-//		enableEvents(AWTEvent.COMPONENT_EVENT_MASK);
 	}
 	public void setBounds(int x, int y, int width, int height)
 	{
@@ -932,15 +788,5 @@ class MyJSlider extends JSlider
 		}
 	}
 
-/*	
-	  public synchronized void removeComponentListener(ComponentListener l) {
-	  	System.out.println("ComponentListener removed" + l);
-        super.removeComponentListener(l);
-    }        
-
-	  public synchronized void addComponentListener(ComponentListener l) {
-	  	System.out.println("ComponentListener added" + l);
-        super.addComponentListener(l);
-    }  */      
 }
 

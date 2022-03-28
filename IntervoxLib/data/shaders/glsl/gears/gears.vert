@@ -2,7 +2,6 @@
 
 layout (location = 0) in vec4 inPos;
 layout (location = 1) in vec3 inNormal;
-layout (location = 2) in vec3 inColor;
 
 layout (binding = 0) uniform UBO 
 {
@@ -10,6 +9,7 @@ layout (binding = 0) uniform UBO
 	mat4 model;
 	mat4 normal;
 	mat4 view;
+    vec4 color;
 	vec3 lightpos;
 } ubo;
 
@@ -21,7 +21,7 @@ layout (location = 3) out vec3 outLightVec;
 void main() 
 {
 	outNormal = normalize(mat3(ubo.normal) * inNormal);
-	outColor = inColor;
+    outColor = ubo.color.xyz;
 	mat4 modelView = ubo.view * ubo.model;
 	vec4 pos = modelView * inPos;	
 	outEyePos = vec3(modelView * pos);

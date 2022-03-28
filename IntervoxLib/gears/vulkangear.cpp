@@ -13,7 +13,7 @@
 #if USE_MESH_PIPELINE
 int32_t VulkanGear::newVertex(std::vector<MeshVertex> *vBuffer, float x, float y, float z, const glm::vec3& normal)
 {
-    MeshVertex v(glm::vec3(x, y, z), normal, color);
+    MeshVertex v(glm::vec3(x, y, z), normal);
     vBuffer->push_back(v);
     return static_cast<int32_t>(vBuffer->size()) - 1;
 }

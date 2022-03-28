@@ -180,7 +180,7 @@ void VulkanMeshPipeline::setupVertexDescriptions()
 
     // Attribute descriptions
     // Describes memory layout and shader positions
-    fVertices.attributeDescriptions.resize(3);
+    fVertices.attributeDescriptions.resize(2);
     // Location 0 : Position
     fVertices.attributeDescriptions[0] =
         vks::initializers::vertexInputAttributeDescription(
@@ -196,12 +196,12 @@ void VulkanMeshPipeline::setupVertexDescriptions()
             VK_FORMAT_R32G32B32_SFLOAT,
             sizeof(float) * 3);
     // Location 2 : Color
-    fVertices.attributeDescriptions[2] =
-        vks::initializers::vertexInputAttributeDescription(
-            VERTEX_BUFFER_BIND_ID,
-            2,
-            VK_FORMAT_R32G32B32_SFLOAT,
-            sizeof(float) * 6);
+//    fVertices.attributeDescriptions[2] =
+//        vks::initializers::vertexInputAttributeDescription(
+//            VERTEX_BUFFER_BIND_ID,
+//            2,
+//            VK_FORMAT_R32G32B32_SFLOAT,
+//            sizeof(float) * 6);
 
     fVertices.inputState = vks::initializers::pipelineVertexInputStateCreateInfo();
     fVertices.inputState.vertexBindingDescriptionCount = static_cast<uint32_t>(fVertices.bindingDescriptions.size());
@@ -230,10 +230,13 @@ void VulkanMeshPipeline::setupDescripterSets(VkDescriptorPool pool)
 
 void VulkanMeshPipeline::setMeshColor(int32_t meshID, const glm::vec3& color)
 {
+    std::cout << "setting mess color [" << color[0] << "," << color[1] << ","
+    << color[2] << "]" << std::endl;
     for (auto& mesh :fMeshes)
     {
         if (mesh->getMeshID() == meshID)
         {
+            std::cout << "color set" << std::endl;
             mesh->setColor(color);
             break;
         }

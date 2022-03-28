@@ -35,7 +35,7 @@ void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
     fUbo.view = view;
     fUbo.normal = glm::inverseTranspose(fUbo.view * fUbo.model);
     fUbo.lightPos = glm::vec3(0.0f, 2.5f, 2.5f);
- //   ubo.color = color; // TODO uncomment this
+    fUbo.color = glm::vec4(fColor, 1.0); //fColor;
     memcpy(fUniformBuffer.mapped, &fUbo, sizeof(fUbo));
 }
 
@@ -90,7 +90,7 @@ void VulkanMesh::AddTriangles(CTriangleList &triangles, CVertexList &vertices, V
         vertexClass = (CVertex*)vertices.At((long)i);
         vertexClass->GetXYZ(vertex);
         vertexClass->GetNormalXYZ(normal);
-        vBuffer.push_back(MeshVertex(vertex, normal, fColor));
+        vBuffer.push_back(MeshVertex(vertex, normal));
     }
                 
      CTriangle* triangleClass;

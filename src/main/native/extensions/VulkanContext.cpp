@@ -85,7 +85,7 @@ void CVulkanContext::AbsoluteZoom(float zoom)
 
 void CVulkanContext::addMesh(mesh_id_t meshID)
 {
-    fRenderSettings.fPipelineSettings.
+  //  fRenderSettings.fPipelineSettings.
 }
 
 void CVulkanContext::removeMesh(mesh_id_t meshID)
@@ -95,7 +95,7 @@ void CVulkanContext::removeMesh(mesh_id_t meshID)
 
 bool CVulkanContext::hasMesh(mesh_id_t meshID)
 {
-    
+    return false;
 }
 
 

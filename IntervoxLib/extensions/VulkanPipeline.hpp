@@ -11,10 +11,11 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <vector>
+#include <set>
 #include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
 
+typedef int32_t mesh_id_t;
 
 enum VulkanPipelineTypes
 {
@@ -31,23 +32,19 @@ public:
     virtual ~VulkanPipeline() {}
 };
 
-struct PipelineSettings
+
+struct MeshPipelineSettings
 {
-    
-    virtual ~PipelineSettings() {}
+    std::set<mesh_id_t> fMeshIds;
 };
 
-struct MeshPipelineSettings : public PipelineSettings
-{
-    std::vector<int32_t> fMeshIds;
-};
-
+// TODO: make this a class
 struct RenderCommandSettings
 {
-    std::map<VulkanPipelineTypes, std::shared_ptr<PipelineSettings>> fPipelineSettings;
  //   VkCommandBuffer fCommandBuffer = VK_NULL_HANDLE;  // destroy command buffers needs fields from VulkanExampleBase, use map
     int32_t         fPipelinesVersion = -1;
     std::string     fContextID;
+    MeshPipelineSettings fMeshPipelineSettings;
  };
 
 #endif /* VulkanPipeline_h */

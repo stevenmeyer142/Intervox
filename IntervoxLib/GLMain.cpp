@@ -324,11 +324,11 @@ JNIEXPORT jboolean JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pViewHa
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAddGeometryToView
 	(JNIEnv *env, jobject openGL, jlong meshID, jlong glContext,  jobjectArray errRecord)
 {
-#if 0
+
 	try
 	{
-		COpenGLContext *dataObj = (COpenGLContext*)glContext;
-		dataObj->AddRenderable ((CGLMeshHolder*)meshObj); 
+        CVulkanContext *dataObj = (CVulkanContext*)glContext;
+        dataObj->addMesh(static_cast<mesh_id_t>(meshID));
 	}
 	catch (CMyError err)
 	{
@@ -337,7 +337,6 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAddGeometr
 	catch (...)
 	{
 	}
-#endif
 }
 
 /*

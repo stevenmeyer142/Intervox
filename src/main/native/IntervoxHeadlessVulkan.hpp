@@ -11,50 +11,22 @@
 
 #include "base/vulkanexamplebase.h"
 
-#define GEARS 1
-
-#if GEARS
-#include "gears/vulkangear.h"
-#endif
-
 #include <vector>
 #include <memory>
 #include <atomic>
 #include <map>
 
-#if USE_MESH_PIPELINE
 #include "extensions/VulkanMeshPipeline.hpp"
 #include "extensions/VulkanPipeline.hpp"
-#endif
+
 
 #define ENABLE_VALIDATION 1
 
 class CJavaArrSlicesSet;
 
 class IntervoxHeadlessVulkan : public  VulkanExampleBase  {
-#if GEARS
-    struct {
-        VkPipelineVertexInputStateCreateInfo inputState;
-        std::vector<VkVertexInputBindingDescription> bindingDescriptions;
-        std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
-    } vertices;
-
-    struct {
-        VkPipeline solid;
-    } pipelines;
-
-    std::vector<std::shared_ptr<VulkanGear>> fGears;
-
-    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-    VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
-
-#endif
     std::vector<uint8_t> fImageData;
-
-#if USE_MESH_PIPELINE
     std::map<VulkanPipelineTypes, std::shared_ptr<VulkanPipeline>> fPipelines;
-#endif
-
     bool            fInitialized = false;
     int32_t         fPipelinesVersion = 0;
     std::map<std::string, VkCommandBuffer> fContextCommandBuffers;
@@ -72,16 +44,8 @@ public:
 
     void buildCommandBuffers(RenderCommandSettings &renderCommandSettings, VkCommandBuffer drawCommandBuffer);
 
-    void prepareVertices(bool offset);
-
-    void setupDescriptorPool();
+     void setupDescriptorPool();
     
-    void setupDescriptorSetLayout();
-
-    void setupDescriptorSets();
-
-    void preparePipelines();
- 
     void updateUniformBuffers();
 
     void draw(VkCommandBuffer drawCommandBuffer);

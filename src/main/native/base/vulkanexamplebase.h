@@ -248,7 +248,9 @@ public:
 	float timerSpeed = 0.25f;
 	bool paused = false;
 
+#ifndef INTERVOX_LIB
 	Camera camera;
+#endif
 	glm::vec2 mousePos;
 
 	std::string title = "Vulkan Example";

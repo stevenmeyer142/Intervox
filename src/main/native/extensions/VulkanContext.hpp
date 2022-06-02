@@ -32,16 +32,16 @@ public:
     
     void AbsoluteZoom(float zoom);
     
-    void addMesh(mesh_id_t meshID);
+    void addMeshID(mesh_id_t meshID);
     
-    void removeMesh(mesh_id_t meshID);
+    void removeMeshID(mesh_id_t meshID);
     
-    bool hasMesh(mesh_id_t meshID);
+    bool hasMeshID(mesh_id_t meshID);
 
 private:
     void forceCommandBufferRebuild();
-        
-	IntervoxHeadlessVulkan *fOffscreenRenderer = NULL;
+    
+ 	IntervoxHeadlessVulkan *fOffscreenRenderer = NULL;
     RenderCommandSettings fRenderSettings;
 };
 

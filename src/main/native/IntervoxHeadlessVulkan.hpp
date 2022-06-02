@@ -46,7 +46,7 @@ public:
 
      void setupDescriptorPool();
     
-    void updateUniformBuffers();
+    void updateUniformBuffers(RenderCommandSettings &renderCommandSettings);
 
     void draw(VkCommandBuffer drawCommandBuffer);
 
@@ -56,16 +56,18 @@ public:
     
     virtual void render() {}
 
-    virtual void viewChanged();
+ //   virtual void viewChanged();
     
     void grabImage();
-    
-    void rotate(float xRot, float yRot);
-    
+     
     // TODO change CJavaArrSlicesSet to CSlicesSet
     int32_t addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
     
     void setMeshColor(int32_t meshID, float red, float green, float blue);
+    
+    uint32_t getWidth() { return width; }
+    
+    uint32_t getHeight() { return height; }
     
 private:
     void updateDescriptorLayouts();

@@ -5,15 +5,22 @@
 *
 * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 */
+#pragma once
+
+#ifndef __CAMERA_HPP__
+#define __CAMERA_HPP__
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 class Camera
 {
+public:
+    float mZoom = 1.0;
 private:
 	float fov = 1.0; // used by perspective
     float znear = 0.0;
@@ -26,7 +33,7 @@ private:
         float top = 0.0f;
     } mOrthoFrame;
     
-    float mZoom = 1.0;
+    
     
     
 	void updateViewMatrix()
@@ -38,13 +45,17 @@ private:
 		rotM = glm::rotate(rotM, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		rotM = glm::rotate(rotM, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
         
-        glm::mat4 scaleM = glm::mat4(1.0f);
+    //    glm::mat4 scaleM = glm::mat4(1.0f);
      //   scaleM = glm::scale(scaleM, glm::vec3(fScale));
 
 		glm::vec3 translation = position;
 		if (flipY) {
 			translation.y *= -1.0f;
 		}
+        translation.z /= mZoom;
+        
+        std::cout << __FUNCTION__ << " mZoom " << mZoom << ", translation.z " << translation.z << std::endl;
+        
 		transM = glm::translate(glm::mat4(1.0f), translation);
 
 		if (type == CameraType::firstperson)
@@ -152,16 +163,19 @@ public:
 		updateViewMatrix();
 	}
 
+    // TODO: remov
 	void setRotationSpeed(float rotationSpeed)
 	{
 		this->rotationSpeed = rotationSpeed;
 	}
 
+    // TODO: remov
 	void setMovementSpeed(float movementSpeed)
 	{
 		this->movementSpeed = movementSpeed;
 	}
 
+    // TODO: remov
 	void update(float deltaTime)
 	{
 		updated = false;
@@ -193,6 +207,7 @@ public:
 
 	// Update camera passing separate axis data (gamepad)
 	// Returns true if view or position has been changed
+    // TODO: remove
 	bool updatePad(glm::vec2 axisLeft, glm::vec2 axisRight, float deltaTime)
 	{
 		bool retVal = false;
@@ -256,3 +271,5 @@ public:
 	}
 
 };
+
+#endif  //  __CAMERA_HPP__

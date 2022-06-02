@@ -14,6 +14,7 @@
 #include <set>
 #include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
+#include "base/camera.hpp"
 
 typedef int32_t mesh_id_t;
 
@@ -22,29 +23,36 @@ enum VulkanPipelineTypes
     MESH_PIPELINE
 };
 
-class VulkanPipeline {
-public:
-    virtual void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view) = 0;
-    virtual uint32_t getUniformBufferCount() = 0;
-    virtual void Draw(VkCommandBuffer drawCommandBuffer) = 0;
-    virtual void setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache) = 0;
-    virtual void setupDescripterSets(VkDescriptorPool pool) = 0;
-    virtual ~VulkanPipeline() {}
-};
-
-
 struct MeshPipelineSettings
 {
     std::set<mesh_id_t> fMeshIds;
+    
+    void addMeshID(mesh_id_t meshID) { fMeshIds.insert(meshID);}
+    void removeMeshID(mesh_id_t meshID) { fMeshIds.erase(meshID);}
+    bool hasMeshID(mesh_id_t meshID) { return fMeshIds.find(meshID) != fMeshIds.end(); }
 };
 
 // TODO: make this a class
 struct RenderCommandSettings
 {
  //   VkCommandBuffer fCommandBuffer = VK_NULL_HANDLE;  // destroy command buffers needs fields from VulkanExampleBase, use map
+    Camera fCamera;
     int32_t         fPipelinesVersion = -1;
     std::string     fContextID;
     MeshPipelineSettings fMeshPipelineSettings;
  };
+
+
+class VulkanPipeline {
+public:
+    virtual void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view) = 0;
+    virtual uint32_t getUniformBufferCount() = 0;
+    virtual void Draw(VkCommandBuffer drawCommandBuffer, RenderCommandSettings &renderCommandSettings) = 0;
+    virtual void setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache) = 0;
+    virtual void setupDescripterSets(VkDescriptorPool pool) = 0;
+    virtual ~VulkanPipeline() {}
+};
+
+
 
 #endif /* VulkanPipeline_h */

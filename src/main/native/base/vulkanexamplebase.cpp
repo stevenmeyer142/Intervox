@@ -255,7 +255,8 @@ VkPipelineShaderStageCreateInfo VulkanExampleBase::loadShader(std::string fileNa
 
 void VulkanExampleBase::nextFrame()
 {
-	auto tStart = std::chrono::high_resolution_clock::now();
+#ifndef INTERVOX_LIB
+    auto tStart = std::chrono::high_resolution_clock::now();
 	if (viewUpdated)
 	{
 		viewUpdated = false;
@@ -295,7 +296,7 @@ void VulkanExampleBase::nextFrame()
 		lastTimestamp = tEnd;
 	}
 	// TODO: Cap UI overlay update rates
-#ifndef INTERVOX_LIB
+
 	updateOverlay();
 #endif
 }
@@ -2790,9 +2791,11 @@ void VulkanExampleBase::windowResize()
 
 	vkDeviceWaitIdle(device);
 
+#ifndef INTERVOX_LIB
 	if ((width > 0.0f) && (height > 0.0f)) {
 		camera.updateAspectRatio((float)width / (float)height);
 	}
+#endif
 
 	// Notify derived class
 	windowResized();

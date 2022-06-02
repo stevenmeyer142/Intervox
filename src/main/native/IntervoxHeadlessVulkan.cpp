@@ -22,11 +22,7 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALI
     width = 256;
     height = 256;
     
-    camera.type = Camera::CameraType::lookat;
-    camera.setPosition(glm::vec3(0.0f, 2.5f, -48.0f));
-    camera.setRotation(glm::vec3(-23.75f, 41.25f, 21.0f));
-    camera.setPerspective(60.0f, (float)width / (float)height, 0.001f, 256.0f);
-    timerSpeed *= 0.25f;
+  //   timerSpeed *= 0.25f;
     fImageData.resize(height * width * sizeof(uint32_t));
 
     initialize(256, 256);
@@ -46,7 +42,7 @@ void IntervoxHeadlessVulkan::renderScene(RenderCommandSettings &renderCommandSet
     {
         buildCommandBuffers(renderCommandSettings, drawCommandBuffer);
     }
-    updateUniformBuffers();
+    updateUniformBuffers(renderCommandSettings);
     render(drawCommandBuffer);
     grabImage();
 }
@@ -109,10 +105,10 @@ void IntervoxHeadlessVulkan::buildCommandBuffers(RenderCommandSettings &renderCo
     VkRect2D scissor = vks::initializers::rect2D(width, height, 0, 0);
     vkCmdSetScissor(drawCommandBuffer, 0, 1, &scissor);
 
-    // TODO draw pipelines in proper order
+    // TODO: draw pipelines in proper order
     for (auto& pipelinesPair : fPipelines)
     {
-        pipelinesPair.second->Draw(drawCommandBuffer);
+        pipelinesPair.second->Draw(drawCommandBuffer, renderCommandSettings);
     }
 
     vkCmdEndRenderPass(drawCommandBuffer);
@@ -154,11 +150,11 @@ void IntervoxHeadlessVulkan::setupDescriptorPool()
 
 }
 
-void IntervoxHeadlessVulkan::updateUniformBuffers()
+void IntervoxHeadlessVulkan::updateUniformBuffers(RenderCommandSettings &renderCommandSettings)
 {
     for (auto pipelinePair : fPipelines)
     {
-        pipelinePair.second->updateUniformBuffer(camera.matrices.perspective,  camera.matrices.view);
+        pipelinePair.second->updateUniformBuffer(renderCommandSettings.fCamera.matrices.perspective,  renderCommandSettings.fCamera.matrices.view);
     }
 }
 
@@ -211,10 +207,10 @@ void IntervoxHeadlessVulkan::render(VkCommandBuffer drawCommandBuffer)
  }
 
 
-void IntervoxHeadlessVulkan::viewChanged()
-{
-    updateUniformBuffers();
-}
+//void IntervoxHeadlessVulkan::viewChanged()
+//{
+//    updateUniformBuffers();
+//}
 
 void IntervoxHeadlessVulkan::grabImage()
 {
@@ -456,11 +452,6 @@ void IntervoxHeadlessVulkan::grabImage()
 }
 
 
-
-void IntervoxHeadlessVulkan::rotate(float xRot, float yRot)
-{
-    camera.rotate(glm::vec3(xRot, yRot, 0));
-}
 
 int32_t IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
 {

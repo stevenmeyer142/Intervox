@@ -22,7 +22,7 @@ public :
     
     virtual ~VulkanMeshPipeline();
     
-    virtual void Draw(VkCommandBuffer commandBuffer) override;
+    virtual void Draw(VkCommandBuffer commandBuffer, RenderCommandSettings &renderCommandSettings) override;
     
     void addMesh(std::shared_ptr<VulkanMesh> mesh);
     

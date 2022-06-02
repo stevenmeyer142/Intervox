@@ -28,13 +28,16 @@ VulkanMeshPipeline::~VulkanMeshPipeline()
 }
 
 
-void VulkanMeshPipeline::Draw(VkCommandBuffer commandBuffer)
+void VulkanMeshPipeline::Draw(VkCommandBuffer commandBuffer, RenderCommandSettings &renderCommandSettings)
 {
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, fPipeline);
-    // TODO move descripterset from mesh to here
+    // TODO: move descripterset from mesh to here
     for (auto mesh : fMeshes)
     {
-        mesh->Draw(commandBuffer, fPipelineLayout);
+        if (renderCommandSettings.fMeshPipelineSettings.hasMeshID(mesh->getMeshID()))
+        {
+            mesh->Draw(commandBuffer, fPipelineLayout);
+        }
     }
 }
 
@@ -67,7 +70,7 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
             0,
             VK_FALSE);
 
-    // TODO change these to defaults
+    // TODO: change these to defaults
     VkPipelineRasterizationStateCreateInfo rasterizationState =
         vks::initializers::pipelineRasterizationStateCreateInfo(
             VK_POLYGON_MODE_FILL,
@@ -195,13 +198,6 @@ void VulkanMeshPipeline::setupVertexDescriptions()
             1,
             VK_FORMAT_R32G32B32_SFLOAT,
             sizeof(float) * 3);
-    // Location 2 : Color
-//    fVertices.attributeDescriptions[2] =
-//        vks::initializers::vertexInputAttributeDescription(
-//            VERTEX_BUFFER_BIND_ID,
-//            2,
-//            VK_FORMAT_R32G32B32_SFLOAT,
-//            sizeof(float) * 6);
 
     fVertices.inputState = vks::initializers::pipelineVertexInputStateCreateInfo();
     fVertices.inputState.vertexBindingDescriptionCount = static_cast<uint32_t>(fVertices.bindingDescriptions.size());

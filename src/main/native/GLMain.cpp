@@ -66,7 +66,7 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGLC
 /**
 	 fill int array with render image
 	 @param      qdView        id of 3d context.
-	 @param      pixArray 	 array for image in rgba format 
+	 @param      rgbArray 	 array for image in rgba format
 	 @param      width 		 image width 
 	 @param      height 		 image height
 	 @param	   errRecord     record for error info
@@ -97,6 +97,7 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pGetGLPixel
  * Method:    pDebugCheckDeallocation
  * Signature: (Lneurosynch/view3D/NativeError;)V
  */
+// TODO: remove
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pDebugCheckDeallocation
 	(JNIEnv *env, jobject, jobjectArray errRecord)
 {
@@ -144,6 +145,7 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pDisposeGLC
 	::DisposeVulkanContext (env, glObject, errRecord);
 }
 
+// TODO: remove
 void DisposeVulkanContext(JNIEnv *env, CVulkanContext *vulkanContext, jobjectArray errRecord)
 {
 //	DebugRemoveAllocatedObject (context);
@@ -272,14 +274,13 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pRemoveAllG
  * Signature: (IILneurosynch/view3D/NativeError;)V
  */
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pRemoveGeometryFromView
-	(JNIEnv *env, jobject openGL, jlong meshObj, jlong glContext, jobjectArray errRecord)
+	(JNIEnv *env, jobject openGL, jlong meshID, jlong glContext, jobjectArray errRecord)
 {
-#if 0
-	try
-	{
-		COpenGLContext *context = (COpenGLContext*)glContext;
-		context->RemoveRenderable ((CGLMeshHolder*) meshObj); 
-	}
+    try
+    {
+        CVulkanContext *dataObj = (CVulkanContext*)glContext;
+        dataObj->removeMeshID(static_cast<mesh_id_t>(meshID));
+    }
 	catch (CMyError err)
 	{
 		FillErrRecord(env, err, errRecord);
@@ -287,7 +288,7 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pRemoveGeom
 	catch (...)
 	{
 	}
-#endif
+
 }
 
 /*
@@ -296,15 +297,15 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pRemoveGeom
  * Signature: (IILneurosynch/view3D/NativeError;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pViewHasGeometry
-	(JNIEnv *env, jobject openGL, jlong meshObj, jlong glContext, jobjectArray errRecord)
+	(JNIEnv *env, jobject openGL, jlong meshID, jlong glContext, jobjectArray errRecord)
 {
 	jboolean result = false;
-#if 0
-	try
-	{
-		COpenGLContext *dataObj = (COpenGLContext*)glContext;
- 		result = dataObj->HasRenderable ((CGLMeshHolder*)meshObj); 
-	}
+
+   try
+    {
+        CVulkanContext *dataObj = (CVulkanContext*)glContext;
+        result = dataObj->hasMeshID(static_cast<mesh_id_t>(meshID));
+    }
 	catch (CMyError err)
 	{
 		FillErrRecord(env, err, errRecord);
@@ -312,7 +313,7 @@ JNIEXPORT jboolean JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pViewHa
 	catch (...)
 	{
 	}
-#endif
+
 	return result;
 }
 
@@ -324,11 +325,10 @@ JNIEXPORT jboolean JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pViewHa
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAddGeometryToView
 	(JNIEnv *env, jobject openGL, jlong meshID, jlong glContext,  jobjectArray errRecord)
 {
-
-	try
+ 	try
 	{
         CVulkanContext *dataObj = (CVulkanContext*)glContext;
-        dataObj->addMesh(static_cast<mesh_id_t>(meshID));
+        dataObj->addMeshID(static_cast<mesh_id_t>(meshID));
 	}
 	catch (CMyError err)
 	{
@@ -536,13 +536,13 @@ void DebugHandleShutDown(JNIEnv *env, jobjectArray errRecord)
 */
 
 JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAbsoluteZoomContext
-	(JNIEnv *env, jobject openGL, jfloat amount, jlong glDisplayObject, jobjectArray errRecord)
+	(JNIEnv *env, jobject openGL, jfloat amount, jlong glContext, jobjectArray errRecord)
 {
-#if 0
+
 	try
 	{
-		COpenGLContext *dataObj = (COpenGLContext*)glDisplayObject;
-
+        CVulkanContext *dataObj = (CVulkanContext*)glContext;
+   
 		dataObj->AbsoluteZoom (amount );
 	}
 	catch (CMyError err)
@@ -552,7 +552,7 @@ JNIEXPORT void JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pAbsoluteZo
 	catch (...)
 	{
 	}
-#endif
+
 }
 
 

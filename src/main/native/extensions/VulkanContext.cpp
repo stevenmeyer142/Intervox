@@ -17,10 +17,10 @@ CVulkanContext::CVulkanContext(IntervoxHeadlessVulkan * offscreenRenderer) :
     fOffscreenRenderer(offscreenRenderer)
 {
     fRenderSettings.fCamera.flipY = true;
-    fRenderSettings.fCamera.type = Camera::CameraType::lookat;
-    fRenderSettings.fCamera.setPosition(glm::vec3(0.0f, 0.0f, -24.0f));
+    fRenderSettings.fCamera.setPosition(glm::vec3(0.0f, 0.0f, -256.0f));
     fRenderSettings.fCamera.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-    fRenderSettings.fCamera.setPerspective(60.0f, (float)offscreenRenderer->getWidth() / (float)offscreenRenderer->getHeight(), 0.001f, 256.0f);
+//    fRenderSettings.fCamera.setOrthogonal(-(float)offscreenRenderer->getWidth(), (float)offscreenRenderer->getWidth(), (float)offscreenRenderer->getHeight(), -(float)offscreenRenderer->getHeight(), (float)offscreenRenderer->getHeight(), -(float)offscreenRenderer->getHeight());
+    fRenderSettings.fCamera.setPerspective(60.0f, (float)offscreenRenderer->getWidth() / (float)offscreenRenderer->getHeight(), 0.001f, 512.0f);
 
 }
 
@@ -70,7 +70,7 @@ void CVulkanContext::FillInJavaRGBArray(JNIEnv *env, jintArray array, long width
 
 void CVulkanContext::Rotate(float xRot, float yRot)
 {
-    fRenderSettings.fCamera.rotate(glm::vec3(xRot, yRot, 0));
+    fRenderSettings.fRotation += glm::vec3(xRot, yRot, 0);
 }
 
 // TODO: is this function used?

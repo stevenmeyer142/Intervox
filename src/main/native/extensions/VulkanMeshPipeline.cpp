@@ -53,11 +53,20 @@ uint32_t VulkanMeshPipeline::getUniformBufferCount()
 
 
 
-void VulkanMeshPipeline::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
+void VulkanMeshPipeline::updateUniformBuffer(RenderCommandSettings &renderCommandSettings)
 {
+    glm::mat4 model;
+
+    model = glm::rotate(model, -glm::radians(renderCommandSettings.fRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(renderCommandSettings.fRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(renderCommandSettings.fRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    float translation = -128;
+    model = glm::translate(model, glm::vec3(translation, translation, translation));
+
     for (auto mesh : fMeshes)
     {
-        mesh->updateUniformBuffer(perspective, view);
+        mesh->updateUniformBuffer(renderCommandSettings.fCamera.matrices.perspective, renderCommandSettings.fCamera.matrices.view, model);
     }
 }
 

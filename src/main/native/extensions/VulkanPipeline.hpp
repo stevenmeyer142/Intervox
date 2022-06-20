@@ -39,13 +39,14 @@ struct RenderCommandSettings
     Camera fCamera;
     int32_t         fPipelinesVersion = -1;
     std::string     fContextID;
+    glm::vec3            fRotation;
     MeshPipelineSettings fMeshPipelineSettings;
  };
 
 
 class VulkanPipeline {
 public:
-    virtual void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view) = 0;
+    virtual void updateUniformBuffer(RenderCommandSettings &renderCommandSettings) = 0;
     virtual uint32_t getUniformBufferCount() = 0;
     virtual void Draw(VkCommandBuffer drawCommandBuffer, RenderCommandSettings &renderCommandSettings) = 0;
     virtual void setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache) = 0;

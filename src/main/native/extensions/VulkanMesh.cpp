@@ -29,15 +29,16 @@ VulkanMesh::~VulkanMesh()
 }
 
 
-void VulkanMesh::updateUniformBuffer(glm::mat4 perspective, glm::mat4 view)
+void VulkanMesh::updateUniformBuffer(const glm::mat4 &perspective, const glm::mat4 &view, const glm::mat4 &model)
 {
     fUbo.projection = perspective;
     fUbo.view = view;
+    fUbo.model = model;
     fUbo.normal = glm::inverseTranspose(fUbo.view * fUbo.model);
-    fUbo.lightPos = glm::vec3(0.0f, 2.5f, 2.5f);
+    fUbo.lightPos = glm::vec3(0.0f, 2.5f, -2.5f);
     fUbo.color = glm::vec4(fColor, 1.0); //fColor;
     memcpy(fUniformBuffer.mapped, &fUbo, sizeof(fUbo));
-}
+ }
 
 
 

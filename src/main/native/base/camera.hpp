@@ -19,19 +19,7 @@
 
 class Camera
 {
-public:
-    float mZoom = 1.0;
 private:
-	float fov = 1.0; // used by perspective
-    float znear = 0.0;
-    float zfar = 0.0;
-    struct
-    {
-        float left = 0.0f;
-        float right = 0.0f;
-        float bottom = 0.0f;
-        float top = 0.0f;
-    } mOrthoFrame;
     
     
     
@@ -45,8 +33,6 @@ private:
 		rotM = glm::rotate(rotM, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		rotM = glm::rotate(rotM, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
         
-    //    glm::mat4 scaleM = glm::mat4(1.0f);
-     //   scaleM = glm::scale(scaleM, glm::vec3(fScale));
 
 		glm::vec3 translation = position;
 		if (flipY) {
@@ -54,34 +40,20 @@ private:
 		}
         translation.z /= mZoom;
         
-        std::cout << __FUNCTION__ << " mZoom " << mZoom << ", translation.z " << translation.z << std::endl;
-        
+         
 		transM = glm::translate(glm::mat4(1.0f), translation);
+        matrices.view = transM * rotM;
 
-		if (type == CameraType::firstperson)
-		{
-			matrices.view = rotM * transM;
-		}
-		else
-		{
-			matrices.view = transM * rotM ;
-		}
-
-	//	viewPos = glm::vec4(position, 0.0f) * glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f);
-
+ //       viewPos = glm::vec4(position, 0.0f) * glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f);
+        
 		updated = true;
 	};
 public:
-	enum CameraType { lookat, firstperson, orthogonal };
-	CameraType type = CameraType::lookat;
 
 	glm::vec3 rotation = glm::vec3();
 	glm::vec3 position = glm::vec3();
-//	glm::vec4 viewPos = glm::vec4();
-    float fScale = 1.0f;
+    float mZoom = 1.0;
 
-	float rotationSpeed = 1.0f;
-	float movementSpeed = 1.0f;
 
 	bool updated = false;
 	bool flipY = false;
@@ -92,46 +64,29 @@ public:
 		glm::mat4 view;
 	} matrices;
 
-	struct
-	{
-		bool left = false;
-		bool right = false;
-		bool up = false;
-		bool down = false;
-	} keys;
-    
-
-	bool moving()
-	{
-		return keys.left || keys.right || keys.up || keys.down;
-	}
-
-	float getNearClip() { 
-		return znear;
-	}
-
-	float getFarClip() {
-		return zfar;
-	}
-
+ 
 	void setPerspective(float fov, float aspect, float znear, float zfar)
 	{
-		this->fov = fov;
-		this->znear = znear;
-		this->zfar = zfar;
 		matrices.perspective = glm::perspective(glm::radians(fov), aspect, znear, zfar);
 		if (flipY) {
 			matrices.perspective[1][1] *= -1.0f;
 		}
 	};
+    
+    void setOrthogonal(float left,
+                       float right,
+                       float bottom,
+                       float top,
+                       float zNear,
+                       float zFar)
+    {
+        matrices.perspective = glm::ortho(left, right, bottom, top, zNear, zFar);
+        if (flipY) {
+            matrices.perspective[1][1] *= -1.0f;
+        }
 
-	void updateAspectRatio(float aspect)
-	{
-		matrices.perspective = glm::perspective(glm::radians(fov), aspect, znear, zfar);
-		if (flipY) {
-			matrices.perspective[1][1] *= -1.0f;
-		}
-	}
+    }
+
 
 	void setPosition(glm::vec3 position)
 	{
@@ -162,114 +117,12 @@ public:
 		this->position += delta;
 		updateViewMatrix();
 	}
-
-    // TODO: remov
-	void setRotationSpeed(float rotationSpeed)
-	{
-		this->rotationSpeed = rotationSpeed;
-	}
-
-    // TODO: remov
-	void setMovementSpeed(float movementSpeed)
-	{
-		this->movementSpeed = movementSpeed;
-	}
-
-    // TODO: remov
-	void update(float deltaTime)
-	{
-		updated = false;
-		if (type == CameraType::firstperson)
-		{
-			if (moving())
-			{
-				glm::vec3 camFront;
-				camFront.x = -cos(glm::radians(rotation.x)) * sin(glm::radians(rotation.y));
-				camFront.y = sin(glm::radians(rotation.x));
-				camFront.z = cos(glm::radians(rotation.x)) * cos(glm::radians(rotation.y));
-				camFront = glm::normalize(camFront);
-
-				float moveSpeed = deltaTime * movementSpeed;
-
-				if (keys.up)
-					position += camFront * moveSpeed;
-				if (keys.down)
-					position -= camFront * moveSpeed;
-				if (keys.left)
-					position -= glm::normalize(glm::cross(camFront, glm::vec3(0.0f, 1.0f, 0.0f))) * moveSpeed;
-				if (keys.right)
-					position += glm::normalize(glm::cross(camFront, glm::vec3(0.0f, 1.0f, 0.0f))) * moveSpeed;
-
-				updateViewMatrix();
-			}
-		}
-	};
-
-	// Update camera passing separate axis data (gamepad)
-	// Returns true if view or position has been changed
-    // TODO: remove
-	bool updatePad(glm::vec2 axisLeft, glm::vec2 axisRight, float deltaTime)
-	{
-		bool retVal = false;
-
-		if (type == CameraType::firstperson)
-		{
-			// Use the common console thumbstick layout		
-			// Left = view, right = move
-
-			const float deadZone = 0.0015f;
-			const float range = 1.0f - deadZone;
-
-			glm::vec3 camFront;
-			camFront.x = -cos(glm::radians(rotation.x)) * sin(glm::radians(rotation.y));
-			camFront.y = sin(glm::radians(rotation.x));
-			camFront.z = cos(glm::radians(rotation.x)) * cos(glm::radians(rotation.y));
-			camFront = glm::normalize(camFront);
-
-			float moveSpeed = deltaTime * movementSpeed * 2.0f;
-			float rotSpeed = deltaTime * rotationSpeed * 50.0f;
-			 
-			// Move
-			if (fabsf(axisLeft.y) > deadZone)
-			{
-				float pos = (fabsf(axisLeft.y) - deadZone) / range;
-				position -= camFront * pos * ((axisLeft.y < 0.0f) ? -1.0f : 1.0f) * moveSpeed;
-				retVal = true;
-			}
-			if (fabsf(axisLeft.x) > deadZone)
-			{
-				float pos = (fabsf(axisLeft.x) - deadZone) / range;
-				position += glm::normalize(glm::cross(camFront, glm::vec3(0.0f, 1.0f, 0.0f))) * pos * ((axisLeft.x < 0.0f) ? -1.0f : 1.0f) * moveSpeed;
-				retVal = true;
-			}
-
-			// Rotate
-			if (fabsf(axisRight.x) > deadZone)
-			{
-				float pos = (fabsf(axisRight.x) - deadZone) / range;
-				rotation.y += pos * ((axisRight.x < 0.0f) ? -1.0f : 1.0f) * rotSpeed;
-				retVal = true;
-			}
-			if (fabsf(axisRight.y) > deadZone)
-			{
-				float pos = (fabsf(axisRight.y) - deadZone) / range;
-				rotation.x -= pos * ((axisRight.y < 0.0f) ? -1.0f : 1.0f) * rotSpeed;
-				retVal = true;
-			}
-		}
-		else
-		{
-			// todo: move code from example base class for look-at
-		}
-
-		if (retVal)
-		{
-			updateViewMatrix();
-		}
-
-		return retVal;
-	}
-
+    
+    void setZoom(float zoom)
+    {
+        
+    }
 };
 
+ 
 #endif  //  __CAMERA_HPP__

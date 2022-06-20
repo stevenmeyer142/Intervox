@@ -26,7 +26,7 @@ public :
     
     void addMesh(std::shared_ptr<VulkanMesh> mesh);
     
-    virtual void updateUniformBuffer(glm::mat4 perspective, glm::mat4 view) override;
+    virtual void updateUniformBuffer(RenderCommandSettings &renderCommandSettings) override;
     
     virtual void setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache) override;
     

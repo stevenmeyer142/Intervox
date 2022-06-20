@@ -154,7 +154,7 @@ void IntervoxHeadlessVulkan::updateUniformBuffers(RenderCommandSettings &renderC
 {
     for (auto pipelinePair : fPipelines)
     {
-        pipelinePair.second->updateUniformBuffer(renderCommandSettings.fCamera.matrices.perspective,  renderCommandSettings.fCamera.matrices.view);
+        pipelinePair.second->updateUniformBuffer(renderCommandSettings);
     }
 }
 
@@ -468,7 +468,7 @@ int32_t IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, i
         
     if (success)
     {
-      //  ComputeWeightedCenter(slicesSet, regionValue, vulkanMesh);
+        ComputeWeightedCenter(slicesSet, regionValue, vulkanMesh);
         getMeshPipeline()->addMesh(vulkanMesh);
         updateDescriptorLayouts();
         return vulkanMesh->getMeshID();  // this is only used as an id.
@@ -525,12 +525,12 @@ void IntervoxHeadlessVulkan::ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet,
     mesh->setWeightedCenter(vecCenter);
     mesh->setWeight(weight);
     
-    glm::mat4 model;
-    model = glm::translate(model, -vecCenter);
-    
-    // TODO why is this -60?
-    model = glm::scale(model, glm::vec3(-60));
-    mesh->setModelMatrix(model);
+//    glm::mat4 model;
+//    model = glm::translate(model, -vecCenter);
+//
+//    // TODO: why is this -60?
+//  //  model = glm::scale(model, glm::vec3(-60));
+//    mesh->setModelMatrix(model);
 }
 
 

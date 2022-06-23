@@ -24,8 +24,6 @@ void main()
     outColor = ubo.color.xyz;
 	mat4 modelView = ubo.view * ubo.model;
 	vec4 pos = modelView * inPos;	
-	outEyePos = vec3(modelView * pos);
-	vec4 lightPos = vec4(ubo.lightpos, 1.0);
-	outLightVec = normalize(lightPos.xyz - outEyePos);
+    outLightVec = normalize(ubo.lightpos - pos.xyz);
 	gl_Position = ubo.projection * pos;
 }

@@ -127,8 +127,8 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
     // Load shaders
     std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages;
 
-    shaderStages[0] = loadShader(shadersPath + "gears/gears.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-    shaderStages[1] = loadShader(shadersPath + "gears/gears.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+    shaderStages[0] = loadShader(shadersPath + "mesh/mesh.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+    shaderStages[1] = loadShader(shadersPath + "mesh/mesh.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
     VkGraphicsPipelineCreateInfo pipelineCreateInfo =
         vks::initializers::pipelineCreateInfo(
@@ -182,7 +182,6 @@ void VulkanMeshPipeline::setupDescriptorSetLayout()
 
 void VulkanMeshPipeline::setupVertexDescriptions()
 {
-    // Binding and attribute descriptions are shared across all gears
     fVertices.bindingDescriptions.resize(1);
     fVertices.bindingDescriptions[0] =
         vks::initializers::vertexInputBindingDescription(

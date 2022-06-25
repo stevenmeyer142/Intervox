@@ -519,7 +519,7 @@
 				PRODUCT_NAME = Intervox;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"/usr/local/Cellar/openjdk/17/libexec/openjdk.jdk/Contents/Home/include/**",
+					/usr/local/Cellar/openjdk/18.0.1.1/include,
 					/usr/local/include,
 					"$(inherited)",
 				);
@@ -546,7 +546,7 @@
 				PRODUCT_NAME = Intervox;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"/usr/local/Cellar/openjdk/17/libexec/openjdk.jdk/Contents/Home/include/**",
+					/usr/local/Cellar/openjdk/18.0.1.1/include,
 					/usr/local/include,
 					"$(inherited)",
 				);

@@ -9,7 +9,7 @@ class IntervoxConan(ConanFile):
 
     def requirements(self):
         if self.settings.os == "Macos":
-            self.requires("moltenvk/1.1.4")
+            self.requires("moltenvk/1.1.10")
         else:
             self.requires("vulkan-loader/1.2.190")
 

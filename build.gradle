@@ -39,11 +39,10 @@ tasks.withType(JavaCompile) {
 }
 
 task JniCompile {
-    exec {
+    exec { 
      	workingDir getProjectDir().getAbsolutePath() + "/src/main/native/build"
     	
-      //  workingDir "/Users/stevenmeyer/Projects/intervox_maven/Intervox/src/main/native/build"
-        commandLine 'cmake', '--build', '../'
+        commandLine 'cmake', '..'
 
     }
 }

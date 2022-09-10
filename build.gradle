@@ -42,7 +42,8 @@ task JniCompile {
     exec { 
      	workingDir getProjectDir().getAbsolutePath() + "/src/main/native/build"
     	
-        commandLine 'cmake', '..'
+        commandLine 'cmake',  '..'
+        commandLine 'cmake',  '--build', '.'
 
     }
 }

@@ -55,7 +55,7 @@ add_library (Intervox
 	SHARED
 
 	${INTERVOX_SOURCE}
-#	${VULKAN_SOURCE}
+	${VULKAN_SOURCE}
 )
 
 

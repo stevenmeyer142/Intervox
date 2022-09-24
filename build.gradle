@@ -18,12 +18,13 @@ dependencies {
     implementation 'javax.vecmath:vecmath:1.5.2'
     implementation 'org.rxtx:rxtx:2.1.7'
     implementation 'gov.nist.math:jama:1.0.3'
-    testImplementation 'junit:junit:4.11'
 }
 
 group = 'com.brazedblue.intervox'
 version = '1.0-SNAPSHOT'
 description = 'Intervox'
+def native_dir = '/src/main/native'
+def jni_build_dir = "${native_dir}/build"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
@@ -39,15 +40,27 @@ tasks.withType(JavaCompile) {
 }
 
 task JniCompile {
-    exec { 
-     	workingDir getProjectDir().getAbsolutePath() + "/src/main/native/build"
+    exec {
+     	workingDir getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
     	
         commandLine 'cmake',  '..'
         commandLine 'cmake',  '--build', '.'
 
     }
 }
+tasks.register('copyData', Copy) {
+    from getProjectDir().getAbsolutePath() + "/${native_dir}/data",getProjectDir().getAbsolutePath() + "/data"
+    into "${buildDir}/data"
+}
 
-JniCompile.dependsOn compileJava
+tasks.register('copyJniLibs', Copy) {
+    from getProjectDir().getAbsolutePath() +  "/${jni_build_dir}/lib"
+    into "${buildDir}/lib"
+}
+
+
+tasks.named("processResources") { finalizedBy("copyData") }
+tasks.named("classes") { finalizedBy("copyJniLibs") }
+
 
 

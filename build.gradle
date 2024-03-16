@@ -20,6 +20,7 @@ dependencies {
     implementation 'gov.nist.math:jama:1.0.3'
 }
 
+
 group = 'com.brazedblue.intervox'
 version = '1.0-SNAPSHOT'
 description = 'Intervox'
@@ -57,10 +58,15 @@ tasks.register('copyJniLibs', Copy) {
     from getProjectDir().getAbsolutePath() +  "/${jni_build_dir}/lib"
     into "${buildDir}/lib"
 }
+tasks.register("copyPackages", Copy) {
+    from configurations.default
+    into "${buildDir}/packages"
+}
 
 
 tasks.named("processResources") { finalizedBy("copyData") }
 tasks.named("classes") { finalizedBy("copyJniLibs") }
+tasks.named("processResources") { finalizedBy("copyPackages") }
 
 
 

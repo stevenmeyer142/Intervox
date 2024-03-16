@@ -121,6 +121,7 @@
 		4F3E43BC27FF963E002D1B79 /* CSlicesSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CSlicesSet.h; path = utility/CSlicesSet.h; sourceTree = "<group>"; };
 		4F3E43E427FF965C002D1B79 /* conanbuildinfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = conanbuildinfo.xcconfig; sourceTree = "<group>"; };
 		4F7B17C8274848F7008892C2 /* libIntervox.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libIntervox.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F97DF1528EA1B17006CD156 /* Intervox.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = Intervox.sh; path = ../../Intervox.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +151,7 @@
 				4F3E436827FF9558002D1B79 /* base */,
 				4F3E435627FF9519002D1B79 /* GLMain.cpp */,
 				4F3E435327FF9519002D1B79 /* headless_debug.xcconfig */,
+				4F97DF1528EA1B17006CD156 /* Intervox.sh */,
 				4F3E435227FF9519002D1B79 /* IntervoxHeadlessVulkan.cpp */,
 				4F3E435427FF9519002D1B79 /* IntervoxHeadlessVulkan.hpp */,
 				4F3E435527FF9519002D1B79 /* IntervoxLib.entitlements */,
@@ -434,6 +436,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = "/usr/local/Cellar/openjdk/18.0.2.1/include ";
 			};
 			name = Debug;
 		};
@@ -488,6 +491,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = "/usr/local/Cellar/openjdk/18.0.2.1/include ";
 			};
 			name = Release;
 		};

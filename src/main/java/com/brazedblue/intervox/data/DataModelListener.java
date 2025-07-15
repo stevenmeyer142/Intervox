@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.data;public interface DataModelListener  { 	public void DataModelChanged(DataModel model, DataChangedEvent event); }
+package com.brazedblue.intervox.data;public interface DataModelListener {  public void DataModelChanged(DataModel model, DataChangedEvent event);}

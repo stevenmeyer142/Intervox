@@ -1,1 +1,39 @@
-// C3DPoint.h// Created by Steve on Wed, Oct 28, 1998 @ 4:01 PM.#ifndef __C3DPoint__#define __C3DPoint__class C3DPoint{public:	float		fX;	float		fY;	float		fZ;		C3DPoint(float x, float y, float z);		C3DPoint(const C3DPoint &other);	virtual ~C3DPoint();	C3DPoint& operator+=(const C3DPoint& pt);	C3DPoint& operator-=(const C3DPoint& pt);	C3DPoint operator+(const C3DPoint& pt) const;	C3DPoint operator-() const;	C3DPoint();	bool IsZero();		C3DPoint CrossProduct(const C3DPoint& pt) const;		void Normalize();		float Length();		void Scale(float factor);		C3DPoint Abs() const;	};#endif
+// C3DPoint.h
+// Created by Steve on Wed, Oct 28, 1998 @ 4:01 PM.
+
+#ifndef __C3DPoint__
+#define __C3DPoint__
+
+class C3DPoint
+{
+public:
+	float fX;
+	float fY;
+	float fZ;
+
+	C3DPoint(float x, float y, float z);
+
+	C3DPoint(const C3DPoint &other);
+
+	virtual ~C3DPoint();
+
+	C3DPoint &operator+=(const C3DPoint &pt);
+	C3DPoint &operator-=(const C3DPoint &pt);
+	C3DPoint operator+(const C3DPoint &pt) const;
+	C3DPoint operator-() const;
+	C3DPoint();
+
+	bool IsZero();
+
+	C3DPoint CrossProduct(const C3DPoint &pt) const;
+
+	void Normalize();
+
+	float Length();
+
+	void Scale(float factor);
+
+	C3DPoint Abs() const;
+};
+
+#endif

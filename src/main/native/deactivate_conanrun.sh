@@ -1,0 +1,1 @@
+. "/Users/stevenmeyer/Projects/intervox_maven/Intervox/src/main/native/deactivate_conanrunenv-release-x86_64.sh"

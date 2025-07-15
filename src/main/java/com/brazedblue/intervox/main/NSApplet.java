@@ -1,11 +1,9 @@
 package com.brazedblue.intervox.main;
 
-import javax.swing.*;
-
 import com.brazedblue.intervox.util.NeuroSynchUtil;
-
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 /*
 	FramelessApplet java
@@ -16,13 +14,9 @@ import java.awt.event.*;
 	All rights reserved
 */
 
-public class NSApplet extends JApplet 
-{
-	
-	Frame GetFrame()
-	{
-		return NeuroSynchUtil.GetFrame(this);
-	}
-	
+public class NSApplet extends JApplet {
 
+  Frame GetFrame() {
+    return NeuroSynchUtil.GetFrame(this);
+  }
 }

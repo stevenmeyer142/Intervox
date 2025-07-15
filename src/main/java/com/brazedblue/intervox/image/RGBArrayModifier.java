@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.image;public interface RGBArrayModifier {	public void UpdateRGBArray(int[] rgbArray);}
+package com.brazedblue.intervox.image;public interface RGBArrayModifier {  public void UpdateRGBArray(int[] rgbArray);}

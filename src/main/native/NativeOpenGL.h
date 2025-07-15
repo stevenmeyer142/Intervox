@@ -21,16 +21,17 @@ typedef float CGLMCoord;
 #define kUseJNI true
 typedef long ListIndex;
 
-typedef ListIndex    CGLMIndex;
+typedef ListIndex CGLMIndex;
 
 #define kUSE_VULKAN 1
 
-struct Rect {
-  short               top;
-  short               left;
-  short               bottom;
-  short               right;
+struct Rect
+{
+  short top;
+  short left;
+  short bottom;
+  short right;
 };
-typedef struct Rect                     Rect;
+typedef struct Rect Rect;
 
 #endif

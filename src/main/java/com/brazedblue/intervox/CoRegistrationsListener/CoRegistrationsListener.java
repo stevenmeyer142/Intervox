@@ -1,1 +1,6 @@
-package com.brazedblue.intervox.CoRegistrationsListener;class CoRegistrationsListener  /* implements anInterface */ {     public CoRegistrationsListener() {    } }
+package com.brazedblue.intervox.CoRegistrationsListener;
+
+class CoRegistrationsListener /* implements anInterface */ {
+
+  public CoRegistrationsListener() {}
+}

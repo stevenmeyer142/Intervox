@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.display;import java.awt.*;public interface NSPopupController  {  	public String[] GetPopupItems(Point pt);}
+package com.brazedblue.intervox.display;import java.awt.*;public interface NSPopupController {  public String[] GetPopupItems(Point pt);}

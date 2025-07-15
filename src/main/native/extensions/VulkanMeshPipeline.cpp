@@ -10,15 +10,13 @@
 
 #define VERTEX_BUFFER_BIND_ID 0
 
-
-VulkanMeshPipeline::VulkanMeshPipeline(VkDevice device) :
-    fDevice(device){
-   
+VulkanMeshPipeline::VulkanMeshPipeline(VkDevice device) : fDevice(device)
+{
 }
 
 VulkanMeshPipeline::~VulkanMeshPipeline()
 {
-    for (auto& shaderModule : fShaderModules)
+    for (auto &shaderModule : fShaderModules)
     {
         vkDestroyShaderModule(fDevice, shaderModule, nullptr);
     }
@@ -26,7 +24,6 @@ VulkanMeshPipeline::~VulkanMeshPipeline()
     vkDestroyPipelineLayout(fDevice, fPipelineLayout, nullptr);
     vkDestroyDescriptorSetLayout(fDevice, fDescriptorSetLayout, nullptr);
 }
-
 
 void VulkanMeshPipeline::Draw(VkCommandBuffer commandBuffer, RenderCommandSettings &renderCommandSettings)
 {
@@ -51,8 +48,6 @@ uint32_t VulkanMeshPipeline::getUniformBufferCount()
     return static_cast<uint32_t>(fMeshes.size());
 }
 
-
-
 void VulkanMeshPipeline::updateUniformBuffer(RenderCommandSettings &renderCommandSettings)
 {
     glm::mat4 model;
@@ -70,7 +65,7 @@ void VulkanMeshPipeline::updateUniformBuffer(RenderCommandSettings &renderComman
     }
 }
 
-void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRenderPass renderPass,
+void VulkanMeshPipeline::createPipeline(const std::string &shadersPath, VkRenderPass renderPass,
                                         VkPipelineCache pipelineCache)
 {
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
@@ -83,11 +78,11 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
     VkPipelineRasterizationStateCreateInfo rasterizationState =
         vks::initializers::pipelineRasterizationStateCreateInfo(
             VK_POLYGON_MODE_FILL,
-            VK_CULL_MODE_NONE, //VK_CULL_MODE_BACK_BIT,
+            VK_CULL_MODE_NONE, // VK_CULL_MODE_BACK_BIT,
             VK_FRONT_FACE_CLOCKWISE,
-       //     VK_CULL_MODE_NONE,
-        //    VK_FRONT_FACE_COUNTER_CLOCKWISE,
-                                                                0);
+            //     VK_CULL_MODE_NONE,
+            //    VK_FRONT_FACE_COUNTER_CLOCKWISE,
+            0);
 
     VkPipelineColorBlendAttachmentState blendAttachmentState =
         vks::initializers::pipelineColorBlendAttachmentState(
@@ -115,8 +110,7 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
 
     std::vector<VkDynamicState> dynamicStateEnables = {
         VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR
-    };
+        VK_DYNAMIC_STATE_SCISSOR};
     VkPipelineDynamicStateCreateInfo dynamicState =
         vks::initializers::pipelineDynamicStateCreateInfo(
             dynamicStateEnables.data(),
@@ -148,21 +142,18 @@ void VulkanMeshPipeline::createPipeline(const std::string& shadersPath, VkRender
     pipelineCreateInfo.pStages = shaderStages.data();
 
     VK_CHECK_RESULT(vkCreateGraphicsPipelines(fDevice, pipelineCache, 1, &pipelineCreateInfo, nullptr, &fPipeline));
-
 }
-
 
 void VulkanMeshPipeline::setupDescriptorSetLayout()
 {
 
     std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings =
-    {
-        // Binding 0 : Vertex shader uniform buffer
-        vks::initializers::descriptorSetLayoutBinding(
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-            VK_SHADER_STAGE_VERTEX_BIT,
-            0)
-    };
+        {
+            // Binding 0 : Vertex shader uniform buffer
+            vks::initializers::descriptorSetLayoutBinding(
+                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                VK_SHADER_STAGE_VERTEX_BIT,
+                0)};
 
     VkDescriptorSetLayoutCreateInfo descriptorLayout =
         vks::initializers::descriptorSetLayoutCreateInfo(
@@ -177,7 +168,6 @@ void VulkanMeshPipeline::setupDescriptorSetLayout()
             1);
 
     VK_CHECK_RESULT(vkCreatePipelineLayout(fDevice, &pPipelineLayoutCreateInfo, nullptr, &fPipelineLayout));
-
 }
 
 void VulkanMeshPipeline::setupVertexDescriptions()
@@ -212,11 +202,10 @@ void VulkanMeshPipeline::setupVertexDescriptions()
     fVertices.inputState.pVertexBindingDescriptions = fVertices.bindingDescriptions.data();
     fVertices.inputState.vertexAttributeDescriptionCount = static_cast<uint32_t>(fVertices.attributeDescriptions.size());
     fVertices.inputState.pVertexAttributeDescriptions = fVertices.attributeDescriptions.data();
-
 }
 
 // this should only need to be called once
-void VulkanMeshPipeline::setupLayoutsAndPipeline(const std::string& shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache)
+void VulkanMeshPipeline::setupLayoutsAndPipeline(const std::string &shadersPath, VkRenderPass renderPass, VkPipelineCache pipelineCache)
 {
     setupDescriptorSetLayout();
     setupVertexDescriptions();
@@ -226,17 +215,17 @@ void VulkanMeshPipeline::setupLayoutsAndPipeline(const std::string& shadersPath,
 // this must be called every time the meshes change
 void VulkanMeshPipeline::setupDescripterSets(VkDescriptorPool pool)
 {
-    for (auto& mesh :fMeshes)
+    for (auto &mesh : fMeshes)
     {
         mesh->setupDescriptorSet(pool, fDescriptorSetLayout);
     }
 }
 
-void VulkanMeshPipeline::setMeshColor(int32_t meshID, const glm::vec3& color)
+void VulkanMeshPipeline::setMeshColor(int32_t meshID, const glm::vec3 &color)
 {
     std::cout << "setting mess color [" << color[0] << "," << color[1] << ","
-    << color[2] << "]" << std::endl;
-    for (auto& mesh :fMeshes)
+              << color[2] << "]" << std::endl;
+    for (auto &mesh : fMeshes)
     {
         if (mesh->getMeshID() == meshID)
         {
@@ -246,10 +235,6 @@ void VulkanMeshPipeline::setMeshColor(int32_t meshID, const glm::vec3& color)
         }
     }
 }
-
-
-
-
 
 VkPipelineShaderStageCreateInfo VulkanMeshPipeline::loadShader(std::string fileName, VkShaderStageFlagBits stage)
 {
@@ -265,8 +250,4 @@ VkPipelineShaderStageCreateInfo VulkanMeshPipeline::loadShader(std::string fileN
     assert(shaderStage.module != VK_NULL_HANDLE);
     fShaderModules.push_back(shaderStage.module);
     return shaderStage;
-
 }
-
-
-

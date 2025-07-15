@@ -1,8 +1,13 @@
 cmake_minimum_required (VERSION 3.17)
 project (Intervox)
 
-include(build/conanbuildinfo.cmake)
-conan_basic_setup()
+set(USE_CONAN 1)
+if (USE_CONAN)
+    include(build/conan_toolchain.cmake)
+ else()
+ find_package(Vulkan)
+
+endif()
 
 find_package(JNI)
 
@@ -74,7 +79,9 @@ target_include_directories(Intervox
 	PRIVATE
 	.
 	${JNI_INCLUDE_DIRS}
+	/usr/local/include
 )
 
+set(CMAKE_CXX_FLAGS "--sysroot ${CMAKE_OSX_SYSROOT} ${CMAKE_CXX_FLAGS}")
 
 target_link_libraries(Intervox ${CONAN_LIBS})

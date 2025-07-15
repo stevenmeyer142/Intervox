@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.display;public interface ContextPopupListener  { 	public void ItemSelected(ContextPopupEvent event);}
+package com.brazedblue.intervox.display;public interface ContextPopupListener {  public void ItemSelected(ContextPopupEvent event);}

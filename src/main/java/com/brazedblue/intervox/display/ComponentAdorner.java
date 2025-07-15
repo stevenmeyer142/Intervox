@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.display;import java.awt.Graphics;public interface ComponentAdorner {	public void Paint(Graphics g, AdornedComponent c);  }
+package com.brazedblue.intervox.display;import java.awt.Graphics;public interface ComponentAdorner {  public void Paint(Graphics g, AdornedComponent c);}

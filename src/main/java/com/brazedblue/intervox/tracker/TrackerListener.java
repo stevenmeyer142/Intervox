@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.tracker;import java.awt.Component;import com.brazedblue.intervox.device.DeviceOutput;public interface TrackerListener{	public void DataRetrieved(DeviceOutput output);		public Component GetComponent();}
+package com.brazedblue.intervox.tracker;import com.brazedblue.intervox.device.DeviceOutput;import java.awt.Component;public interface TrackerListener {  public void DataRetrieved(DeviceOutput output);  public Component GetComponent();}

@@ -1,0 +1,45 @@
+{
+    "version": 3,
+    "vendor": {
+        "conan": {}
+    },
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "conan-release",
+            "displayName": "'conan-release' config",
+            "description": "'conan-release' configure using 'Unix Makefiles' generator",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "toolchainFile": "conan_toolchain.cmake",
+            "binaryDir": "/Users/stevenmeyer/Projects/intervox_maven/Intervox/src/main/native"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-release",
+            "jobs": 8
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-release",
+            "environment": {
+                "VK_DRIVER_FILES": "/Users/stevenmeyer/.conan2/p/b/molte3d22cbeef2742/p/lib/MoltenVK_icd.json:$penv{VK_DRIVER_FILES}",
+                "VK_ICD_FILENAMES": "/Users/stevenmeyer/.conan2/p/b/molte3d22cbeef2742/p/lib/MoltenVK_icd.json:$penv{VK_ICD_FILENAMES}",
+                "PATH": "/Users/stevenmeyer/.conan2/p/b/molte3d22cbeef2742/p/bin:$penv{PATH}",
+                "LD_LIBRARY_PATH": "/Users/stevenmeyer/.conan2/p/b/molte3d22cbeef2742/p/lib:$penv{LD_LIBRARY_PATH}",
+                "DYLD_LIBRARY_PATH": "/Users/stevenmeyer/.conan2/p/b/molte3d22cbeef2742/p/lib:$penv{DYLD_LIBRARY_PATH}"
+            }
+        }
+    ]
+}

@@ -1,10 +1,10 @@
 /*
-* Vulkan Example - Minimal headless rendering example
-*
-* Copyright (C) 2017 by Sascha Willems - www.saschawillems.de
-*
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
-*/
+ * Vulkan Example - Minimal headless rendering example
+ *
+ * Copyright (C) 2017 by Sascha Willems - www.saschawillems.de
+ *
+ * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+ */
 
 #if defined(_WIN32)
 #pragma comment(linker, "/subsystem:console")
@@ -36,7 +36,7 @@
 #include "IntervoxHeadlessVulkan.hpp"
 
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-android_app* androidapp;
+android_app *androidapp;
 #endif
 
 #define BUFFER_ELEMENTS 32
@@ -53,9 +53,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
 	uint64_t object,
 	size_t location,
 	int32_t messageCode,
-	const char* pLayerPrefix,
-	const char* pMessage,
-	void* pUserData)
+	const char *pLayerPrefix,
+	const char *pMessage,
+	void *pUserData)
 {
 	LOG("[VALIDATION]: %s - %s\n", pLayerPrefix, pMessage);
 	return VK_FALSE;
@@ -79,7 +79,8 @@ public:
 	VkBuffer vertexBuffer, indexBuffer;
 	VkDeviceMemory vertexMemory, indexMemory;
 
-	struct FrameBufferAttachment {
+	struct FrameBufferAttachment
+	{
 		VkImage image;
 		VkDeviceMemory memory;
 		VkImageView view;
@@ -91,12 +92,16 @@ public:
 
 	VkDebugReportCallbackEXT debugReportCallback{};
 
-	uint32_t getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties) {
+	uint32_t getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties)
+	{
 		VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &deviceMemoryProperties);
-		for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++) {
-			if ((typeBits & 1) == 1) {
-				if ((deviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+		for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
+		{
+			if ((typeBits & 1) == 1)
+			{
+				if ((deviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+				{
 					return i;
 				}
 			}
@@ -120,7 +125,8 @@ public:
 		memAlloc.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memoryPropertyFlags);
 		VK_CHECK_RESULT(vkAllocateMemory(device, &memAlloc, nullptr, memory));
 
-		if (data != nullptr) {
+		if (data != nullptr)
+		{
 			void *mapped;
 			VK_CHECK_RESULT(vkMapMemory(device, *memory, 0, size, 0, &mapped));
 			memcpy(mapped, data, size);
@@ -137,9 +143,9 @@ public:
 	*/
 	void submitWork(VkCommandBuffer cmdBuffer, VkQueue queue)
 	{
-        VK_CHECK_RESULT(vkEndCommandBuffer(cmdBuffer));
+		VK_CHECK_RESULT(vkEndCommandBuffer(cmdBuffer));
 
-        VkSubmitInfo submitInfo = vks::initializers::submitInfo();
+		VkSubmitInfo submitInfo = vks::initializers::submitInfo();
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &cmdBuffer;
 		VkFenceCreateInfo fenceInfo = vks::initializers::fenceCreateInfo();
@@ -174,10 +180,10 @@ public:
 
 		uint32_t layerCount = 0;
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-		const char* validationLayers[] = { "VK_LAYER_GOOGLE_threading",	"VK_LAYER_LUNARG_parameter_validation",	"VK_LAYER_LUNARG_object_tracker","VK_LAYER_LUNARG_core_validation",	"VK_LAYER_LUNARG_swapchain", "VK_LAYER_GOOGLE_unique_objects" };
+		const char *validationLayers[] = {"VK_LAYER_GOOGLE_threading", "VK_LAYER_LUNARG_parameter_validation", "VK_LAYER_LUNARG_object_tracker", "VK_LAYER_LUNARG_core_validation", "VK_LAYER_LUNARG_swapchain", "VK_LAYER_GOOGLE_unique_objects"};
 		layerCount = 6;
 #else
-		const char* validationLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
+		const char *validationLayers[] = {"VK_LAYER_LUNARG_standard_validation"};
 		layerCount = 1;
 #endif
 #if DEBUG
@@ -188,22 +194,27 @@ public:
 		vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayers.data());
 
 		bool layersAvailable = true;
-		for (auto layerName : validationLayers) {
+		for (auto layerName : validationLayers)
+		{
 			bool layerAvailable = false;
-			for (auto instanceLayer : instanceLayers) {
-				if (strcmp(instanceLayer.layerName, layerName) == 0) {
+			for (auto instanceLayer : instanceLayers)
+			{
+				if (strcmp(instanceLayer.layerName, layerName) == 0)
+				{
 					layerAvailable = true;
 					break;
 				}
 			}
-			if (!layerAvailable) {
+			if (!layerAvailable)
+			{
 				layersAvailable = false;
 				break;
 			}
 		}
 
 		const char *validationExt = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-		if (layersAvailable) {
+		if (layersAvailable)
+		{
 			instanceCreateInfo.ppEnabledLayerNames = validationLayers;
 			instanceCreateInfo.enabledLayerCount = layerCount;
 			instanceCreateInfo.enabledExtensionCount = 1;
@@ -216,7 +227,8 @@ public:
 		vks::android::loadVulkanFunctions(instance);
 #endif
 #if DEBUG
-		if (layersAvailable) {
+		if (layersAvailable)
+		{
 			VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
 			debugReportCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 			debugReportCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
@@ -249,8 +261,10 @@ public:
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 		std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
-		for (uint32_t i = 0; i < static_cast<uint32_t>(queueFamilyProperties.size()); i++) {
-			if (queueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+		for (uint32_t i = 0; i < static_cast<uint32_t>(queueFamilyProperties.size()); i++)
+		{
+			if (queueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			{
 				queueFamilyIndex = i;
 				queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 				queueCreateInfo.queueFamilyIndex = i;
@@ -279,17 +293,17 @@ public:
 		/*
 			Prepare vertex and index buffers
 		*/
-		struct Vertex {
+		struct Vertex
+		{
 			float position[3];
 			float color[3];
 		};
 		{
 			std::vector<Vertex> vertices = {
-				{ {  1.0f,  1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-				{ { -1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-				{ {  0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
-			};
-			std::vector<uint32_t> indices = { 0, 1, 2 };
+				{{1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+				{{-1.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+				{{0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}};
+			std::vector<uint32_t> indices = {0, 1, 2};
 
 			const VkDeviceSize vertexBufferSize = vertices.size() * sizeof(Vertex);
 			const VkDeviceSize indexBufferSize = indices.size() * sizeof(uint32_t);
@@ -453,8 +467,8 @@ public:
 			attchmentDescriptions[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			attchmentDescriptions[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-			VkAttachmentReference colorReference = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
-			VkAttachmentReference depthReference = { 1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL };
+			VkAttachmentReference colorReference = {0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL};
+			VkAttachmentReference depthReference = {1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL};
 
 			VkSubpassDescription subpassDescription = {};
 			subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -535,8 +549,8 @@ public:
 
 			VkPipelineRasterizationStateCreateInfo rasterizationState =
 				vks::initializers::pipelineRasterizationStateCreateInfo(VK_POLYGON_MODE_FILL,
-                                                                        VK_CULL_MODE_FRONT_AND_BACK, VK_FRONT_FACE_CLOCKWISE);
-                                                                        //VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_CLOCKWISE);
+																		VK_CULL_MODE_FRONT_AND_BACK, VK_FRONT_FACE_CLOCKWISE);
+			// VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_CLOCKWISE);
 
 			VkPipelineColorBlendAttachmentState blendAttachmentState =
 				vks::initializers::pipelineColorBlendAttachmentState(0xf, VK_FALSE);
@@ -555,8 +569,7 @@ public:
 
 			std::vector<VkDynamicState> dynamicStateEnables = {
 				VK_DYNAMIC_STATE_VIEWPORT,
-				VK_DYNAMIC_STATE_SCISSOR
-			};
+				VK_DYNAMIC_STATE_SCISSOR};
 			VkPipelineDynamicStateCreateInfo dynamicState =
 				vks::initializers::pipelineDynamicStateCreateInfo(dynamicStateEnables);
 
@@ -583,8 +596,8 @@ public:
 
 			// Attribute descriptions
 			std::vector<VkVertexInputAttributeDescription> vertexInputAttributes = {
-				vks::initializers::vertexInputAttributeDescription(0, 0, VK_FORMAT_R32G32B32_SFLOAT, 0),					// Position
-				vks::initializers::vertexInputAttributeDescription(0, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3),	// Color
+				vks::initializers::vertexInputAttributeDescription(0, 0, VK_FORMAT_R32G32B32_SFLOAT, 0),				 // Position
+				vks::initializers::vertexInputAttributeDescription(0, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3), // Color
 			};
 
 			VkPipelineVertexInputStateCreateInfo vertexInputState = vks::initializers::pipelineVertexInputStateCreateInfo();
@@ -613,7 +626,7 @@ public:
 			shaderStages[0].module = vks::tools::loadShader((shadersPath + "triangle.vert.spv").c_str(), device);
 			shaderStages[1].module = vks::tools::loadShader((shadersPath + "triangle.frag.spv").c_str(), device);
 #endif
-			shaderModules = { shaderStages[0].module, shaderStages[1].module };
+			shaderModules = {shaderStages[0].module, shaderStages[1].module};
 			VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline));
 		}
 
@@ -632,8 +645,8 @@ public:
 			VK_CHECK_RESULT(vkBeginCommandBuffer(commandBuffer, &cmdBufInfo));
 
 			VkClearValue clearValues[2];
-			clearValues[0].color = { { 0.0f, 0.0f, 0.2f, 1.0f } };
-			clearValues[1].depthStencil = { 1.0f, 0 };
+			clearValues[0].color = {{0.0f, 0.0f, 0.2f, 1.0f}};
+			clearValues[1].depthStencil = {1.0f, 0};
 
 			VkRenderPassBeginInfo renderPassBeginInfo = {};
 			renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -662,17 +675,18 @@ public:
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
 			// Render scene
-			VkDeviceSize offsets[1] = { 0 };
+			VkDeviceSize offsets[1] = {0};
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
 			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 			std::vector<glm::vec3> pos = {
 				glm::vec3(-1.5f, 0.0f, -4.0f),
-				glm::vec3( 0.0f, 0.0f, -2.5f),
-				glm::vec3( 1.5f, 0.0f, -4.0f),
+				glm::vec3(0.0f, 0.0f, -2.5f),
+				glm::vec3(1.5f, 0.0f, -4.0f),
 			};
 
-			for (auto v : pos) {
+			for (auto v : pos)
+			{
 				glm::mat4 mvpMatrix = glm::perspective(glm::radians(60.0f), (float)width / (float)height, 0.1f, 256.0f) * glm::translate(glm::mat4(1.0f), v);
 				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mvpMatrix), &mvpMatrix);
 				vkCmdDrawIndexed(commandBuffer, 3, 1, 0, 0, 0);
@@ -690,7 +704,7 @@ public:
 		/*
 			Copy framebuffer image to host visible image
 		*/
-		const char* imagedata;
+		const char *imagedata;
 		{
 			// Create the linear tiled destination image to copy to and to read the memory from
 			VkImageCreateInfo imgCreateInfo(vks::initializers::imageCreateInfo());
@@ -736,7 +750,7 @@ public:
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
-				VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+				VkImageSubresourceRange{VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1});
 
 			// colorAttachment.image is already in VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, and does not need to be transitioned
 
@@ -766,7 +780,7 @@ public:
 				VK_IMAGE_LAYOUT_GENERAL,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
-				VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+				VkImageSubresourceRange{VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1});
 
 			VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
 
@@ -780,39 +794,46 @@ public:
 			vkGetImageSubresourceLayout(device, dstImage, &subResource, &subResourceLayout);
 
 			// Map image memory so we can start copying from it
-			vkMapMemory(device, dstImageMemory, 0, VK_WHOLE_SIZE, 0, (void**)&imagedata);
+			vkMapMemory(device, dstImageMemory, 0, VK_WHOLE_SIZE, 0, (void **)&imagedata);
 			imagedata += subResourceLayout.offset;
 
-		/*
-			Save host visible framebuffer image to disk (ppm format)
-		*/
+			/*
+				Save host visible framebuffer image to disk (ppm format)
+			*/
 
-#if defined (VK_USE_PLATFORM_ANDROID_KHR)
-			const char* filename = strcat(getenv("EXTERNAL_STORAGE"), "/headless.ppm");
+#if defined(VK_USE_PLATFORM_ANDROID_KHR)
+			const char *filename = strcat(getenv("EXTERNAL_STORAGE"), "/headless.ppm");
 #else
-			const char* filename = "headless.ppm";
+			const char *filename = "headless.ppm";
 #endif
 			std::ofstream file(filename, std::ios::out | std::ios::binary);
 
 			// ppm header
-			file << "P6\n" << width << "\n" << height << "\n" << 255 << "\n";
+			file << "P6\n"
+				 << width << "\n"
+				 << height << "\n"
+				 << 255 << "\n";
 
 			// If source is BGR (destination is always RGB) and we can't use blit (which does automatic conversion), we'll have to manually swizzle color components
 			// Check if source is BGR and needs swizzle
-			std::vector<VkFormat> formatsBGR = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_B8G8R8A8_SNORM };
+			std::vector<VkFormat> formatsBGR = {VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_B8G8R8A8_SNORM};
 			const bool colorSwizzle = (std::find(formatsBGR.begin(), formatsBGR.end(), VK_FORMAT_R8G8B8A8_UNORM) != formatsBGR.end());
 
 			// ppm binary pixel data
-			for (int32_t y = 0; y < height; y++) {
-				unsigned int *row = (unsigned int*)imagedata;
-				for (int32_t x = 0; x < width; x++) {
-					if (colorSwizzle) {
-						file.write((char*)row + 2, 1);
-						file.write((char*)row + 1, 1);
-						file.write((char*)row, 1);
+			for (int32_t y = 0; y < height; y++)
+			{
+				unsigned int *row = (unsigned int *)imagedata;
+				for (int32_t x = 0; x < width; x++)
+				{
+					if (colorSwizzle)
+					{
+						file.write((char *)row + 2, 1);
+						file.write((char *)row + 1, 1);
+						file.write((char *)row, 1);
 					}
-					else {
-						file.write((char*)row, 3);
+					else
+					{
+						file.write((char *)row, 3);
 					}
 					row++;
 				}
@@ -825,7 +846,7 @@ public:
 			// Clean up resources
 			vkUnmapMemory(device, dstImageMemory);
 
-            vkFreeMemory(device, dstImageMemory, nullptr);
+			vkFreeMemory(device, dstImageMemory, nullptr);
 			vkDestroyImage(device, dstImage, nullptr);
 		}
 
@@ -851,12 +872,14 @@ public:
 		vkDestroyPipeline(device, pipeline, nullptr);
 		vkDestroyPipelineCache(device, pipelineCache, nullptr);
 		vkDestroyCommandPool(device, commandPool, nullptr);
-		for (auto shadermodule : shaderModules) {
+		for (auto shadermodule : shaderModules)
+		{
 			vkDestroyShaderModule(device, shadermodule, nullptr);
 		}
 		vkDestroyDevice(device, nullptr);
 #if DEBUG
-		if (debugReportCallback) {
+		if (debugReportCallback)
+		{
 			PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT"));
 			assert(vkDestroyDebugReportCallback);
 			vkDestroyDebugReportCallback(instance, debugReportCallback, nullptr);
@@ -870,44 +893,51 @@ public:
 };
 
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-void handleAppCommand(android_app * app, int32_t cmd) {
-	if (cmd == APP_CMD_INIT_WINDOW) {
+void handleAppCommand(android_app *app, int32_t cmd)
+{
+	if (cmd == APP_CMD_INIT_WINDOW)
+	{
 		VulkanExample *vulkanExample = new VulkanExample();
-		delete(vulkanExample);
+		delete (vulkanExample);
 		ANativeActivity_finish(app->activity);
 	}
 }
-void android_main(android_app* state) {
+void android_main(android_app *state)
+{
 	androidapp = state;
 	androidapp->onAppCmd = handleAppCommand;
 	int ident, events;
-	struct android_poll_source* source;
-	while ((ident = ALooper_pollAll(-1, NULL, &events, (void**)&source)) >= 0) {
-		if (source != NULL)	{
+	struct android_poll_source *source;
+	while ((ident = ALooper_pollAll(-1, NULL, &events, (void **)&source)) >= 0)
+	{
+		if (source != NULL)
+		{
 			source->process(androidapp, source);
 		}
-		if (androidapp->destroyRequested != 0) {
+		if (androidapp->destroyRequested != 0)
+		{
 			break;
 		}
 	}
 }
 #else
-int main() {
+int main()
+{
 #if 0
 	VulkanExample *vulkanExample = new VulkanExample();
 	std::cout << "Finished. Press enter to terminate...";
 	getchar();
 	delete(vulkanExample);
 #else
-    IntervoxHeadlessVulkan *intervoxHeadless = new IntervoxHeadlessVulkan();
+	IntervoxHeadlessVulkan *intervoxHeadless = new IntervoxHeadlessVulkan();
 
-    intervoxHeadless->initVulkan();
-    intervoxHeadless->prepare();
-    intervoxHeadless->render();
-     
-    intervoxHeadless->grabImage();
+	intervoxHeadless->initVulkan();
+	intervoxHeadless->prepare();
+	intervoxHeadless->render();
 
-    delete(intervoxHeadless);
+	intervoxHeadless->grabImage();
+
+	delete (intervoxHeadless);
 #endif
 	return 0;
 }

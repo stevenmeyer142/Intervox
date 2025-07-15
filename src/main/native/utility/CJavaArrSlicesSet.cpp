@@ -1,1 +1,180 @@
-// CJavaArrSlicesSet.cp// Created by Steve on Thu, Mar 18, 1999 @ 3:44 PM.#include "NativeOpenGL.h"#ifndef __CJavaArrSlicesSet__#include "CJavaArrSlicesSet.h"#endif#include "CMyError.h"    // adding this instead of unsigned char* for debugging purposesclass JavaByteArray {    JNIEnv*	fJNIEnv;    jbyte* 	fArray;    jsize 	fSize;    jbyteArray	fByteArrayObject;    public :    JavaByteArray(JNIEnv *env, jbyteArray byteArrayObj);        jbyte GetByte(long index);        virtual ~JavaByteArray();};    JavaByteArray::JavaByteArray(JNIEnv *env, jbyteArray byteArrayObj) : fJNIEnv(env), fArray(NULL), fSize(NULL),         fByteArrayObject(byteArrayObj){}    jbyte JavaByteArray::GetByte(long index){    jbyte result = 0;    if (fArray == NULL)    {        if (fByteArrayObject != NULL)        {            jboolean isCopy;            fArray = fJNIEnv->GetByteArrayElements(fByteArrayObject, &isCopy);            CMyError::CheckForJNIException(fJNIEnv);                        fSize = fJNIEnv->GetArrayLength(fByteArrayObject);            CMyError::CheckForJNIException(fJNIEnv);        }    }        if (fArray != NULL)    {        if (index >= 0 && index < fSize)        {            result = fArray[index];        }        else        {            ::printf("bad index %d in JavaByteArray::GetByte, fSize %d\n", (int)index, (int)fSize);        }    }    else     {        ::printf("fArray null in JavaByteArray::GetByte\n");    }        return result;}JavaByteArray::~JavaByteArray(){    if (fArray != NULL && fJNIEnv != NULL && fByteArrayObject != NULL)    {        fJNIEnv->ReleaseByteArrayElements(fByteArrayObject, fArray, JNI_ABORT);        }}CJavaArrSlicesSet::CJavaArrSlicesSet(JNIEnv *env, jobjectArray array, jint width, jint height) : fJNIEnv(env), fArray(array)#if kStaticByteArray, fPixelArray(NULL), fPixelArrayCount(0)#endif{		// these values correspond to an axial set	fWidth = width;	fDepth = height;        jsize count = fJNIEnv->GetArrayLength(fArray);	fHeight = count;	CMyError::CheckForJNIException(env); #if kStaticByteArray	fPixelArrayCount = count;	fPixelArray = new JavaByteArray*[count];#endif		for (long i = 0; i < count; i++)	{   		jbyteArray byteArray = (jbyteArray)fJNIEnv->GetObjectArrayElement(fArray, i);		CMyError::CheckForJNIException(env);		if (byteArray != NULL)		{                    JavaByteArray *arrayAccessor = new JavaByteArray(env, byteArray);#if kStaticByteArray					fPixelArray[i] = arrayAccessor;#else				                fPixelArray.Push(arrayAccessor);#endif				}		else		{#if kStaticByteArray			fPixelArray[i] = NULL;#else						fPixelArray.Push(NULL);#endif				}			}}CJavaArrSlicesSet::~CJavaArrSlicesSet(){#if kStaticByteArray	long count = fPixelArrayCount;	fPixelArrayCount = 0;	if (fPixelArray != NULL)	{		JavaByteArray** pixelArray = fPixelArray;		fPixelArray = NULL;		for (long i = 0; i < count; i++)		{			JavaByteArray* byteArray = pixelArray[i];			if (byteArray != NULL)			{				delete byteArray;			}		} 		delete pixelArray;	}     #else		for (int i = 1; i <= fPixelArray.GetSize(); i++)    {        JavaByteArray* byteArray = (JavaByteArray*)fPixelArray.GetElementAt(i);        if (byteArray != NULL)        {            delete byteArray;        }    }#endif}#pragma segment Mainlong CJavaArrSlicesSet::GetPixelValue(long x, long y, long z)//Override{	long result = 0;			// axial slices	if (InRange (x, 0, fWidth - 1) && InRange(y, 0, fHeight -1) && 				InRange (z, 0, fDepth - 1))	{		JavaByteArray* byteArray = NULL;		long arrayIndex = fHeight - y ;#if kStaticByteArray		arrayIndex--; // 0 based array		if (fPixelArray != NULL && arrayIndex >= 0 && arrayIndex < fPixelArrayCount)		{			byteArray = fPixelArray[arrayIndex];		}		#else				byteArray = (JavaByteArray*)fPixelArray.GetElementAt(arrayIndex);#endif		if (byteArray != NULL )		{                    result = byteArray->GetByte((z  + 1)* fWidth - (x + 1));		}                else                {                    result = 0;                }	}		return result;}
+// CJavaArrSlicesSet.cp
+// Created by Steve on Thu, Mar 18, 1999 @ 3:44 PM.
+
+#include "NativeOpenGL.h"
+#ifndef __CJavaArrSlicesSet__
+#include "CJavaArrSlicesSet.h"
+#endif
+#include "CMyError.h"
+
+// adding this instead of unsigned char* for debugging purposes
+class JavaByteArray
+{
+	JNIEnv *fJNIEnv;
+	jbyte *fArray;
+	jsize fSize;
+	jbyteArray fByteArrayObject;
+
+public:
+	JavaByteArray(JNIEnv *env, jbyteArray byteArrayObj);
+	jbyte GetByte(long index);
+
+	virtual ~JavaByteArray();
+};
+
+JavaByteArray::JavaByteArray(JNIEnv *env, jbyteArray byteArrayObj) : fJNIEnv(env), fArray(NULL), fSize(NULL),
+																	 fByteArrayObject(byteArrayObj)
+{
+}
+
+jbyte JavaByteArray::GetByte(long index)
+{
+	jbyte result = 0;
+	if (fArray == NULL)
+	{
+		if (fByteArrayObject != NULL)
+		{
+			jboolean isCopy;
+			fArray = fJNIEnv->GetByteArrayElements(fByteArrayObject, &isCopy);
+			CMyError::CheckForJNIException(fJNIEnv);
+
+			fSize = fJNIEnv->GetArrayLength(fByteArrayObject);
+			CMyError::CheckForJNIException(fJNIEnv);
+		}
+	}
+
+	if (fArray != NULL)
+	{
+		if (index >= 0 && index < fSize)
+		{
+			result = fArray[index];
+		}
+		else
+		{
+			::printf("bad index %d in JavaByteArray::GetByte, fSize %d\n", (int)index, (int)fSize);
+		}
+	}
+	else
+	{
+		::printf("fArray null in JavaByteArray::GetByte\n");
+	}
+
+	return result;
+}
+
+JavaByteArray::~JavaByteArray()
+{
+	if (fArray != NULL && fJNIEnv != NULL && fByteArrayObject != NULL)
+	{
+		fJNIEnv->ReleaseByteArrayElements(fByteArrayObject, fArray, JNI_ABORT);
+	}
+}
+
+CJavaArrSlicesSet::CJavaArrSlicesSet(JNIEnv *env, jobjectArray array, jint width, jint height) : fJNIEnv(env), fArray(array)
+#if kStaticByteArray
+																								 ,
+																								 fPixelArray(NULL), fPixelArrayCount(0)
+#endif
+
+{
+	// these values correspond to an axial set
+	fWidth = width;
+	fDepth = height;
+
+	jsize count = fJNIEnv->GetArrayLength(fArray);
+	fHeight = count;
+	CMyError::CheckForJNIException(env);
+#if kStaticByteArray
+	fPixelArrayCount = count;
+	fPixelArray = new JavaByteArray *[count];
+#endif
+	for (long i = 0; i < count; i++)
+	{
+		jbyteArray byteArray = (jbyteArray)fJNIEnv->GetObjectArrayElement(fArray, i);
+		CMyError::CheckForJNIException(env);
+		if (byteArray != NULL)
+		{
+			JavaByteArray *arrayAccessor = new JavaByteArray(env, byteArray);
+#if kStaticByteArray
+			fPixelArray[i] = arrayAccessor;
+#else
+			fPixelArray.Push(arrayAccessor);
+#endif
+		}
+		else
+		{
+#if kStaticByteArray
+			fPixelArray[i] = NULL;
+#else
+			fPixelArray.Push(NULL);
+#endif
+		}
+	}
+}
+
+CJavaArrSlicesSet::~CJavaArrSlicesSet()
+{
+#if kStaticByteArray
+	long count = fPixelArrayCount;
+	fPixelArrayCount = 0;
+	if (fPixelArray != NULL)
+	{
+		JavaByteArray **pixelArray = fPixelArray;
+		fPixelArray = NULL;
+		for (long i = 0; i < count; i++)
+		{
+			JavaByteArray *byteArray = pixelArray[i];
+
+			if (byteArray != NULL)
+			{
+				delete byteArray;
+			}
+		}
+		delete pixelArray;
+	}
+
+#else
+	for (int i = 1; i <= fPixelArray.GetSize(); i++)
+	{
+		JavaByteArray *byteArray = (JavaByteArray *)fPixelArray.GetElementAt(i);
+		if (byteArray != NULL)
+		{
+			delete byteArray;
+		}
+	}
+#endif
+}
+
+#pragma segment Main
+long CJavaArrSlicesSet::GetPixelValue(long x, long y, long z) // Override
+{
+	long result = 0;
+
+	// axial slices
+	if (InRange(x, 0, fWidth - 1) && InRange(y, 0, fHeight - 1) &&
+		InRange(z, 0, fDepth - 1))
+	{
+		JavaByteArray *byteArray = NULL;
+		long arrayIndex = fHeight - y;
+#if kStaticByteArray
+		arrayIndex--; // 0 based array
+		if (fPixelArray != NULL && arrayIndex >= 0 && arrayIndex < fPixelArrayCount)
+		{
+			byteArray = fPixelArray[arrayIndex];
+		}
+
+#else
+		byteArray = (JavaByteArray *)fPixelArray.GetElementAt(arrayIndex);
+#endif
+		if (byteArray != NULL)
+		{
+			result = byteArray->GetByte((z + 1) * fWidth - (x + 1));
+		}
+		else
+		{
+			result = 0;
+		}
+	}
+
+	return result;
+}

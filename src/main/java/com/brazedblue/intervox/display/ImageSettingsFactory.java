@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.display;public interface ImageSettingsFactory { 	public ImageControlSettings GetCurrentSettings();}
+package com.brazedblue.intervox.display;public interface ImageSettingsFactory {  public ImageControlSettings GetCurrentSettings();}

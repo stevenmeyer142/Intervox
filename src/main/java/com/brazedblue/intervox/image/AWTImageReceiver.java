@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.image;import java.awt.Image;public interface AWTImageReceiver extends ImageReceiver {	public void AddImage(Image image);	public void SetSliceThickness(float sliceThickness);}
+package com.brazedblue.intervox.image;import java.awt.Image;public interface AWTImageReceiver extends ImageReceiver {  public void AddImage(Image image);  public void SetSliceThickness(float sliceThickness);}

@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.geometry;public interface Region3DAccessor  {		public boolean IsFillPixel(int x, int y, int z);	public void MarkPixel(int x, int y, int z);}
+package com.brazedblue.intervox.geometry;public interface Region3DAccessor {  public boolean IsFillPixel(int x, int y, int z);  public void MarkPixel(int x, int y, int z);}

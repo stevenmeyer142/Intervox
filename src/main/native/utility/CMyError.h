@@ -4,7 +4,6 @@
 #ifndef __CMyError__
 #define __CMyError__
 
-
 #include <stdexcept>
 #ifdef INTERVOX_JNI
 #include <jni.h>
@@ -18,31 +17,31 @@ extern bool gDebugging;
 class CMyError : public std::exception
 {
 public:
-	CMyError(long err, const char* message1, const char* message2 = NULL);
-	
+	CMyError(long err, const char *message1, const char *message2 = NULL);
+
 	long GetErrorCode() { return fError; }
-	
-	char* GetMessage() { return fMessage; } 
-	
-	static void ThrowErrorIfNULL(void* ptr, const char *message = NULL);
+
+	char *GetMessage() { return fMessage; }
+
+	static void ThrowErrorIfNULL(void *ptr, const char *message = NULL);
 
 	static void ThrowErrorIfOSErr(OSErr err, const char *message = NULL);
-	
+
 #ifdef INTERVOX_JNI
-    static void CheckForJNIException(JNIEnv *env, const char * message = NULL);
+	static void CheckForJNIException(JNIEnv *env, const char *message = NULL);
 #endif
 
-	static void DebugMessage(const char* message);
-	
+	static void DebugMessage(const char *message);
+
 	static void CheckForGLError(bool toss, bool debugMessage);
-	
-	static void Assert(bool condition, const char* message = NULL);
-	
+
+	static void Assert(bool condition, const char *message = NULL);
+
 	virtual ~CMyError() throw();
 
-private :
-	char 	fMessage[kErrMessageStrLength + 1];
-	long 	fError;
+private:
+	char fMessage[kErrMessageStrLength + 1];
+	long fError;
 };
 
 #endif

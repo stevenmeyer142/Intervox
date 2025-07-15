@@ -1,0 +1,4 @@
+// Conan XcodeToolchain generated file
+// Includes all installed configurations
+
+#include "conantoolchain_release_x86_64.xcconfig"

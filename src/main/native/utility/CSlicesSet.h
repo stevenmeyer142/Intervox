@@ -1,1 +1,37 @@
-// CSlicesSet.h// Created by Steve on Mon, Oct 26, 1998 @ 10:25 AM.#ifndef __CSlicesSet__#define __CSlicesSet__#define kTest falseinline bool InRange(long value, long low, long high) {		 return (value >= low && value <= high); }class CSlicesSet{protected :	long 		fWidth;	long 		fHeight;	long 		fDepth;	public:		static const short kResolution;		CSlicesSet();		virtual ~CSlicesSet();		long GetWidth() { return fWidth; }		long GetHeight() { return fHeight; }	virtual long GetDepth() { return fDepth; }			virtual long GetPixelValue(long x, long y, long z);				 };#endif
+// CSlicesSet.h
+// Created by Steve on Mon, Oct 26, 1998 @ 10:25 AM.
+
+#ifndef __CSlicesSet__
+#define __CSlicesSet__
+
+#define kTest false
+
+inline bool InRange(long value, long low, long high)
+{
+	return (value >= low && value <= high);
+}
+
+class CSlicesSet
+{
+protected:
+	long fWidth;
+	long fHeight;
+	long fDepth;
+
+public:
+	static const short kResolution;
+
+	CSlicesSet();
+
+	virtual ~CSlicesSet();
+
+	long GetWidth() { return fWidth; }
+
+	long GetHeight() { return fHeight; }
+
+	virtual long GetDepth() { return fDepth; }
+
+	virtual long GetPixelValue(long x, long y, long z);
+};
+
+#endif

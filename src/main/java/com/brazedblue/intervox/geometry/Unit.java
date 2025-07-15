@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.geometry;public interface Unit { static final float MILLIMETER = 	.001f;static final float CENTIMETER = 	.01f;	public float Convert(float value, float unit);}
+package com.brazedblue.intervox.geometry;public interface Unit {  static final float MILLIMETER = .001f;  static final float CENTIMETER = .01f;  public float Convert(float value, float unit);}

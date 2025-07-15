@@ -1,1 +1,1 @@
-package com.brazedblue.intervox.display;import javax.swing.*;class ImagesRootPane extends JRootPane /* implements anInterface */ {      public ImagesRootPane() 		{    }				public void setDefaultButton(JButton defaultButton)		{			// no default button		}  }
+package com.brazedblue.intervox.display;import javax.swing.*;class ImagesRootPane extends JRootPane /* implements anInterface */ {  public ImagesRootPane() {}  public void setDefaultButton(JButton defaultButton) {    // no default button  }}

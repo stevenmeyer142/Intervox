@@ -8,7 +8,8 @@ import java.util.*;
 import javax.swing.*;
 
 /**
- * View Object to display a Point with labels for each coordinate. Dimensions of coordinate system
+ * View Object to display a Point with labels for each coordinate. Dimensions of
+ * coordinate system
  * determing by labels.length in SetLabels
  *
  * @version 1 6/4/98
@@ -17,7 +18,7 @@ import javax.swing.*;
 public class CoordinatesDisplay extends JComponent implements TrackerListener {
   Vector fSensor1Coordinates = new Vector();
   Vector fSensor2Coordinates = new Vector();
-  public static final String[] kXYZLabel = {"X", "Y", "Z"};
+  public static final String[] kXYZLabel = { "X", "Y", "Z" };
   JPanel fCoordinatesPanel;
   JPanel fLabelsPanel;
 
@@ -43,11 +44,13 @@ public class CoordinatesDisplay extends JComponent implements TrackerListener {
   }
 
   /**
-   * View Object to display a Point with labels for each coordinate. Dimensions of coordinate system
+   * View Object to display a Point with labels for each coordinate. Dimensions of
+   * coordinate system
    * determing by labels.length in SetLabels
    *
-   * @param labels, array which determines the labels, i.e. "x,y,etc..." and the number of
-   *     coordinates
+   * @param labels, array which determines the labels, i.e. "x,y,etc..." and the
+   *                number of
+   *                coordinates
    */
   public void SetLabels(String[] labels) {
 
@@ -55,8 +58,7 @@ public class CoordinatesDisplay extends JComponent implements TrackerListener {
 
     fCoordinatesPanel.setLayout(new GridLayout(3, labels.length));
     FontMetrics fMetrics = getFontMetrics(getFont());
-    Dimension size =
-        new Dimension(labels.length * fMetrics.stringWidth("1.111111"), 3 * fMetrics.getHeight());
+    Dimension size = new Dimension(labels.length * fMetrics.stringWidth("1.111111"), 3 * fMetrics.getHeight());
     fCoordinatesPanel.setMinimumSize(size);
     fCoordinatesPanel.setPreferredSize(size);
 
@@ -90,11 +92,13 @@ public class CoordinatesDisplay extends JComponent implements TrackerListener {
   }
 
   /**
-   * View Object to display a Point with labels for each coordinate. Dimensions of coordinate system
+   * View Object to display a Point with labels for each coordinate. Dimensions of
+   * coordinate system
    * determing by labels.length in SetLabels
    *
-   * @param labels, array which determines the labels, i.e. "x,y,etc..." and the number of
-   *     coordinates
+   * @param labels, array which determines the labels, i.e. "x,y,etc..." and the
+   *                number of
+   *                coordinates
    */
   void SetSensor1Coordinates(FloatPoint point) {
     for (int i = 0; i < 3 && i < fSensor1Coordinates.size(); i++) {

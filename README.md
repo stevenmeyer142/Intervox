@@ -4,3 +4,20 @@ This App was developed as a proof of concept around the year 2000. It displayed 
 
 The app interfaced with a localizer to display DICOM images during surgery. It was used non-commercially in over 500 surgeries.
 
+# Prerequisites
+
+## VCPKG
+
+`VCPKG_ROOT` must be set.
+
+### Build dependencies
+autoconfig, pkg-config, automake, libtool
+
+## CMAKE
+
+## TODO
+
+Getting an error on Mac "Could not create Vulkan instance : ERROR_INCOMPATIBLE_DRIVER"
+Remove Conan
+Add gradle copy files for "bin" and "src/main/native/build"
+

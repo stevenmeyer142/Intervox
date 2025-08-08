@@ -1,1 +1,42 @@
-package com.brazedblue.intervox.device;import com.brazedblue.intervox.tracker.*;import com.brazedblue.intervox.util.Debug;public abstract class PortDevice {  protected static final String kPolhemusString = "Polhemus";  protected static final String kAscensionString = "Ascension";  protected static final String[] kDeviceStrings = {kPolhemusString, kAscensionString};  public static final String kDefaultDevice = kPolhemusString;  public static PortDevice NewPortDevice(String type) {    PortDevice result = null;    if (type.equals(kPolhemusString)) {      result = new PolhemusDevice();    } else if (type.equals(kAscensionString)) {      result = new AscensionDevice();    } else {      Debug.PrintStackTrace("Unknown device " + type);    }    return result;  }  public static String[] GetDeviceList() {    return kDeviceStrings;  }  public abstract DeviceOutput CreateOutputObject(ScrollingBuffer buffer);  //	usually responding to a status output  public abstract void HandleOutput(DeviceOutput output, Tracker tracker);  //	called within tracker run loop  public abstract void SendToTracker(Tracker tracker);  public abstract void Connecting(Tracker tracker);  public abstract void Disconnecting(Tracker tracker);}
+package com.brazedblue.intervox.device;
+
+import com.brazedblue.intervox.tracker.*;
+import com.brazedblue.intervox.util.Debug;
+
+public abstract class PortDevice {
+  protected static final String kPolhemusString = "Polhemus";
+  protected static final String kAscensionString = "Ascension";
+
+  protected static final String[] kDeviceStrings = { kPolhemusString, kAscensionString };
+  public static final String kDefaultDevice = kPolhemusString;
+
+  public static PortDevice NewPortDevice(String type) {
+    PortDevice result = null;
+
+    if (type.equals(kPolhemusString)) {
+      result = new PolhemusDevice();
+    } else if (type.equals(kAscensionString)) {
+      result = new AscensionDevice();
+    } else {
+      Debug.PrintStackTrace("Unknown device " + type);
+    }
+
+    return result;
+  }
+
+  public static String[] GetDeviceList() {
+    return kDeviceStrings;
+  }
+
+  public abstract DeviceOutput CreateOutputObject(ScrollingBuffer buffer);
+
+  // usually responding to a status output
+  public abstract void HandleOutput(DeviceOutput output, Tracker tracker);
+
+  // called within tracker run loop
+  public abstract void SendToTracker(Tracker tracker);
+
+  public abstract void Connecting(Tracker tracker);
+
+  public abstract void Disconnecting(Tracker tracker);
+}

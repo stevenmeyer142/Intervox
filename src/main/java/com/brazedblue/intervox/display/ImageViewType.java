@@ -30,11 +30,11 @@ public class ImageViewType implements java.io.Serializable, java.lang.Cloneable 
   public static final String kProbeTrajectoryPerspective = "Probe Trajectory";
   public static final String k3DPerspective = "3D";
   public static final String[] kPerspectiveChoices = {
-    kSagitalPerspective,
-    kCoronalPerspective,
-    kAxialPerspective,
-    kProbeTrajectoryPerspective,
-    k3DPerspective
+      kSagitalPerspective,
+      kCoronalPerspective,
+      kAxialPerspective,
+      kProbeTrajectoryPerspective,
+      k3DPerspective
   };
   private static final Color kSagitalColor = new Color(67, 155, 67);
   private static final Color kAxialColor = new Color(109, 109, 213);
@@ -47,10 +47,10 @@ public class ImageViewType implements java.io.Serializable, java.lang.Cloneable 
   private static final String k150PercentMagnification = "150%";
   private static final String k200PercentMagnification = "200%";
   public static final String[] kMagnificationChoices = {
-    k50PercentMagnification,
-    k100PercentMagnification,
-    k150PercentMagnification,
-    k200PercentMagnification
+      k50PercentMagnification,
+      k100PercentMagnification,
+      k150PercentMagnification,
+      k200PercentMagnification
   };
 
   static final long serialVersionUID = -4783516988435056267L;
@@ -181,8 +181,7 @@ public class ImageViewType implements java.io.Serializable, java.lang.Cloneable 
         displaysFiducials = false;
       }
 
-      result =
-          new ImageViewType(axis, magnification, hasScrollbar, hasPopup, displaysFiducials, tracks);
+      result = new ImageViewType(axis, magnification, hasScrollbar, hasPopup, displaysFiducials, tracks);
       result.SetPerspectiveString(perspective);
     }
 
@@ -265,14 +264,16 @@ public class ImageViewType implements java.io.Serializable, java.lang.Cloneable 
   }
 
   public NSImageView CreateView() {
-    /*		if (HasFeature(kTracksInterceptFeature))
-    {
-    	return new ImageInterceptView(this);
-    }
-    else
-    {
-    	return new ImageSeriesView(this);
-    } */
+    /*
+     * if (HasFeature(kTracksInterceptFeature))
+     * {
+     * return new ImageInterceptView(this);
+     * }
+     * else
+     * {
+     * return new ImageSeriesView(this);
+     * }
+     */
 
     return new ImageSeriesView(this);
   }
@@ -292,10 +293,10 @@ public class ImageViewType implements java.io.Serializable, java.lang.Cloneable 
     }
 
     if (fAxis != newAxis) {
-      //		Int oldAxis = new Int(fAxis);
-      //		Int newAxisObj = new Int(newAxis);
+      // Int oldAxis = new Int(fAxis);
+      // Int newAxisObj = new Int(newAxis);
       fAxis = newAxis;
-      //		FireChange(kAxisProperty, oldAxis, newAxisObj);
+      // FireChange(kAxisProperty, oldAxis, newAxisObj);
     }
   }
 

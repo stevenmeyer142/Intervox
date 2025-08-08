@@ -1,1 +1,8 @@
-package com.brazedblue.intervox.display;public class ProgressCancelledException extends Exception {  public ProgressCancelledException(String s) {    super(s);  }}
+package com.brazedblue.intervox.display;
+
+public class ProgressCancelledException extends Exception {
+
+  public ProgressCancelledException(String s) {
+    super(s);
+  }
+}

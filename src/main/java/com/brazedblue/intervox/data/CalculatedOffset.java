@@ -5,7 +5,7 @@ import com.brazedblue.intervox.util.Debug;
 import java.util.*;
 
 public class CalculatedOffset extends DataModel
-    implements java.io.Serializable, java.lang.Cloneable {
+    implements java.io.Serializable {
   FloatPoint fOffset = new FloatPoint();
   FloatPoint fStandardDeviation = new FloatPoint();
   ThreeDVector fOrthogonalVector;

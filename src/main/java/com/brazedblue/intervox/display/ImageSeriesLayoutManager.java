@@ -79,14 +79,14 @@ public class ImageSeriesLayoutManager implements LayoutListener {
         NSImageView view = (NSImageView) viewList.elementAt(i);
         fImageViews[i] = view;
         PostProcessView(view);
-        //				fImageViews[i].SetData(fData);
-        //				f3DImageController.AddImageView(view);
-        //				fImageCopier.AddImageCopier(view.GetImageCopier());
+        // fImageViews[i].SetData(fData);
+        // f3DImageController.AddImageView(view);
+        // fImageCopier.AddImageCopier(view.GetImageCopier());
       }
     }
 
-    //		f3DImageController.UpdateSeriesViews();
-    //		fContainer.invalidate();
+    // f3DImageController.UpdateSeriesViews();
+    // fContainer.invalidate();
     fContainer.revalidate();
   }
 

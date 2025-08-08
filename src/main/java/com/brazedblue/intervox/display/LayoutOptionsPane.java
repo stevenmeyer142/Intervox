@@ -49,36 +49,34 @@ class LayoutOptionsPane extends JPanel {
       JButton deleteBtn = new JButton("Delete");
       bottomBtns.add(deleteBtn);
 
-      ActionListener l =
-          new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-              LayoutModel selectedLayout = fLayoutSelections.GetSelectedLayout();
-              if (selectedLayout != null) {
-                fLayoutSelections.DeleteLayout(selectedLayout);
-              } else {
-                NeuroSynchUtil.ErrorMessage(
-                    "No Layout selected to Delete", NeuroSynchUtil.kShowDlog);
-              }
-            }
-          };
+      ActionListener l = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+          LayoutModel selectedLayout = fLayoutSelections.GetSelectedLayout();
+          if (selectedLayout != null) {
+            fLayoutSelections.DeleteLayout(selectedLayout);
+          } else {
+            NeuroSynchUtil.ErrorMessage(
+                "No Layout selected to Delete", NeuroSynchUtil.kShowDlog);
+          }
+        }
+      };
       deleteBtn.addActionListener(l);
 
       JButton duplicateBtn = new JButton("Duplicate");
       bottomBtns.add(duplicateBtn);
-      l =
-          new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-              LayoutModel selectedLayout = fLayoutSelections.GetSelectedLayout();
-              if (selectedLayout != null) {
-                LayoutModel newLayout = (LayoutModel) selectedLayout.clone();
-                fLayoutSelections.AddLayout(newLayout);
-                fLayoutSelections.SetSelectedLayout(newLayout);
-              } else {
-                NeuroSynchUtil.ErrorMessage(
-                    "No Layout selected to Duplicate", NeuroSynchUtil.kShowDlog);
-              }
-            }
-          };
+      l = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+          LayoutModel selectedLayout = fLayoutSelections.GetSelectedLayout();
+          if (selectedLayout != null) {
+            LayoutModel newLayout = (LayoutModel) selectedLayout.clone();
+            fLayoutSelections.AddLayout(newLayout);
+            fLayoutSelections.SetSelectedLayout(newLayout);
+          } else {
+            NeuroSynchUtil.ErrorMessage(
+                "No Layout selected to Duplicate", NeuroSynchUtil.kShowDlog);
+          }
+        }
+      };
 
       duplicateBtn.addActionListener(l);
     } else {

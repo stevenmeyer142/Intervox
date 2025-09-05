@@ -19,5 +19,5 @@ autoconfig, pkg-config, automake, libtool
 
 Getting an error on Mac "Could not create Vulkan instance : ERROR_INCOMPATIBLE_DRIVER"
 Remove Conan
-Add gradle copy files for "bin" and "src/main/native/build"
+Check copying of packages with gradle dependencies
 

@@ -5,6 +5,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'application'
 }
 
 repositories {
@@ -13,6 +14,13 @@ repositories {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
 }
+
+application {
+    mainClass = 'com.brazedblue.intervox.main.NSAppletFrameDev' 
+       applicationDefaultJvmArgs = ["-Djava.library.path=${buildDir}/lib"]
+
+}
+
 
 dependencies {
     implementation 'javax.vecmath:vecmath:1.5.2'
@@ -24,7 +32,7 @@ dependencies {
 group = 'com.brazedblue.intervox'
 version = '1.0-SNAPSHOT'
 description = 'Intervox'
-def native_dir = '/src/main/native'
+def native_dir = 'src/main/native'
 def jni_build_dir = "${native_dir}/build"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -38,16 +46,23 @@ publishing {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    options.compilerArgs += [
+        '-h', // This flag tells javac to generate JNI header files
+        file("${native_dir}"), // Specify the output directory for the headers
+    ]
+
+    finalizedBy("JniCompile")
 }
 
-task JniCompile {
-    exec {
+task JniCompile  (type: Exec) {
      	workingDir getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
     	
         commandLine 'cmake',  '..'
         commandLine 'cmake',  '--build', '.'
 
-    }
+        finalizedBy("copyJniLibs") 
+
+
 }
 tasks.register('copyData', Copy) {
     from getProjectDir().getAbsolutePath() + "/${native_dir}/data",getProjectDir().getAbsolutePath() + "/data"
@@ -55,18 +70,9 @@ tasks.register('copyData', Copy) {
 }
 
 tasks.register('copyJniLibs', Copy) {
-    from getProjectDir().getAbsolutePath() +  "/${jni_build_dir}/lib"
+    println "Copying JNI libs... from " + getProjectDir().getAbsolutePath() +  "/${jni_build_dir}" + " to " + "${buildDir}/lib"
+    from getProjectDir().getAbsolutePath() +  "/${jni_build_dir}"
     into "${buildDir}/lib"
+    include '*.dylib','*.so','*.dll'
 }
-tasks.register("copyPackages", Copy) {
-    from configurations.default
-    into "${buildDir}/packages"
-}
-
-
-tasks.named("processResources") { finalizedBy("copyData") }
-tasks.named("classes") { finalizedBy("copyJniLibs") }
-tasks.named("processResources") { finalizedBy("copyPackages") }
-
-
 

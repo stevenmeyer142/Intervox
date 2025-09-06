@@ -32,8 +32,10 @@ dependencies {
 group = 'com.brazedblue.intervox'
 version = '1.0-SNAPSHOT'
 description = 'Intervox'
+def cmake_preset = 'vcpkg' // 'vcpkg' or 'default'
 def native_dir = 'src/main/native'
-def jni_build_dir = "${native_dir}/build"
+def jni_build_subdir = "build/${cmake_preset}"
+def jni_build_dir = "${native_dir}/${jni_build_subdir}"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
@@ -51,19 +53,35 @@ tasks.withType(JavaCompile) {
         file("${native_dir}"), // Specify the output directory for the headers
     ]
 
-    finalizedBy("JniCompile")
+        dependsOn("makeJniBuildDir")
+        finalizedBy("JniCMake")
 }
 
-task JniCompile  (type: Exec) {
-     	workingDir getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
+task JniCMake  (type: Exec) {
+        // Set environment variables if needed
+        if ("${cmake_preset}" == "vcpkg") {
+           environment "VCPKG_ROOT", "/Users/stevenmeyer/Projects/vcpkg"
+        }
+     	workingDir getProjectDir().getAbsolutePath() + "/${native_dir}"
     	
-        commandLine 'cmake',  '..'
-        commandLine 'cmake',  '--build', '.'
-
-        finalizedBy("copyJniLibs") 
-
-
+        println "Running cmake --preset ${cmake_preset} in " + getProjectDir().getAbsolutePath() + "/${native_dir}"
+        commandLine 'cmake',  "--preset", "${cmake_preset}", '.'
+        finalizedBy("JniBuild")
 }
+
+task JniBuild  (type: Exec) {
+        workingDir getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
+        println "Running cmake --build in " + getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
+        commandLine 'cmake',  '--build', "."
+}
+
+
+task makeJniBuildDir {
+    println "Making JNI build dir at " + getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
+   mkdir getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
+}
+
+tasks
 tasks.register('copyData', Copy) {
     from getProjectDir().getAbsolutePath() + "/${native_dir}/data",getProjectDir().getAbsolutePath() + "/data"
     into "${buildDir}/data"

@@ -1,8 +1,0 @@
-{
-  "configurePresets": [
-    {
-      "name": "default",
-      "inherits": "vcpkg",
-     }
-  ]
-}

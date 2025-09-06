@@ -10,6 +10,17 @@ The app interfaced with a localizer to display DICOM images during surgery. It w
 
 `VCPKG_ROOT` must be set.
 
+For Windows:
+```
+$env:VCPKG_ROOT = "C:\path\to\vcpkg"
+$env:PATH = "$env:VCPKG_ROOT;$env:PATH"
+```
+
+For Linux:
+```
+export VCPKG_ROOT="path\to\vcpkg"
+```
+
 ### Build dependencies
 autoconfig, pkg-config, automake, libtool
 

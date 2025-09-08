@@ -253,9 +253,9 @@ public:
 #endif
 	glm::vec2 mousePos;
 
-	std::string title = "Vulkan Example";
-	std::string name = "vulkanExample";
-	uint32_t apiVersion = VK_API_VERSION_1_0;
+	std::string title = "Intervox";
+	std::string name = "Intervox";
+	uint32_t apiVersion = VK_API_VERSION_1_1;
 
 	struct {
 		VkImage image;

@@ -1,4 +1,0 @@
-    HEADER_SEARCH_PATHS = "/Users/stevenmeyer/Projects/vulkan/vulkan_git/Vulkan/xcode/MoltenVK/include" "/Users/stevenmeyer/Projects/vulkan/vulkan_git/Vulkan/xcode/../external"/**
-    LIBRARY_SEARCH_PATHS = "/Users/stevenmeyer/Projects/vulkan/vulkan_git/Vulkan/xcode/MoltenVK/macOS" /Users/stevenmeyer/Projects/vulkan/vulkan_git/Vulkan/xcode/MoltenVK/macOS
-    USER_HEADER_SEARCH_PATHS = "/Users/stevenmeyer/Projects/vulkan/vulkan_git/Vulkan/xcode/../base"
-  

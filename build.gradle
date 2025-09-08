@@ -19,6 +19,9 @@ application {
     mainClass = 'com.brazedblue.intervox.main.NSAppletFrameDev' 
        applicationDefaultJvmArgs = ["-Djava.library.path=${buildDir}/lib"]
 
+    tasks.run {
+        workingDir = file("${buildDir}") 
+    }
 }
 
 
@@ -32,7 +35,14 @@ dependencies {
 group = 'com.brazedblue.intervox'
 version = '1.0-SNAPSHOT'
 description = 'Intervox'
-def cmake_preset = 'vcpkg' // 'vcpkg' or 'default'
+def cmake_preset = 'default' // 'vcpkg' or 'default'
+if (cmake_preset == 'vcpkg' ) {
+    def VCPKG_ROOT = System.getenv('VCPKG_ROOT')
+    if (VCPKG_ROOT == null) {
+        throw new GradleException("VCPKG_ROOT environment variable is not set. Please set it to the root of your vcpkg installation.")
+    }
+  //  System.setEnv('VCPKG_ROOT', "/path/to/vcpkg") // Set this to your vcpkg path if not set in environment
+}
 def native_dir = 'src/main/native'
 def jni_build_subdir = "build/${cmake_preset}"
 def jni_build_dir = "${native_dir}/${jni_build_subdir}"
@@ -58,10 +68,6 @@ tasks.withType(JavaCompile) {
 }
 
 task JniCMake  (type: Exec) {
-        // Set environment variables if needed
-        if ("${cmake_preset}" == "vcpkg") {
-           environment "VCPKG_ROOT", "/Users/stevenmeyer/Projects/vcpkg"
-        }
      	workingDir getProjectDir().getAbsolutePath() + "/${native_dir}"
     	
         println "Running cmake --preset ${cmake_preset} in " + getProjectDir().getAbsolutePath() + "/${native_dir}"
@@ -73,6 +79,7 @@ task JniBuild  (type: Exec) {
         workingDir getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
         println "Running cmake --build in " + getProjectDir().getAbsolutePath() + "/${jni_build_dir}"
         commandLine 'cmake',  '--build', "."
+        finalizedBy("copyJniLibs","copyData")
 }
 
 

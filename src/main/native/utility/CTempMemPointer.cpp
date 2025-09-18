@@ -26,7 +26,7 @@ void CTempMemPointer::Allocate(size_t itsSize)
 		Release();
 	}
 
-	OSErr err;
+	MyErr err;
 	fPtr = ::malloc(itsSize);
 
 	CMyError::ThrowErrorIfNULL(fPtr, "Couldn't allocate temp handle");

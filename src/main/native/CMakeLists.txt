@@ -73,6 +73,8 @@ ELSEIF(APPLE)
 		ENDIF()
 	ENDIF()
 	message("Apple build detected")
+	set(CMAKE_CXX_FLAGS "--sysroot ${CMAKE_OSX_SYSROOT} ${CMAKE_CXX_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -include ${CMAKE_CURRENT_SOURCE_DIR}/base/mvk_vulkan.h")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_USE_PLATFORM_METAL_EXT -DVK_EXAMPLE_XCODE_GENERATED")
 ENDIF(WIN32)
 
@@ -145,6 +147,7 @@ target_compile_options(Intervox
 	-DENABLE_HLSL
 	-DINTERVOX_JNI
 	-DDEBUG=1
+	-DFORCE_VALIDATION=1
 )
 target_include_directories(Intervox
 	PRIVATE
@@ -153,6 +156,5 @@ target_include_directories(Intervox
 	/usr/local/include
 )
 
-set(CMAKE_CXX_FLAGS "--sysroot ${CMAKE_OSX_SYSROOT} ${CMAKE_CXX_FLAGS}")
 
 target_link_libraries(Intervox ${CONAN_LIBS} Vulkan::Vulkan)

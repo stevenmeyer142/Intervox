@@ -1,10 +1,10 @@
 /*
-* Assorted Vulkan helper functions
-*
-* Copyright (C) 2016 by Sascha Willems - www.saschawillems.de
-*
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
-*/
+ * Assorted Vulkan helper functions
+ *
+ * Copyright (C) 2016-2023 by Sascha Willems - www.saschawillems.de
+ *
+ * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+ */
 
 #pragma once
 
@@ -22,6 +22,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
+#include <algorithm>
 #if defined(_WIN32)
 #include <windows.h>
 #include <fcntl.h>
@@ -60,11 +61,15 @@
 #endif
 
 const std::string getAssetPath();
+const std::string getShaderBasePath();
 
 namespace vks
 {
 	namespace tools
 	{
+		/** @brief Setting this path chnanges the place where the samples looks for assets and shaders */
+		extern std::string resourcePath;
+
 		/** @brief Disable message boxes on fatal errors */
 		extern bool errorModeSilent;
 
@@ -77,9 +82,13 @@ namespace vks
 		// Selected a suitable supported depth format starting with 32 bit down to 16 bit
 		// Returns false if none of the depth formats in the list is supported by the device
 		VkBool32 getSupportedDepthFormat(VkPhysicalDevice physicalDevice, VkFormat *depthFormat);
+		// Same as getSupportedDepthFormat but will only select formats that also have stencil
+		VkBool32 getSupportedDepthStencilFormat(VkPhysicalDevice physicalDevice, VkFormat* depthStencilFormat);
 
-		// Returns if a given format support LINEAR filtering
+		// Returns true a given format support LINEAR filtering
 		VkBool32 formatIsFilterable(VkPhysicalDevice physicalDevice, VkFormat format, VkImageTiling tiling);
+		// Returns true if a given format has a stencil part
+		VkBool32 formatHasStencil(VkFormat format);
 
 		// Put an image memory barrier for setting an image layout on the sub resource into the given command buffer
 		void setImageLayout(
@@ -127,5 +136,6 @@ namespace vks
 		bool fileExists(const std::string &filename);
 
 		uint32_t alignedSize(uint32_t value, uint32_t alignment);
+		VkDeviceSize alignedVkSize(VkDeviceSize value, VkDeviceSize alignment);
 	}
 }

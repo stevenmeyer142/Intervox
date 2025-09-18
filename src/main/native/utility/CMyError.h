@@ -10,7 +10,7 @@
 #endif
 
 const short kErrMessageStrLength = 55;
-typedef long OSErr;
+typedef long MyErr;
 
 extern bool gDebugging;
 
@@ -25,7 +25,7 @@ public:
 
 	static void ThrowErrorIfNULL(void *ptr, const char *message = NULL);
 
-	static void ThrowErrorIfOSErr(OSErr err, const char *message = NULL);
+	static void ThrowErrorIfOSErr(MyErr err, const char *message = NULL);
 
 #ifdef INTERVOX_JNI
 	static void CheckForJNIException(JNIEnv *env, const char *message = NULL);

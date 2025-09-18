@@ -22,7 +22,7 @@ public:
 
     virtual ~CVulkanContext();
     
-	void initialize(const Rect *rect);
+	void initialize(const GLRect *rect);
 
 	void FillInJavaRGBArray(JNIEnv *env, jintArray array, long width, long height);
 

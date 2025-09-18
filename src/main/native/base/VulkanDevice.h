@@ -1,12 +1,12 @@
 /*
-* Vulkan device class
-*
-* Encapsulates a physical Vulkan device and its logical representation
-*
-* Copyright (C) by Sascha Willems - www.saschawillems.de
-*
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
-*/
+ * Vulkan device class
+ *
+ * Encapsulates a physical Vulkan device and its logical representation
+ *
+ * Copyright (C) 2016-2023 by Sascha Willems - www.saschawillems.de
+ *
+ * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+ */
 
 #pragma once
 
@@ -39,8 +39,6 @@ struct VulkanDevice
 	std::vector<std::string> supportedExtensions;
 	/** @brief Default command pool for the graphics queue family index */
 	VkCommandPool commandPool = VK_NULL_HANDLE;
-	/** @brief Set to true when the debug marker extension is detected */
-	bool enableDebugMarkers = false;
 	/** @brief Contains queue family indices */
 	struct
 	{
@@ -55,7 +53,7 @@ struct VulkanDevice
 	explicit VulkanDevice(VkPhysicalDevice physicalDevice);
 	~VulkanDevice();
 	uint32_t        getMemoryType(uint32_t typeBits, VkMemoryPropertyFlags properties, VkBool32 *memTypeFound = nullptr) const;
-	uint32_t        getQueueFamilyIndex(VkQueueFlagBits queueFlags) const;
+	uint32_t        getQueueFamilyIndex(VkQueueFlags queueFlags) const;
 	VkResult        createLogicalDevice(VkPhysicalDeviceFeatures enabledFeatures, std::vector<const char *> enabledExtensions, void *pNextChain, bool useSwapChain = true, VkQueueFlags requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT);
 	VkResult        createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size, VkBuffer *buffer, VkDeviceMemory *memory, void *data = nullptr);
 	VkResult        createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, vks::Buffer *buffer, VkDeviceSize size, void *data = nullptr);
@@ -67,7 +65,9 @@ struct VulkanDevice
 	void            flushCommandBuffer(VkCommandBuffer commandBuffer, VkQueue queue, bool free = true);
 	bool            extensionSupported(std::string extension);
 	VkFormat        getSupportedDepthFormat(bool checkSamplingSupport);
-    
-    VkDeviceSize getAlignedMemory(VkDeviceSize size); // added sgm 2/23/22
+
+#ifdef INTERVOX_LIB
+    VkDeviceSize getAlignedMemory(VkDeviceSize size); 
+#endif // INTERVOX_LIB
 };
 }        // namespace vks

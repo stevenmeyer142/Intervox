@@ -74,7 +74,7 @@ void CMyError::CheckForJNIException(JNIEnv *env, const char *message)
 }
 #endif
 
-void CMyError::ThrowErrorIfOSErr(OSErr err, const char *message)
+void CMyError::ThrowErrorIfOSErr(MyErr err, const char *message)
 {
 	if (err != 0)
 	{

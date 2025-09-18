@@ -26,7 +26,7 @@ CVulkanContext::~CVulkanContext()
 {
 }
 
-void CVulkanContext::initialize(const Rect *rect)
+void CVulkanContext::initialize(const GLRect *rect)
 {
 	fOffscreenRenderer->initialize(rect->right - rect->left, rect->bottom - rect->top);
 }

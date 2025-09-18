@@ -5,7 +5,7 @@
 
 bool GetJIntField(jint &intVal, JNIEnv *env, jobject obj, jclass cls, const char *fieldName);
 
-bool JavaIntArrayToRect(JNIEnv *env, jintArray jRect, Rect &rect)
+bool JavaIntArrayToRect(JNIEnv *env, jintArray jRect, GLRect &rect)
 {
 	jboolean isCopy;
 	jint *fields = env->GetIntArrayElements(jRect, &isCopy);

@@ -37,7 +37,7 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGLC
 	CVulkanContext *dataObj = NULL;
 	try
 	{
-		Rect location;
+		GLRect location;
 		
 		if (!JavaIntArrayToRect (env, frameRect, location))
 		{

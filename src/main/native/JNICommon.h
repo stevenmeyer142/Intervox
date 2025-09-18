@@ -11,7 +11,7 @@ typedef double GLfloat;
 
 class CMyError;
 
-bool JavaIntArrayToRect(JNIEnv *env, jintArray jRect, Rect &rect);
+bool JavaIntArrayToRect(JNIEnv *env, jintArray jRect, GLRect &rect);
 void JavaArrayToGLFloat(JNIEnv *env, jfloatArray, GLfloat *glfloat, int size);
 void GLFloatToJavaArray(JNIEnv *env, GLfloat *glfloat, jfloatArray, int size);
 void FillErrRecord(JNIEnv *env, CMyError &err, jobjectArray errRecord);

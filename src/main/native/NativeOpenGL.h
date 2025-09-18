@@ -25,13 +25,13 @@ typedef ListIndex CGLMIndex;
 
 #define kUSE_VULKAN 1
 
-struct Rect
+struct GLRect
 {
   short top;
   short left;
   short bottom;
   short right;
 };
-typedef struct Rect Rect;
+typedef struct GLRect GLRect;
 
 #endif

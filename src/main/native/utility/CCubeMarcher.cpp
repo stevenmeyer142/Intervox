@@ -119,7 +119,7 @@ void CCubeMarcher::MarchTheCubes(short resolution)
 	const short kResolution = fSlicesSet ? fResolution : 1;
 
 #if __profile__
-	OSErr profileErr = -1;
+	MyErr profileErr = -1;
 	profileErr = ProfilerInit(collectDetailed, bestTimeBase, 20, 1000);
 #endif
 	for (short z = 0; z < fDepth - kResolution; z += kResolution)

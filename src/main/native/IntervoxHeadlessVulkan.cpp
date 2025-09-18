@@ -16,7 +16,7 @@ static bool DEV_DEBUG = true;
 
 #define VERTEX_BUFFER_BIND_ID 0
 
-IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase(ENABLE_VALIDATION)
+IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase()
 
 {
     width = 256;
@@ -77,8 +77,9 @@ void IntervoxHeadlessVulkan::copyImageData_RGBA_8888(uint32_t* toBuffer, uint32_
 void IntervoxHeadlessVulkan::buildCommandBuffers(RenderCommandSettings &renderCommandSettings, VkCommandBuffer drawCommandBuffer)
 {
     VkCommandBufferBeginInfo cmdBufInfo = vks::initializers::commandBufferBeginInfo();
-    VkClearColorValue clearColor = { { 0.025f, 0.025f, 0.025f, 1.0f } };
-    VkClearValue clearValues[2];
+  //  VkClearColorValue clearColor = { { 0.025f, 0.025f, 0.025f, 1.0f } };
+    VkClearColorValue clearColor = { { 0.0f, 0.0f, 0.5f, 1.0f } };
+     VkClearValue clearValues[2];
  //   clearValues[0].color = defaultClearColor;
     clearValues[0].color = clearColor;
     clearValues[1].depthStencil = { 1.0f, 0 };

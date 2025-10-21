@@ -15,7 +15,7 @@
 
 int32_t VulkanMesh::gNextMeshID = 1;
 
-VulkanMesh::VulkanMesh(vks::VulkanDevice *aVulkanDevice) : fVulkanDevice(aVulkanDevice), fColor(1, 0, 0)
+VulkanMesh::VulkanMesh(vks::VulkanDevice *aVulkanDevice) : fVulkanDevice(aVulkanDevice), fColor(0, 1, 0)
 {
     fMeshID = gNextMeshID++;
 }
@@ -221,6 +221,25 @@ void VulkanMesh::freeBuffers()
     fVertexBuffer.destroy();
     fIndexBuffer.destroy();
 }
+
+#ifdef DEBUG_SIMPLE_TRIANGLE
+void VulkanMesh::CreateDebugMesh(VkQueue queue){
+    CTriangleList triangleList(10); // initial size;
+    CVertexList vertexList(30); // initial size;
+
+    CTriangle triangle;
+    triangle.AddVertex(1.0, 1.0, 0.0);
+    triangle.AddVertex(-1.0, 1.0, 0.0);
+    triangle.AddVertex(0.0, -1.0, 0.0);
+
+    	vertexList.InsertTriangle(&triangle);
+		triangleList.InsertTriangle(&triangle);
+        vertexList.SetIndices();
+
+        AddTriangles(triangleList, vertexList, queue);
+        fMeshID = DEBUG_MESH_ID;
+}
+#endif
 
 void VulkanMesh::DebugTestDraw()
 {

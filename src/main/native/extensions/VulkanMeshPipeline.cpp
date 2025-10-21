@@ -27,12 +27,14 @@ VulkanMeshPipeline::~VulkanMeshPipeline()
 
 void VulkanMeshPipeline::Draw(VkCommandBuffer commandBuffer, RenderCommandSettings &renderCommandSettings)
 {
+    std::cout << __FUNCTION__ << " fMeshes.size() " << fMeshes.size() << std::endl;
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, fPipeline);
     // TODO: move descripterset from mesh to here
     for (auto mesh : fMeshes)
     {
         if (renderCommandSettings.fMeshPipelineSettings.hasMeshID(mesh->getMeshID()))
         {
+            std::cout << __FUNCTION__ << " mesh->getMeshID() " << mesh->getMeshID() << std::endl;
             mesh->Draw(commandBuffer, fPipelineLayout);
         }
     }
@@ -56,8 +58,10 @@ void VulkanMeshPipeline::updateUniformBuffer(RenderCommandSettings &renderComman
     model = glm::rotate(model, glm::radians(renderCommandSettings.fRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(renderCommandSettings.fRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
+#ifndef DEBUG_SIMPLE_TRIANGLE
     float translation = -128;
     model = glm::translate(model, glm::vec3(translation, translation, translation));
+#endif
 
     for (auto mesh : fMeshes)
     {
@@ -121,8 +125,18 @@ void VulkanMeshPipeline::createPipeline(const std::string &shadersPath, VkRender
     // Load shaders
     std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages;
 
+#if 0
     shaderStages[0] = loadShader(shadersPath + "mesh/mesh.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
     shaderStages[1] = loadShader(shadersPath + "mesh/mesh.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+#else
+#ifdef DEBUG_SHADER_PRINTF
+    shaderStages[0] = loadShader(shadersPath + "mesh/mesh_debug_printf.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+    shaderStages[1] = loadShader(shadersPath + "mesh/mesh_debug_printf.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+#else
+    shaderStages[0] = loadShader(shadersPath + "mesh/mesh_debug.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+    shaderStages[1] = loadShader(shadersPath + "mesh/mesh_debug.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+    #endif
+#endif
 
     VkGraphicsPipelineCreateInfo pipelineCreateInfo =
         vks::initializers::pipelineCreateInfo(

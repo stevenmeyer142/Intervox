@@ -1,0 +1,33 @@
+#version 450
+// This extension is required to use printf
+#extension GL_EXT_debug_printf : enable
+
+layout (location = 0) in vec4 inPos;
+layout (location = 1) in vec3 inNormal;
+
+layout (binding = 0) uniform UBO 
+{
+	mat4 projection;
+	mat4 model;
+	mat4 normal;
+	mat4 view;
+    vec4 color;
+	vec3 lightpos;
+} ubo;
+
+layout (location = 0) out vec3 outNormal;
+layout (location = 1) out vec3 outColor;
+layout (location = 2) out vec3 outEyePos;
+layout (location = 3) out vec3 outLightVec;
+
+void main() 
+{
+	outNormal = normalize(mat3(ubo.normal) * inNormal);
+    outColor = ubo.color.xyz;
+	mat4 modelView = ubo.view * ubo.model;
+	vec4 pos = modelView * inPos;	
+    outLightVec = normalize(ubo.lightpos - pos.xyz);
+	gl_Position = ubo.projection * pos;
+
+	debugPrintfEXT("gl_Position = %v4f", gl_Position);
+}

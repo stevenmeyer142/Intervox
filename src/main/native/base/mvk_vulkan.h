@@ -41,9 +41,9 @@
 #	define VK_USE_PLATFORM_IOS_MVK				1
 #endif
 
-#ifdef __MAC_OS_X_VERSION_MAX_ALLOWED
-#	define VK_USE_PLATFORM_MACOS_MVK			1
-#endif
+// #ifdef __MAC_OS_X_VERSION_MAX_ALLOWED
+// #	define VK_USE_PLATFORM_MACOS_MVK			1
+// #endif
 
 #include <vulkan/vulkan.h>
 

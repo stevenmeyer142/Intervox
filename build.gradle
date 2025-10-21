@@ -21,6 +21,7 @@ application {
 
     tasks.run {
         workingDir = file("${buildDir}") 
+ //       environment("VK_LOADER_DEBUG", "error,warn,layer")
     }
 }
 

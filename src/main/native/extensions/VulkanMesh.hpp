@@ -78,6 +78,9 @@ public:
 
     void setupDescriptorSet(VkDescriptorPool pool, VkDescriptorSetLayout descriptorSetLayout);
 
+#ifdef DEBUG_SIMPLE_TRIANGLE
+    void CreateDebugMesh(VkQueue queue);
+#endif
     static void DebugTestDraw();
 
     void DebugDrawNormals();

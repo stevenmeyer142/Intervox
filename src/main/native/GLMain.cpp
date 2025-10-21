@@ -48,6 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_brazedblue_intervox_view3D_OpenGLJNI_pCreateGLC
 		dataObj->initialize (&location);
 		
 		
+		
 
 //		DebugAddAllocatedObject (dataObj);
 	}

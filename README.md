@@ -30,5 +30,6 @@ autoconfig, pkg-config, automake, libtool
 
 Getting an error on Mac "Could not create Vulkan instance : ERROR_INCOMPATIBLE_DRIVER"
 Clean up CMAKEXXFlags vs targetcompileroption
+I had to comment out lines 44-46 in mvk_vulkan.h
 
 

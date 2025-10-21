@@ -18,6 +18,13 @@
 
 typedef int32_t mesh_id_t;
 
+#define DEBUG_SIMPLE_TRIANGLE 1
+#ifdef DEBUG_SIMPLE_TRIANGLE
+#define DEBUG_MESH_ID  22
+#endif
+
+#define DEBUG_SHADER_PRINTF 1
+
 enum VulkanPipelineTypes
 {
     MESH_PIPELINE

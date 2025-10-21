@@ -15,11 +15,21 @@ const static bool DEBUG_MODULE = true;
 
 CVulkanContext::CVulkanContext(IntervoxHeadlessVulkan *offscreenRenderer) : fOffscreenRenderer(offscreenRenderer)
 {
-	fRenderSettings.fCamera.flipY = true;
+#ifndef DEBUG_SIMPLE_TRIANGLE
+	fRenderSettings.fCamera.flipY = false;
 	fRenderSettings.fCamera.setPosition(glm::vec3(0.0f, 0.0f, -256.0f));
 	fRenderSettings.fCamera.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-	//    fRenderSettings.fCamera.setOrthogonal(-(float)offscreenRenderer->getWidth(), (float)offscreenRenderer->getWidth(), (float)offscreenRenderer->getHeight(), -(float)offscreenRenderer->getHeight(), (float)offscreenRenderer->getHeight(), -(float)offscreenRenderer->getHeight());
+	// fRenderSettings.fCamera.setOrthogonal(-(float)offscreenRenderer->getWidth(), (float)offscreenRenderer->getWidth(), (float)offscreenRenderer->getHeight(), -(float)offscreenRenderer->getHeight(), (float)offscreenRenderer->getHeight(), -(float)offscreenRenderer->getHeight());
 	fRenderSettings.fCamera.setPerspective(60.0f, (float)offscreenRenderer->getWidth() / (float)offscreenRenderer->getHeight(), 0.001f, 512.0f);
+#else
+		fRenderSettings.fCamera.type = Camera::CameraType::lookat;
+		fRenderSettings.fCamera.setPosition(glm::vec3(0.0f, 0.0f, -2.5f));
+		fRenderSettings.fCamera.setRotation(glm::vec3(0.0f));
+		fRenderSettings.fCamera.setPerspective(60.0f, (float)offscreenRenderer->getWidth() / (float)offscreenRenderer->getHeight(), 1.0f, 256.0f);
+
+		addMeshID(DEBUG_MESH_ID);
+
+#endif
 }
 
 CVulkanContext::~CVulkanContext()
@@ -28,6 +38,7 @@ CVulkanContext::~CVulkanContext()
 
 void CVulkanContext::initialize(const GLRect *rect)
 {
+	std::cout << __FUNCTION__ << " rect " << rect->left << "," << rect->top << "," << rect->right << "," << rect->bottom << std::endl;
 	fOffscreenRenderer->initialize(rect->right - rect->left, rect->bottom - rect->top);
 }
 

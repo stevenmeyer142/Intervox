@@ -157,4 +157,4 @@ target_include_directories(Intervox
 )
 
 
-target_link_libraries(Intervox ${CONAN_LIBS} Vulkan::Vulkan)
+target_link_libraries(Intervox  Vulkan::Vulkan)

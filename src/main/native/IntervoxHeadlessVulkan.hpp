@@ -29,6 +29,7 @@ class IntervoxHeadlessVulkan : public VulkanExampleBase
     bool fInitialized = false;
     int32_t fPipelinesVersion = 0;
     std::map<std::string, VkCommandBuffer> fContextCommandBuffers;
+    VkFence fWaitFence = VK_NULL_HANDLE;
 
 public:
     IntervoxHeadlessVulkan();
@@ -59,8 +60,11 @@ public:
 
     void grabImage();
 
+
+#ifdef INTERVOX_JNI
     // TODO change CJavaArrSlicesSet to CSlicesSet
     int32_t addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue);
+    #endif
 
 #ifdef DEBUG_SIMPLE_TRIANGLE
     int32_t addDebugMesh();
@@ -79,7 +83,9 @@ private:
     void setupDebugShaderPrintf();
 #endif
 
+#ifdef INTERVOX_JNI
     void ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet, short region, std::shared_ptr<VulkanMesh> mesh);
+#endif
 
     VkCommandBuffer getCommandBuffer(RenderCommandSettings &renderCommandSettings);
 

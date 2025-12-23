@@ -7,7 +7,9 @@
 
 #include "NativeOpenGL.h"
 #include "IntervoxHeadlessVulkan.hpp"
+#ifdef INTERVOX_JNI
 #include "utility/CJavaArrSlicesSet.h"
+#endif
 #include "utility/C3DPoint.h"
 #include "utility/CCubeMarcher.h"
 #include "utility/CMyError.h"
@@ -34,19 +36,37 @@ IntervoxHeadlessVulkan::IntervoxHeadlessVulkan() : VulkanExampleBase()
 
 IntervoxHeadlessVulkan::~IntervoxHeadlessVulkan()
 {
+    if (fWaitFence != VK_NULL_HANDLE)
+    {
+        vkDestroyFence(device, fWaitFence, nullptr);
+        fWaitFence = VK_NULL_HANDLE;
+    }
+
     fPipelines.clear();
 }
 
 void IntervoxHeadlessVulkan::renderScene(RenderCommandSettings &renderCommandSettings)
 {
+    std::cout << __FUNCTION__ << ", renderCommandSettings.fContextID " << renderCommandSettings.fContextID
+    << std::endl;
+    // log thread id
+     pthread_t tid = pthread_self();
+    std::cout << "Thread ID: " << (long)tid << std::endl;
+    VK_CHECK_RESULT(vkResetFences(device, 1, &fWaitFence));
     VkCommandBuffer drawCommandBuffer = getCommandBuffer(renderCommandSettings);
+    std::cout << __FUNCTION__ << " got command buffer" << std::endl; 
     if (renderCommandSettings.fPipelinesVersion != fPipelinesVersion)
     {
         buildCommandBuffers(renderCommandSettings, drawCommandBuffer);
+        std::cout << __FUNCTION__ << " built command buffers" << std::endl;
     }
     updateUniformBuffers(renderCommandSettings);
+    std::cout << __FUNCTION__ << " updated uniform buffers" << std::endl;
     render(drawCommandBuffer);
+    std::cout << __FUNCTION__ << " submitted draw command buffer" << std::endl;
+    vkWaitForFences(device, 1, &fWaitFence, VK_TRUE, UINT64_MAX);
     grabImage();
+    std::cout << __FUNCTION__ << " done. thread id" << (long)tid  << std::endl;
 }
 
 void IntervoxHeadlessVulkan::initialize(uint32_t aWidth, uint32_t aHeight)
@@ -216,7 +236,7 @@ void IntervoxHeadlessVulkan::draw(VkCommandBuffer drawCommandBuffer)
     submitInfo.pCommandBuffers = &drawCommandBuffer;
 
     // Submit to queue
-    VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE));
+    VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, fWaitFence));
 }
 
 void IntervoxHeadlessVulkan::prepare()
@@ -235,6 +255,8 @@ void IntervoxHeadlessVulkan::prepare()
     }
 
     updateDescriptorLayouts();
+    VkFenceCreateInfo fenceCreateInfo = vks::initializers::fenceCreateInfo(VK_FENCE_CREATE_SIGNALED_BIT);
+    VK_CHECK_RESULT(vkCreateFence(device, &fenceCreateInfo, nullptr, &fWaitFence))
 
     prepared = true;
 }
@@ -500,6 +522,7 @@ void IntervoxHeadlessVulkan::grabImage()
     vkDestroyImage(device, dstImage, nullptr);
 }
 
+#ifdef INTERVOX_JNI
 int32_t IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, int regionValue)
 {
 
@@ -525,6 +548,7 @@ int32_t IntervoxHeadlessVulkan::addMeshForRegion(CJavaArrSlicesSet *slicesSet, i
         return -1;
     }
 }
+#endif
 
 #ifdef DEBUG_SIMPLE_TRIANGLE
 int32_t IntervoxHeadlessVulkan::addDebugMesh()
@@ -543,6 +567,8 @@ void IntervoxHeadlessVulkan::setMeshColor(int32_t meshID, float red, float green
     meshPipeline->setMeshColor(meshID, glm::vec3(red, green, blue));
 }
 
+
+#ifdef INTERVOX_JNI
 void IntervoxHeadlessVulkan::ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet, short region,
                                                    std::shared_ptr<VulkanMesh> mesh)
 {
@@ -587,6 +613,7 @@ void IntervoxHeadlessVulkan::ComputeWeightedCenter(CJavaArrSlicesSet *slicesSet,
     //  //  model = glm::scale(model, glm::vec3(-60));
     //    mesh->setModelMatrix(model);
 }
+#endif
 
 VkCommandBuffer IntervoxHeadlessVulkan::getCommandBuffer(RenderCommandSettings &renderCommandSettings)
 {

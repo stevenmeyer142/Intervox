@@ -15,6 +15,7 @@
 #include "JNICommon.h"
 #endif
 #define kUseCGL 1
+#include <cstdio>
 
 bool gDebugging = false;
 
@@ -55,7 +56,7 @@ void CMyError::DebugMessage(const char *message)
 {
 	if (gDebugging)
 	{
-		::printf("%s\n", message);
+		printf("%s\n", message);
 	}
 }
 

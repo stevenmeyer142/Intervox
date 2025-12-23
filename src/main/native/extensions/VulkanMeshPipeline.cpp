@@ -125,7 +125,7 @@ void VulkanMeshPipeline::createPipeline(const std::string &shadersPath, VkRender
     // Load shaders
     std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages;
 
-#if 0
+#if 1
     shaderStages[0] = loadShader(shadersPath + "mesh/mesh.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
     shaderStages[1] = loadShader(shadersPath + "mesh/mesh.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 #else

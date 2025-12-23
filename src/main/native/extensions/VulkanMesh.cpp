@@ -38,6 +38,7 @@ void VulkanMesh::updateUniformBuffer(const glm::mat4 &perspective, const glm::ma
 
 void VulkanMesh::Draw(VkCommandBuffer cmdbuffer, VkPipelineLayout pipelineLayout)
 {
+    std::cout << __FUNCTION__ << " drawing meshID " << fMeshID << " with index count " << fIndexCount << std::endl;
     VkDeviceSize offsets[1] = {0};
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &fDescriptorSet, 0, NULL);
     vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &fVertexBuffer.buffer, offsets);
